@@ -556,7 +556,7 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private void B_resources_Click(object sender, EventArgs e)
         {
-            db = new Database(true);
+            db = new Database(true, (ModifierKeys == Keys.Control));
             if (loaded) { Parse(); }
         }
 

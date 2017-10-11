@@ -124,13 +124,14 @@
     <value>108, 17</value>
   </metadata>
   <data name="B_resources.ToolTip" xml:space="preserve">
-    <value>Click this to re-scan for external resource files.
-
-Create a folder named "resources" in the same directory as PSSE.exe,
-then drop additional files there for them to be recognized by PSSE.
+    <value>Click this to re-scan for external resource files. These must be placed
+in a 'resources' folder in the same directory as PSSE.exe.
 
 For a complete list of supported files and additional informations,
-please visit PSSE's Wiki page on Github.</value>
+please visit PSSE's Wiki page on Github.
+
+Ctrl+click if you want to choose which files to load (strongly NOT
+recomanded).</value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>114</value>
