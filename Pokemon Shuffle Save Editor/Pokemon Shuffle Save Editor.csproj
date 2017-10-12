@@ -240,6 +240,8 @@
     <Content Include="Resources\img\mega_pokemon_094.png" />
     <None Include="Resources\img\mega_pokemon_094_01.png" />
     <None Include="Resources\img\mega_pokemon_094_01_lo.png" />
+    <None Include="Resources\img\mega_pokemon_094_02.png" />
+    <None Include="Resources\img\mega_pokemon_094_02_lo.png" />
     <Content Include="Resources\img\mega_pokemon_094_lo.png" />
     <Content Include="Resources\img\mega_pokemon_115.png" />
     <Content Include="Resources\img\mega_pokemon_115_lo.png" />
@@ -1447,6 +1449,10 @@
     <None Include="Resources\img\pokemon_800.png" />
     <None Include="Resources\img\pokemon_801.png" />
     <None Include="Resources\img\pokemon_802.png" />
+    <None Include="Resources\img\Rank_A.png" />
+    <None Include="Resources\img\Rank_B.png" />
+    <None Include="Resources\img\Rank_C.png" />
+    <None Include="Resources\img\Rank_S.png" />
     <Content Include="Resources\txt\mons.txt" />
     <None Include="Resources\txt\pokathlon.txt" />
     <Content Include="Resources\txt\species.txt" />

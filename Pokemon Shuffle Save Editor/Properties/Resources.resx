@@ -127,6 +127,39 @@
   <data name="pokathlon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\txt\pokathlon.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="megaStone" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bin\megaStone.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="messagePokedex_US" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bin\messagePokedex_US.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="missionCard" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bin\missionCard.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="pokeLoad" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bin\pokeLoad.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="pokemonAbility" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bin\pokemonAbility.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="pokemonData" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bin\pokemonData.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="pokemonLevel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bin\pokemonLevel.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="stageData" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bin\stageData.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="stageDataEvent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bin\stageDataEvent.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="stageDataExtra" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bin\stageDataExtra.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img\folder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="lollipop" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\img\lollipop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -342,6 +375,12 @@
   </data>
   <data name="mega_pokemon_094_01_lo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\img\mega_pokemon_094_01_lo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="mega_pokemon_094_02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img\mega_pokemon_094_02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="mega_pokemon_094_02_lo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img\mega_pokemon_094_02_lo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="mega_pokemon_094_lo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\img\mega_pokemon_094_lo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -3952,6 +3991,18 @@
   <data name="pokemon_802" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\img\pokemon_802.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Rank_A" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img\Rank_A.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Rank_B" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img\Rank_B.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Rank_C" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img\Rank_C.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Rank_S" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img\Rank_S.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="skill" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\img\skill.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -3960,38 +4011,5 @@
   </data>
   <data name="warn" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\img\warn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\img\folder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="megaStone" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bin\megaStone.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="messagePokedex_US" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bin\messagePokedex_US.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="missionCard" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bin\missionCard.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="pokeLoad" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bin\pokeLoad.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="pokemonAbility" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bin\pokemonAbility.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="pokemonData" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bin\pokemonData.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="pokemonLevel" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bin\pokemonLevel.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="stageData" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bin\stageData.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="stageDataEvent" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bin\stageDataEvent.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="stageDataExtra" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bin\stageDataExtra.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

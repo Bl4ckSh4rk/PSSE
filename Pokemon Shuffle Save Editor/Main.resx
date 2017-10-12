@@ -133,6 +133,15 @@ the corresponding pokemons in your team.
 Ctrl+clic on an icon will insert the below-displayed
 pokemon into the corresponding team slot.</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="B_resources.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        xAAADsQBlSsOGwAAAHdJREFUOE/tkksKwCAMBT2eKz/gCaLX9hpuX0mwRUqttnbZByNIkkEwCotZFxAR
+        jDFwzglaa+Sca3kcEaSUDvjuvUcppbbcR7XDOzFGhBBE1MNaK32XAoaLI/i1XcEsv+ALwXmRniDfyEe7
+        yrPwjAjqRr7OogDYAAY4vhndwd9CAAAAAElFTkSuQmCC
+</value>
+  </data>
   <data name="B_resources.ToolTip" xml:space="preserve">
     <value>Click this to re-scan for external resource files. These must be placed
 in a 'resources' folder in the same directory as PSSE.exe.
@@ -146,7 +155,6 @@ recomanded).</value>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>25</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAMAEBAAAAAAIABoBAAANgAAACAgAAAAACAAqBAAAJ4EAAAwMAAAAAAgAKglAABGFQAAKAAAABAA

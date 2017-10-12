@@ -66,10 +66,11 @@ namespace Pokemon_Shuffle_Save_Editor
                 return;
             }
 
-            B_Save.Enabled = GB_Caught.Enabled = GB_HighScore.Enabled = GB_Resources.Enabled = B_CheatsForm.Enabled = ItemsGrid.Enabled = loaded = true;
+            B_Save.Enabled = GB_Caught.Enabled = GB_HighScore.Enabled = GB_Resources.Enabled = B_CheatsForm.Enabled = ItemsGrid.Enabled = true;
             TB_FilePath.Text = file;
             savedata = File.ReadAllBytes(file);
-            UpdateForm(null, null);
+            loaded = true; //this needs to be set AFTER everything else has been loaded/initialized properly
+            Parse();
         }
 
         private bool IsShuffleSave(string file) // Try to do a better job at filtering files rather than just saying "oh, it's not savedata.bin quit"
@@ -93,7 +94,7 @@ namespace Pokemon_Shuffle_Save_Editor
             int pbIndex = 0;
             foreach (PictureBox pb in new[] { PB_Team1, PB_Team2, PB_Team3, PB_Team4 })
             {
-                pb.Image = GetTeamImage(GetMonTeamSlot(pbIndex), (ltir == pbIndex));
+                pb.Image = GetTeamImage(GetMonFrommSlot(pbIndex), (ltir == pbIndex));
                 pbIndex++;
             }
 
@@ -171,18 +172,16 @@ namespace Pokemon_Shuffle_Save_Editor
             #endregion
 
             #region UpdateStageBox()
-            Label[] labels = new[] { L_RankM, L_RankEx, L_RankEv };
-            NumericUpDown[] nups = new[] { NUP_MainScore, NUP_ExpertScore, NUP_EventScore };
-            PictureBox[] pics = new[] { PB_Main, PB_Expert, PB_Event };
+            byte[][] stagesData = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent };
             int[] index = new int[] { (int)NUP_MainIndex.Value - 1, (int)NUP_ExpertIndex.Value - 1, (int)NUP_EventIndex.Value };
-            byte[][] stages = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent };
+            PictureBox[] stagesPics = new[] { PB_Main, PB_Expert, PB_Event };
+            NumericUpDown[] nups = new[] { NUP_MainScore, NUP_ExpertScore, NUP_EventScore };
 
-            for (int i = 0; i < labels.Length; i++)
+            for (int i = 0; i < stagesData.Length; i++)
             {
                 stgItem stgI = GetStage(index[i], i);
-                GetRankImage(labels[i], stgI.Rank, stgI.Completed);
                 nups[i].Value = stgI.Score;
-                pics[i].Image = GetStageImage(BitConverter.ToInt16(stages[i], 0x50 + BitConverter.ToInt32(stages[i], 0x4) * ((i == 0) ? index[i] + 1 : index[i])) & 0x7FF, i);
+                stagesPics[i].Image = GetRankImage(BitConverter.ToInt16(stagesData[i], 0x50 + BitConverter.ToInt32(stagesData[i], 0x4) * ((i == 0) ? index[i] + 1 : index[i])) & 0x7FF, i, stgI.Completed, stgI.Rank);
             }
             #endregion
 
@@ -195,7 +194,7 @@ namespace Pokemon_Shuffle_Save_Editor
                 return;
             updating = true;
             if(!(new Control[] { null, CB_MonIndex, NUP_MainIndex, NUP_ExpertIndex, NUP_ExpertScore}.Contains(sender)))
-            {
+            {//add above any control which purpose is to change info displayed on another control, to prevent it from writing to savedata when doing so.
                 //Owned Box Properties
                 int ind = (int)CB_MonIndex.SelectedValue;
                 ushort set_level = (ushort)(CHK_CaughtMon.Checked ? (NUP_Level.Value == 1 ? 0 : NUP_Level.Value) : 0);
@@ -239,8 +238,10 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private void B_CheatsForm_Click(object sender, EventArgs e)
         {
+            updating = true;
             new Cheats().ShowDialog();
             Parse();
+            updating = false;
         }
 
         private void B_Open_Click(object sender, EventArgs e)
@@ -310,62 +311,40 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private void PB_Stage_Click(object sender, EventArgs e)
         {
+            if ((e as MouseEventArgs).Button != MouseButtons.Left && (e as MouseEventArgs).Button != MouseButtons.Right)
+                return;
+            int type = Array.IndexOf(new Control[] { PB_Main, PB_Expert, PB_Event }, (sender as Control));
+            if (type < 0)
+                return;
             updating = true;
-            int type, ind;
-            //int max;
-            if ((sender as Control).Name.Contains("Main"))
+            int ind = new int[] { (int)NUP_MainIndex.Value - 1, (int)NUP_ExpertIndex.Value - 1, (int)NUP_EventIndex.Value }[type];
+
+            if ((e as MouseEventArgs).Button == MouseButtons.Left && GetStage(ind, type).Completed)    //Left Click = circle ranks up
+                SetRank(ind, type, (GetStage(ind, type).Rank + 1) % 4);
+            if ((e as MouseEventArgs).Button == MouseButtons.Right)   //Right Click = (un)completed
             {
-                type = 0;
-                ind = (int)NUP_MainIndex.Value - 1;
-                //max = (int)NUP_MainIndex.Maximum;
+                SetStage(ind, type, !GetStage(ind, type).Completed);
+                SetRank(ind, type, 0);
             }
-            else if ((sender as Control).Name.Contains("Expert"))
-            {
-                type = 1;
-                ind = (int)NUP_ExpertIndex.Value - 1;
-                //max = (int)NUP_ExpertIndex.Maximum;
-            }
-            else if ((sender as Control).Name.Contains("Event"))
-            {
-                type = 2;
-                ind = (int)NUP_EventIndex.Value;
-                //max = (int)NUP_EventIndex.Maximum + 1;
-            }
-            else return;
-            if ((e as MouseEventArgs).Button == MouseButtons.Left)    //Left Click = circle ranks down
-            {
-                if (GetStage(ind, type).Completed)
-                {
-                    SetRank(ind, type, (GetStage(ind, type).Rank + 3) % 4);
-                    if (GetStage(ind, type).Rank == 3) { PatchScore(ind, type); }
-                }
-                //Nothing happens if uncompleted
-            }
-            if ((e as MouseEventArgs).Button == System.Windows.Forms.MouseButtons.Right)   //Right Click = (un)completed
-            {
-                SetStage(ind, type, !GetStage(ind, type).Completed);    //invert completed state
-                SetRank(ind, type, GetStage(ind, type).Completed ? 3 : 0);  //rank S or C
-                PatchScore(ind, type);
-                #region needs better implementation idea
-                //if (GetStage(ind, i).Completed && i == 0)
-                //{
-                //    for (int j = 0; j < ind; j++) //mark every previous stage as completed
-                //    {
-                //        SetStage(j, i, true);
-                //        PatchScore(j, i);
-                //    }
-                //}
-                //else if (i == 0)
-                //{
-                //    for (int j = ind; j < max; j++) //mark every next stage as uncompleted
-                //    {
-                //        SetStage(j, i);
-                //        SetRank(j, i, 0);
-                //        SetScore(j, i, 0);
-                //    }
-                //}
-                #endregion
-            }
+            #region needs better implementation idea
+            //if (GetStage(ind, i).Completed && i == 0)
+            //{
+            //    for (int j = 0; j < ind; j++) //mark every previous stage as completed
+            //    {
+            //        SetStage(j, i, true);
+            //        PatchScore(j, i);
+            //    }
+            //}
+            //else if (i == 0)
+            //{
+            //    for (int j = ind; j < max; j++) //mark every next stage as uncompleted
+            //    {
+            //        SetStage(j, i);
+            //        SetRank(j, i, 0);
+            //        SetScore(j, i, 0);
+            //    }
+            //}
+            #endregion
             Parse();
             updating = false;
         }
@@ -392,13 +371,13 @@ namespace Pokemon_Shuffle_Save_Editor
                     SetCaught(ind, true);
                     for (int i = 0; i < senderNames.Length; i++)
                     {
-                        if (i != s && GetMonTeamSlot(i) == ind)
-                            SetMonTeamSlot(i, GetMonTeamSlot(s));
+                        if (i != s && GetMonFrommSlot(i) == ind)
+                            SetMonToSlot(i, GetMonFrommSlot(s));
                     }
-                    SetMonTeamSlot(s, ind);
+                    SetMonToSlot(s, ind);
                 }
                 else
-                    CB_MonIndex.SelectedValue = GetMonTeamSlot(s);
+                    CB_MonIndex.SelectedValue = GetMonFrommSlot(s);
             }
             else if ((e as MouseEventArgs).Button == MouseButtons.Right)
             {
@@ -406,9 +385,9 @@ namespace Pokemon_Shuffle_Save_Editor
                     ltir = s;
                 else
                 {
-                    int temp = GetMonTeamSlot(ltir); //important variable, otherwise next instruction changes which pokemon to be set by the one just after.
-                    SetMonTeamSlot(ltir, GetMonTeamSlot(s));
-                    SetMonTeamSlot(s, temp);
+                    int temp = GetMonFrommSlot(ltir); //important variable, otherwise next instruction changes which pokemon to be set by the one just after.
+                    SetMonToSlot(ltir, GetMonFrommSlot(s));
+                    SetMonToSlot(s, temp);
                     ltir = -1;
                 }
             }
@@ -508,6 +487,11 @@ namespace Pokemon_Shuffle_Save_Editor
         private void UpdateProperty(object s, PropertyValueChangedEventArgs e)
         {
             UpdateForm(s, e);
+        }
+
+        private void PB_LoadCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            UpdateForm(sender, e);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

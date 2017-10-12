@@ -35,9 +35,6 @@
             this.TB_FilePath = new System.Windows.Forms.TextBox();
             this.B_Save = new System.Windows.Forms.Button();
             this.GB_HighScore = new System.Windows.Forms.GroupBox();
-            this.L_RankEv = new System.Windows.Forms.Label();
-            this.L_RankEx = new System.Windows.Forms.Label();
-            this.L_RankM = new System.Windows.Forms.Label();
             this.L_ScoreEv = new System.Windows.Forms.Label();
             this.L_ScoreEx = new System.Windows.Forms.Label();
             this.L_ScoreM = new System.Windows.Forms.Label();
@@ -179,9 +176,6 @@
             // 
             // GB_HighScore
             // 
-            this.GB_HighScore.Controls.Add(this.L_RankEv);
-            this.GB_HighScore.Controls.Add(this.L_RankEx);
-            this.GB_HighScore.Controls.Add(this.L_RankM);
             this.GB_HighScore.Controls.Add(this.L_ScoreEv);
             this.GB_HighScore.Controls.Add(this.L_ScoreEx);
             this.GB_HighScore.Controls.Add(this.L_ScoreM);
@@ -207,40 +201,6 @@
             this.GB_HighScore.TabIndex = 6;
             this.GB_HighScore.TabStop = false;
             this.GB_HighScore.Text = "High-Scores";
-            // 
-            // L_RankEv
-            // 
-            this.L_RankEv.AutoSize = true;
-            this.L_RankEv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.L_RankEv.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.L_RankEv.Location = new System.Drawing.Point(464, 76);
-            this.L_RankEv.Name = "L_RankEv";
-            this.L_RankEv.Size = new System.Drawing.Size(10, 13);
-            this.L_RankEv.TabIndex = 20;
-            this.L_RankEv.Text = "-";
-            this.L_RankEv.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-            // 
-            // L_RankEx
-            // 
-            this.L_RankEx.AutoSize = true;
-            this.L_RankEx.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.L_RankEx.Location = new System.Drawing.Point(307, 76);
-            this.L_RankEx.Name = "L_RankEx";
-            this.L_RankEx.Size = new System.Drawing.Size(10, 13);
-            this.L_RankEx.TabIndex = 19;
-            this.L_RankEx.Text = "-";
-            this.L_RankEx.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-            // 
-            // L_RankM
-            // 
-            this.L_RankM.AutoSize = true;
-            this.L_RankM.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.L_RankM.Location = new System.Drawing.Point(148, 76);
-            this.L_RankM.Name = "L_RankM";
-            this.L_RankM.Size = new System.Drawing.Size(10, 13);
-            this.L_RankM.TabIndex = 18;
-            this.L_RankM.Text = "-";
-            this.L_RankM.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             // 
             // L_ScoreEv
             // 
@@ -1113,7 +1073,7 @@
             // 
             // B_resources
             // 
-            this.B_resources.Image = global::Pokemon_Shuffle_Save_Editor.Properties.Resources.folder;
+            this.B_resources.Image = ((System.Drawing.Image)(resources.GetObject("B_resources.Image")));
             this.B_resources.Location = new System.Drawing.Point(13, 12);
             this.B_resources.Name = "B_resources";
             this.B_resources.Size = new System.Drawing.Size(20, 20);
@@ -1298,9 +1258,6 @@
         private System.Windows.Forms.PictureBox PB_Team2;
         private System.Windows.Forms.PictureBox PB_Team3;
         private System.Windows.Forms.PictureBox PB_Team4;
-        private System.Windows.Forms.Label L_RankEv;
-        private System.Windows.Forms.Label L_RankEx;
-        private System.Windows.Forms.Label L_RankM;
         private System.Windows.Forms.PictureBox PB_Lollipop;
         private System.Windows.Forms.NumericUpDown NUP_Lollipop;
         private System.Windows.Forms.Label L_Level;
