@@ -94,7 +94,7 @@ namespace Pokemon_Shuffle_Save_Editor
             int pbIndex = 0;
             foreach (PictureBox pb in new[] { PB_Team1, PB_Team2, PB_Team3, PB_Team4 })
             {
-                pb.Image = GetTeamImage(GetMonFrommSlot(pbIndex), (ltir == pbIndex));
+                pb.Image = GetTeamImage(GetMonFrommSlot(pbIndex), pbIndex, (ltir == pbIndex));
                 pbIndex++;
             }
 

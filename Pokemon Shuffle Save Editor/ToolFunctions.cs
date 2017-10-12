@@ -233,7 +233,7 @@ namespace Pokemon_Shuffle_Save_Editor
             string imgname = string.Empty;
             int mon_num = db.Mons[ind].Item1, form = db.Mons[ind].Item2;
             bool mega = db.Mons[ind].Item3;
-            if (mega)
+            if (mega || megaWithOverlay)
             {
                 form -= db.HasMega[mon_num][1] ? 1 : 2; //Differenciate Rayquaza/Gyarados from Charizard/Mewtwo, otherwise either stage 300 is Shiny M-Ray or stage 150 is M-mewtwo X
                 imgname += "mega_";
@@ -241,7 +241,7 @@ namespace Pokemon_Shuffle_Save_Editor
             imgname += "pokemon_" + mon_num.ToString("000");
             if (form > 0 && mon_num > 0)
                 imgname += "_" + form.ToString("00");
-            if (mega && !megaWithOverlay)
+            if (mega)
                 imgname += "_lo";
             return new Bitmap((Image)Properties.Resources.ResourceManager.GetObject(imgname));
         }
@@ -288,15 +288,22 @@ namespace Pokemon_Shuffle_Save_Editor
         //    return bmp;
         //}
 
-        public static Bitmap GetTeamImage(int ind, bool opacity = false, int w = 48, int h = 48)
+        public static Bitmap GetTeamImage(int ind, int slot = -1, bool selected = false, int w = 48, int h = 48)
         {
-            Bitmap bmp = GetMonImage(ind);
-            if (opacity)
+            bool megaOverlay = (GetMon(ind).Stone != 0 && slot == 0);
+            Bitmap bmp = GetMonImage(ind, megaOverlay);
+            if (selected)
             {
-                Bitmap bmp2 = ResizeImage(GetMonImage(ind), 54, 54);
+                Bitmap bmp2 = ResizeImage(bmp, 54, 54);
                 using (Graphics g = Graphics.FromImage(GetShadow(bmp, GetDominantColor(bmp))))
                     g.DrawImage(bmp2, new Point(5, 5));
-            }            
+            }
+            if (megaOverlay)
+            {
+                Bitmap bmp3 = db.HasMega[ind][0] ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MegaStone" + db.Mons[ind].Item1.ToString("000") + (db.HasMega[ind][1] ? "_X" : string.Empty))) : new Bitmap(16, 16);
+                using (Graphics g = Graphics.FromImage(bmp))
+                    g.DrawImage(bmp3, new Point(48, 48));
+            }
             return ResizeImage(bmp, 48, 48);
             //return ResizeImage(ChangeOpacity(GetMonImage(ind), opacity ? 0.5F : 1), w, h);
         }
