@@ -35,7 +35,6 @@
             this.TB_FilePath = new System.Windows.Forms.TextBox();
             this.B_Save = new System.Windows.Forms.Button();
             this.GB_HighScore = new System.Windows.Forms.GroupBox();
-            this.PB_override = new System.Windows.Forms.PictureBox();
             this.L_RankEv = new System.Windows.Forms.Label();
             this.L_RankEx = new System.Windows.Forms.Label();
             this.L_RankM = new System.Windows.Forms.Label();
@@ -106,10 +105,9 @@
             this.TT_Skill = new System.Windows.Forms.ToolTip(this.components);
             this.GB_Party = new System.Windows.Forms.GroupBox();
             this.B_resources = new System.Windows.Forms.Button();
-            this.TT_Button = new System.Windows.Forms.ToolTip(this.components);
+            this.TT_Help = new System.Windows.Forms.ToolTip(this.components);
             this.ItemsGrid = new Pokemon_Shuffle_Save_Editor.TabbedPropertyGrid();
             this.GB_HighScore.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PB_override)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUP_EventScore)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUP_EventIndex)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUP_ExpertScore)).BeginInit();
@@ -181,7 +179,6 @@
             // 
             // GB_HighScore
             // 
-            this.GB_HighScore.Controls.Add(this.PB_override);
             this.GB_HighScore.Controls.Add(this.L_RankEv);
             this.GB_HighScore.Controls.Add(this.L_RankEx);
             this.GB_HighScore.Controls.Add(this.L_RankM);
@@ -210,16 +207,6 @@
             this.GB_HighScore.TabIndex = 6;
             this.GB_HighScore.TabStop = false;
             this.GB_HighScore.Text = "High-Scores";
-            // 
-            // PB_override
-            // 
-            this.PB_override.Location = new System.Drawing.Point(6, 17);
-            this.PB_override.Name = "PB_override";
-            this.PB_override.Size = new System.Drawing.Size(16, 16);
-            this.PB_override.TabIndex = 69;
-            this.PB_override.TabStop = false;
-            this.PB_override.Visible = false;
-            this.PB_override.Click += new System.EventHandler(this.PB_Override_Click);
             // 
             // L_RankEv
             // 
@@ -1122,6 +1109,7 @@
             this.GB_Party.TabIndex = 32;
             this.GB_Party.TabStop = false;
             this.GB_Party.Text = "Active Party";
+            this.TT_Help.SetToolTip(this.GB_Party, resources.GetString("GB_Party.ToolTip"));
             // 
             // B_resources
             // 
@@ -1130,16 +1118,16 @@
             this.B_resources.Name = "B_resources";
             this.B_resources.Size = new System.Drawing.Size(20, 20);
             this.B_resources.TabIndex = 33;
-            this.TT_Button.SetToolTip(this.B_resources, resources.GetString("B_resources.ToolTip"));
+            this.TT_Help.SetToolTip(this.B_resources, resources.GetString("B_resources.ToolTip"));
             this.B_resources.UseVisualStyleBackColor = true;
             this.B_resources.Click += new System.EventHandler(this.B_resources_Click);
             // 
-            // TT_Button
+            // TT_Help
             // 
-            this.TT_Button.AutoPopDelay = 10000;
-            this.TT_Button.InitialDelay = 500;
-            this.TT_Button.ReshowDelay = 100;
-            this.TT_Button.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.TT_Help.AutoPopDelay = 10000;
+            this.TT_Help.InitialDelay = 500;
+            this.TT_Help.ReshowDelay = 100;
+            this.TT_Help.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             // 
             // ItemsGrid
             // 
@@ -1216,7 +1204,6 @@
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Main_DragEnter);
             this.GB_HighScore.ResumeLayout(false);
             this.GB_HighScore.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PB_override)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUP_EventScore)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUP_EventIndex)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUP_ExpertScore)).EndInit();
@@ -1317,7 +1304,6 @@
         private System.Windows.Forms.PictureBox PB_Lollipop;
         private System.Windows.Forms.NumericUpDown NUP_Lollipop;
         private System.Windows.Forms.Label L_Level;
-        private System.Windows.Forms.PictureBox PB_override;
         private System.Windows.Forms.Label L_Skill;
         private System.Windows.Forms.ToolTip TT_Skill;
         private System.Windows.Forms.GroupBox GB_Party;
@@ -1339,7 +1325,7 @@
         private System.Windows.Forms.NumericUpDown NUP_Skill1;
         private System.Windows.Forms.PictureBox PB_Skill;
         private System.Windows.Forms.Button B_resources;
-        private System.Windows.Forms.ToolTip TT_Button;
+        private System.Windows.Forms.ToolTip TT_Help;
     }
 }
 

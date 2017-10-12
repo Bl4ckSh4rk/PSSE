@@ -170,7 +170,7 @@
             this.B_Random.TabIndex = 63;
             this.B_Random.Text = "Random";
             this.toolTip1.SetToolTip(this.B_Random, "Click to get a random opponent among the legit ones for that step.\r\n\r\nCtrl + Clic" +
-        "k to get a random opponent among the first 150 main stages.");
+        "k to get a random opponent among the first 300 main stages.");
             this.B_Random.UseVisualStyleBackColor = true;
             this.B_Random.Click += new System.EventHandler(this.B_Random_Click);
             // 

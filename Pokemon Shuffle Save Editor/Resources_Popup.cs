@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using static Pokemon_Shuffle_Save_Editor.Database;
 
 namespace Pokemon_Shuffle_Save_Editor
 {

@@ -10,12 +10,12 @@ namespace Pokemon_Shuffle_Save_Editor
 {
     public static class ToolFunctions
     {
-        public static int GetTeam(int slot)
+        public static int GetMonTeamSlot(int slot)
         {
             return (BitConverter.ToInt32(savedata, TeamData.Ofset(slot)) >> TeamData.Shift(slot)) & 0xFFF;
         }
 
-        public static void SetTeam(int slot, int ind)
+        public static void SetMonTeamSlot(int slot, int ind)
         {
             int data = BitConverter.ToInt32(savedata, TeamData.Ofset(slot));
             data = (data & ~(0xFFF << TeamData.Shift(slot))) | (ind << TeamData.Shift(slot));
@@ -171,6 +171,24 @@ namespace Pokemon_Shuffle_Save_Editor
             };
         }
 
+        public static void SetRank(int ind, int type, int newRank = 0)
+        {
+            short rank = (short)((BitConverter.ToInt16(savedata, Rank.Ofset(ind, type)) & ~(0x3 << Rank.Shift(ind, type))) | (newRank << Rank.Shift(ind, type)));
+            Array.Copy(BitConverter.GetBytes(rank), 0, savedata, Rank.Ofset(ind, type), 2);
+        }
+
+        public static void SetScore(int ind, int type, int newScore = 0)
+        {
+            long score = (BitConverter.ToInt64(savedata, Score.Ofset(ind, type)) & ~(0xFFFFFF << Score.Shift(ind, type))) | (long)newScore << Score.Shift(ind, type);
+            Array.Copy(BitConverter.GetBytes(score), 0, savedata, Score.Ofset(ind, type), 8);
+        }
+
+        public static void SetStage(int ind, int type, bool completed = false)
+        {
+            short stage = (short)(BitConverter.ToInt16(savedata, Completed.Ofset(ind, type)) & (~(0x7 << Completed.Shift(ind, type))) | ((completed ? 5 : 0) << Completed.Shift(ind, type)));
+            Array.Copy(BitConverter.GetBytes(stage), 0, savedata, Completed.Ofset(ind, type), 2);
+        }
+
         public static void GetRankImage(Label label, int rank = default(int), bool completed = false) //Plain text until a way is found to extract Rank sprites from game's folders.
         {                                                                                       //These are in several files in "Layout Archives", #127 for example,
             if (completed)                                                                      //but I can't get a proper png without it being cropped or its colours distorted.
@@ -215,7 +233,7 @@ namespace Pokemon_Shuffle_Save_Editor
             byte[] stage = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent}[type];
             int entrylen = BitConverter.ToInt32(stage, 0x4);
             byte[] data = stage.Skip(0x50 + (ind + ((type == 0) ? 1 : 0)) * entrylen).Take(entrylen).ToArray();
-            SetScore(ind, type, Math.Max((ulong)GetStage(ind, type).Score, (BitConverter.ToUInt64(data, 0x4) & 0xFFFFFF) + (ulong)(Math.Min(7000, ((GetStage(ind, type).Rank > 0) ? ((BitConverter.ToInt16(data, 0x30 + GetStage(ind, type).Rank - 1) >> 4) & 0xFF) : 0) * 500)))); //score = Max(current_highscore, hitpoints + minimum_bonus_points (a.k.a min moves left times 500, capped at 7000))
+            SetScore(ind, type, (int)Math.Max((ulong)GetStage(ind, type).Score, (BitConverter.ToUInt64(data, 0x4) & 0xFFFFFF) + (ulong)(Math.Min(7000, ((GetStage(ind, type).Rank > 0) ? ((BitConverter.ToInt16(data, 0x30 + GetStage(ind, type).Rank - 1) >> 4) & 0xFF) : 0) * 500)))); //score = Max(current_highscore, hitpoints + minimum_bonus_points (a.k.a min moves left times 500, capped at 7000))
         }
 
         public static void SetExcalationStep(int step = 1)
@@ -227,24 +245,6 @@ namespace Pokemon_Shuffle_Save_Editor
             int data = BitConverter.ToUInt16(savedata, EscalationStep.Ofset());
             data = (data & (~(0x3FF << EscalationStep.Shift()))) | (step-- << EscalationStep.Shift());  //sets previous step as beaten = selected step shown in game
             Array.Copy(BitConverter.GetBytes(data), 0, savedata, EscalationStep.Ofset(), 2);
-        }
-
-        public static void SetRank(int ind, int type, int newRank = 0)
-        {
-            short rank = (short)((BitConverter.ToInt16(savedata, Rank.Ofset(ind, type)) & ~(0x3 << Rank.Shift(ind, type))) | (newRank << Rank.Shift(ind, type)));
-            Array.Copy(BitConverter.GetBytes(rank), 0, savedata, Rank.Ofset(ind, type), 2);
-        }
-
-        public static void SetScore(int ind, int type, ulong newScore = 0)
-        {
-            ulong score = (ulong)((BitConverter.ToUInt32(savedata, Score.Ofset(ind, type)) & (uint)(~(0xFFFFFF << Score.Shift(ind, type)))) | (newScore << Score.Shift(ind, type)));
-            Array.Copy(BitConverter.GetBytes(score), 0, savedata, Score.Ofset(ind, type), 4);
-        }
-
-        public static void SetStage(int ind, int type, bool completed = false)
-        {
-            short stage = (short)(BitConverter.ToInt16(savedata, Completed.Ofset(ind, type)) & (~(0x7 << Completed.Shift(ind, type))) | ((completed ? 5 : 0) << Completed.Shift(ind, type)));
-            Array.Copy(BitConverter.GetBytes(stage), 0, savedata, Completed.Ofset(ind, type), 2);
         }
 
         //public static smItem GetPokathlon()
@@ -261,64 +261,6 @@ namespace Pokemon_Shuffle_Save_Editor
         //{
         //    Array.Copy(BitConverter.GetBytes((BitConverter.ToInt16(savedata, PokathlonOpponent.Ofset()) & ~(0x3FF << PokathlonOpponent.Shift())) | (opponent << PokathlonOpponent.Shift())), 0, savedata, PokathlonOpponent.Ofset(), 2);
         //}
-
-        public static Bitmap ChangeOpacity(Image img, float opacityvalue)
-        {
-            Bitmap bmp = new Bitmap(img.Width, img.Height); // Determining Width and Height of Source Image
-            Graphics graphics = Graphics.FromImage(bmp);
-            ColorMatrix colormatrix = new ColorMatrix();
-            colormatrix.Matrix33 = opacityvalue;
-            ImageAttributes imgAttribute = new ImageAttributes();
-            imgAttribute.SetColorMatrix(colormatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-            graphics.DrawImage(img, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imgAttribute);
-            graphics.Dispose();   // Releasing all resource used by graphics
-            return bmp;
-        }
-
-        public static Bitmap GetBlackImage(Bitmap bmp, bool visible = true)
-        {
-            if (!visible)
-            {
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    for (int y = 0; y < bmp.Height; y++)
-                    {
-                        Color c = bmp.GetPixel(x, y);
-                        bmp.SetPixel(x, y, Color.FromArgb(c.A, 0, 0, 0));
-                    }
-                }
-            }
-            return bmp;
-        }
-
-        public static Bitmap GetCaughtImage(int ind, bool caught = false)
-        {
-            Bitmap bmp = GetMonImage(ind);
-            GetBlackImage(bmp, caught);
-            return bmp;
-        }
-
-        public static Bitmap GetCompletedImage(int ind, int type, bool completed = true)
-        {
-            Bitmap bmp = GetStageImage(ind, type);
-            GetBlackImage(bmp, completed);
-            return bmp;
-        }
-
-        public static Bitmap GetStageImage(int ind, int type = 0)
-        {
-            Bitmap bmp = new Bitmap(64, 80);
-            using (Graphics g = Graphics.FromImage(bmp))
-            {
-                if (db.Mons[ind].Item3 && (type == 0))
-                    g.DrawImage(Properties.Resources.PlateMega, new Point(0, 16));
-                else
-                    g.DrawImage(Properties.Resources.Plate, new Point(0, 16));
-                g.DrawImage(ResizeImage(GetMonImage(ind), 48, 48), new Point(8, 7));
-            }
-
-            return bmp;
-        }
 
         public static Bitmap GetMonImage(int ind, bool boool = false)
         {
@@ -338,9 +280,63 @@ namespace Pokemon_Shuffle_Save_Editor
             return new Bitmap((Image)Properties.Resources.ResourceManager.GetObject(imgname));
         }
 
+        public static Bitmap GetStageImage(int ind, int type = 0)
+        {
+            Bitmap bmp = new Bitmap(64, 80);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                if (db.Mons[ind].Item3 && (type == 0))
+                    g.DrawImage(Properties.Resources.PlateMega, new Point(0, 16));
+                else
+                    g.DrawImage(Properties.Resources.Plate, new Point(0, 16));
+                g.DrawImage(ResizeImage(GetMonImage(ind), 48, 48), new Point(8, 7));
+            }
+
+            return bmp;
+        }
+
+        public static Bitmap GetCaughtImage(int ind, bool caught = false)
+        {
+            Bitmap bmp = GetMonImage(ind);
+            if (!caught)
+                bmp = GetShadow(bmp); //add a color here to change the default color of the "shadow"
+            return bmp;
+        }
+
+        public static Bitmap GetCompletedImage(int ind, int type, bool completed = true)
+        {
+            Bitmap bmp = GetStageImage(ind, type);
+            if (!completed)
+                bmp = GetShadow(bmp);
+            return bmp;
+        }
+
         public static Bitmap GetTeamImage(int ind, bool opacity = false, int w = 48, int h = 48)
         {
-            return ResizeImage(ChangeOpacity(GetMonImage(ind), (float)(opacity ? 0.75 : 1)), w, h);
+            Bitmap bmp = GetMonImage(ind);
+            if (opacity)
+            {
+                Bitmap bmp2 = ResizeImage(GetMonImage(ind), 54, 54);
+                using (Graphics g = Graphics.FromImage(GetShadow(bmp, GetDominantColor(bmp))))
+                    g.DrawImage(bmp2, new Point(5, 5));
+            }            
+            return ResizeImage(bmp, 48, 48);
+            //return ResizeImage(ChangeOpacity(GetMonImage(ind), opacity ? 0.5F : 1), w, h);
+        }
+
+        public static Bitmap GetShadow(Bitmap bmp, Color c = default(Color))
+        {
+            if (c == default(Color))
+                c = Color.Black;
+            for (int x = 0; x < bmp.Width; x++)
+            {
+                for (int y = 0; y < bmp.Height; y++)
+                {
+                    Color pix = bmp.GetPixel(x, y);
+                    bmp.SetPixel(x, y, Color.FromArgb(pix.A, c.R, c.G, c.B));
+                }
+            }
+            return bmp;
         }
 
         public static Bitmap ResizeImage(Image image, int width, int height)
@@ -368,6 +364,42 @@ namespace Pokemon_Shuffle_Save_Editor
 
             return destImage;
         }
+
+        public static Color GetDominantColor(Bitmap bmp)
+        {
+            int r = 0, g = 0, b = 0, total = 0;
+
+            for (int x = 0; x < bmp.Width; x++)
+            {
+                for (int y = 0; y < bmp.Height; y++)
+                {
+                    Color c = bmp.GetPixel(x, y);
+                    if (c.A == 0) { continue; } //ignore transparent pixels
+                    r += c.R;
+                    g += c.G;
+                    b += c.B;
+                    total++;
+                }
+            }
+            r /= total;
+            g /= total;
+            b /= total;
+
+            return Color.FromArgb(r, g, b);
+        }
+
+        //public static Bitmap ChangeOpacity(Image img, float opacityvalue)
+        //{
+        //    Bitmap bmp = new Bitmap(img.Width, img.Height); // Determining Width and Height of Source Image
+        //    Graphics graphics = Graphics.FromImage(bmp);
+        //    ColorMatrix colormatrix = new ColorMatrix();
+        //    colormatrix.Matrix33 = opacityvalue;
+        //    ImageAttributes imgAttribute = new ImageAttributes();
+        //    imgAttribute.SetColorMatrix(colormatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+        //    graphics.DrawImage(img, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imgAttribute);
+        //    graphics.Dispose();   // Releasing all resource used by graphics
+        //    return bmp;
+        //}
     }
 
     #region Shifts&Ofsets
@@ -509,6 +541,18 @@ namespace Pokemon_Shuffle_Save_Editor
         public static int Shift(int ind)
         {
             return (db.MegaList.IndexOf(ind, db.MegaList.IndexOf(ind) + 1) * 7 + 3) % 8;
+        }
+    }
+    public static class TeamData
+    {
+        public static int Ofset(int slot)
+        {
+            return 0xE0 + new int[] { 0, 0x2, 0x3, 0x5 }[slot];
+        }
+
+        public static int Shift(int slot)
+        {
+            return new int[] { 5, 1 }[(slot) % 2];
         }
     }
 
@@ -699,19 +743,6 @@ namespace Pokemon_Shuffle_Save_Editor
             return 20;
         }
     }
-
-    public static class TeamData
-    {
-        public static int Ofset(int slot)
-        {
-            return 0xE0 + new int[] { 0, 0x2, 0x3, 0x5 }[slot - 1];
-        }
-
-        public static int Shift(int slot)
-        {
-            return new int[] { 5, 1 }[(slot - 1) % 2];
-        }
-    }
     public static class StreetCount
     {
         public static int Ofset()
@@ -741,7 +772,6 @@ namespace Pokemon_Shuffle_Save_Editor
             return (card * 10 + mission) % 8;
         }
     }
-
     public static class PokathlonOpponent
     {
         public static int Ofset()

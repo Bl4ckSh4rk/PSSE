@@ -18,8 +18,8 @@ namespace Pokemon_Shuffle_Save_Editor
         private List<cbItem> skillsel = new List<cbItem>();
         private ShuffleItems SI_Items = new ShuffleItems();
 
-        private bool loaded, updating, overrideHS;
-        public static int ltir; //Last TeamIndex Right-clicked
+        private bool loaded, updating;
+        public static int ltir; //Last TeamIndex Right-clicked, -1 is default
 
         public Main()
         {
@@ -55,20 +55,21 @@ namespace Pokemon_Shuffle_Save_Editor
             ItemsGrid.SelectedObject = null;
             TB_FilePath.Text = string.Empty;
             savedata = null;
-            ltir = 0;
+            ltir = -1;
         }
 
         private void Open(string file)
         {
-            if (IsShuffleSave(file))
+            if (!IsShuffleSave(file))
             {
-                B_Save.Enabled = GB_Caught.Enabled = GB_HighScore.Enabled = GB_Resources.Enabled = B_CheatsForm.Enabled = ItemsGrid.Enabled = loaded = true;
-                TB_FilePath.Text = file;
-                savedata = File.ReadAllBytes(file);
-                UpdateForm(null, null);
-            }
-            else
                 MessageBox.Show("Couldn't open your file, it wasn't detected as a proper Pokemon Shuffle savefile.");
+                return;
+            }
+
+            B_Save.Enabled = GB_Caught.Enabled = GB_HighScore.Enabled = GB_Resources.Enabled = B_CheatsForm.Enabled = ItemsGrid.Enabled = loaded = true;
+            TB_FilePath.Text = file;
+            savedata = File.ReadAllBytes(file);
+            UpdateForm(null, null);
         }
 
         private bool IsShuffleSave(string file) // Try to do a better job at filtering files rather than just saying "oh, it's not savedata.bin quit"
@@ -81,75 +82,19 @@ namespace Pokemon_Shuffle_Save_Editor
             return BitConverter.ToInt64(contents, 0) == 0x4000000009L;
         }
 
-        private void Parse(int slot = 0)
+        private void Parse()
         {
-            ltir = slot;
-            UpdateResourceBox();
-            UpdateStageBox();
-            UpdateOwnedBox();
-        }
-
-        private void UpdateForm(object sender, EventArgs e)
-        {
-            if (!loaded || updating)
-                return;
             updating = true;
-            if (sender != null && sender != CB_MonIndex)
-            {
-                //Owned Box Properties
-                int ind = (int)CB_MonIndex.SelectedValue;
-                ushort set_level = (ushort)(CHK_CaughtMon.Checked ? (NUP_Level.Value == 1 ? 0 : NUP_Level.Value) : 0);
-                ushort set_rml = (ushort)(CHK_CaughtMon.Checked ? NUP_Lollipop.Value : 0);
-                if (set_level > 10 + set_rml)
-                {
-                    if ((sender as Control).Name.Contains("Level"))
-                        set_rml = (ushort)(set_level - 10);
-                    else if ((sender as Control).Name.Contains("Lollipop"))
-                        set_level = (ushort)(10 + set_rml);
-                }
-                SetCaught(ind, CHK_CaughtMon.Checked);
-                SetLevel(ind, set_level, set_rml);
-                SetStone(ind, CHK_MegaX.Checked, CHK_MegaY.Checked);
-                SetSpeedup(ind, (db.HasMega[ind][0] && CHK_CaughtMon.Checked && CHK_MegaX.Checked), (int)NUP_SpeedUpX.Value, (db.HasMega[ind][1] && CHK_CaughtMon.Checked && CHK_MegaY.Checked), (int)NUP_SpeedUpY.Value);
-                //if (!(sender as Control).Name.Equals("CB_Skill"))
-                //    SetSkill(ind, (int)(CHK_CaughtMon.Checked ? CB_Skill.SelectedValue : 0), (int)(CHK_CaughtMon.Checked ? NUP_SkillLvl.Value : 1), CHK_CaughtMon.Checked && ((sender as Control).Name.ToLower().Contains("currentskill") && CHK_CurrentSkill.Checked));
 
-                for (int j = 0; j < TLP_Skills.RowCount; j++)
-                {
-                    int slvl = 1;
-                    bool iscurrent = false;
-                    for (int i = 0; i < TLP_Skills.ColumnCount; i++)
-                    {
-                        if (TLP_Skills.GetControlFromPosition(i, j) is RadioButton)
-                            iscurrent = (TLP_Skills.GetControlFromPosition(i, j) as RadioButton).Checked;
-                        else if (TLP_Skills.GetControlFromPosition(i, j) is NumericUpDown)
-                            slvl = (int)(TLP_Skills.GetControlFromPosition(i, j) as NumericUpDown).Value;
-                    }
-                    SetSkill(ind, j, (GetMon(ind).Caught) ? slvl : 1, iscurrent);
-                }
-
-                //Stages Box Properties
-                SetScore((int)NUP_MainIndex.Value - 1, 0, (ulong)NUP_MainScore.Value);
-                SetScore((int)NUP_ExpertIndex.Value - 1, 1, (ulong)NUP_ExpertScore.Value);
-                SetScore((int)NUP_EventIndex.Value, 2, (ulong)NUP_EventScore.Value);
-
-                //Ressources Box Properties
-                SetResources((int)NUP_Hearts.Value, (uint)NUP_Coins.Value, (uint)NUP_Jewels.Value, SI_Items.Items, SI_Items.Enchantments);
-            }
-            Parse();
-            updating = false;
-        }
-
-        private void UpdateOwnedBox()
-        {
+            #region UpdateOwnedBox()
             int ind = (int)CB_MonIndex.SelectedValue;
 
             //team preview
-            int k = 1;
+            int pbIndex = 0;
             foreach (PictureBox pb in new[] { PB_Team1, PB_Team2, PB_Team3, PB_Team4 })
             {
-                pb.Image = GetTeamImage(GetTeam(k), (ltir == k));
-                k++;
+                pb.Image = GetTeamImage(GetMonTeamSlot(pbIndex), (ltir == pbIndex));
+                pbIndex++;
             }
 
             //caught CHK
@@ -160,7 +105,7 @@ namespace Pokemon_Shuffle_Save_Editor
             NUP_Lollipop.Value = GetMon(ind).Lollipops;
             NUP_Level.Maximum = 10 + NUP_Lollipop.Maximum;
             NUP_Level.Value = GetMon(ind).Level;
-            
+
             //Skill level
             for (int i = 0; i < TLP_Skills.ColumnCount; i++)
             {
@@ -172,7 +117,7 @@ namespace Pokemon_Shuffle_Save_Editor
                     {
                         (TLP_Skills.GetControlFromPosition(i, j) as Label).Text = (db.Mons[(int)CB_MonIndex.SelectedValue].Item6[j] != 0 || j == 0) ? db.SkillsList[db.Mons[(int)CB_MonIndex.SelectedValue].Item6[j] - 1] : "";
                         TT_Skill.SetToolTip((TLP_Skills.GetControlFromPosition(i, j) as Label), (db.Mons[ind].Item6[j] > 0) ? db.SkillsTextList[db.Mons[ind].Item6[j] - 1] : "default");
-                    }                        
+                    }
                     else if (TLP_Skills.GetControlFromPosition(i, j) is NumericUpDown)
                         (TLP_Skills.GetControlFromPosition(i, j) as NumericUpDown).Value = Math.Max(GetMon(ind).SkillLevel[j], 1);
 
@@ -211,66 +156,91 @@ namespace Pokemon_Shuffle_Save_Editor
             PB_SpeedUpY.Image = db.HasMega[ind][1] ? new Bitmap(ResizeImage((Image)Properties.Resources.ResourceManager.GetObject("mega_speedup"), 24, 24)) : new Bitmap(16, 16);
             RB_Skill1.Enabled = (db.Mons[ind].Rest.Item2 > 1);
             #endregion Visibility            
-        }
+            #endregion
 
-        private void UpdateResourceBox()
-        {
-            NUP_Coins.Value = GetRessources().Coins;
-            NUP_Jewels.Value = GetRessources().Jewels;
-            NUP_Hearts.Value = GetRessources().Hearts;
+            #region UpdateResourceBox()
+            rsItem rsI = GetRessources();
+            NUP_Coins.Value = rsI.Coins;
+            NUP_Jewels.Value = rsI.Jewels;
+            NUP_Hearts.Value = rsI.Hearts;
             for (int i = 0; i < SI_Items.Items.Length; i++)
-                SI_Items.Items[i] = GetRessources().Items[i];
+                SI_Items.Items[i] = rsI.Items[i];
             for (int i = 0; i < SI_Items.Enchantments.Length; i++)
-                SI_Items.Enchantments[i] = GetRessources().Enhancements[i];
+                SI_Items.Enchantments[i] = rsI.Enhancements[i];
             ItemsGrid.Refresh();
+            #endregion
+
+            #region UpdateStageBox()
+            Label[] labels = new[] { L_RankM, L_RankEx, L_RankEv };
+            NumericUpDown[] nups = new[] { NUP_MainScore, NUP_ExpertScore, NUP_EventScore };
+            PictureBox[] pics = new[] { PB_Main, PB_Expert, PB_Event };
+            int[] index = new int[] { (int)NUP_MainIndex.Value - 1, (int)NUP_ExpertIndex.Value - 1, (int)NUP_EventIndex.Value };
+            byte[][] stages = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent };
+
+            for (int i = 0; i < labels.Length; i++)
+            {
+                stgItem stgI = GetStage(index[i], i);
+                GetRankImage(labels[i], stgI.Rank, stgI.Completed);
+                nups[i].Value = stgI.Score;
+                pics[i].Image = GetStageImage(BitConverter.ToInt16(stages[i], 0x50 + BitConverter.ToInt32(stages[i], 0x4) * ((i == 0) ? index[i] + 1 : index[i])) & 0x7FF, i);
+            }
+            #endregion
+
+            updating = false;
         }
 
-        private void UpdateStageBox()
+        private void UpdateForm(object sender, EventArgs e)
         {
-            int ind, type;
-            byte[] stage;
-            Object nup, pb;
-            foreach (Label lbl in new[] { L_RankM, L_RankEx, L_RankEv })
+            if (!loaded || updating)
+                return;
+            updating = true;
+            if(!(new Control[] { null, CB_MonIndex, NUP_MainIndex, NUP_ExpertIndex, NUP_ExpertScore}.Contains(sender)))
             {
-                if (lbl == L_RankM)
+                //Owned Box Properties
+                int ind = (int)CB_MonIndex.SelectedValue;
+                ushort set_level = (ushort)(CHK_CaughtMon.Checked ? (NUP_Level.Value == 1 ? 0 : NUP_Level.Value) : 0);
+                ushort set_rml = (ushort)(CHK_CaughtMon.Checked ? NUP_Lollipop.Value : 0);
+                if (set_level > 10 + set_rml)
                 {
-                    ind = (int)NUP_MainIndex.Value - 1;
-                    type = 0;
-                    nup = NUP_MainScore;
-                    pb = PB_Main;
-                    stage = db.StagesMain;
+                    if ((sender as Control).Name.Contains("Level"))
+                        set_rml = (ushort)(set_level - 10);
+                    if ((sender as Control).Name.Contains("Lollipop"))
+                        set_level = (ushort)(10 + set_rml);
                 }
-                else if (lbl == L_RankEx)
+                SetCaught(ind, CHK_CaughtMon.Checked);
+                SetLevel(ind, set_level, set_rml);
+                SetStone(ind, CHK_MegaX.Checked, CHK_MegaY.Checked);
+                SetSpeedup(ind, (db.HasMega[ind][0] && CHK_CaughtMon.Checked && CHK_MegaX.Checked), (int)NUP_SpeedUpX.Value, (db.HasMega[ind][1] && CHK_CaughtMon.Checked && CHK_MegaY.Checked), (int)NUP_SpeedUpY.Value);
+                for (int j = 0; j < TLP_Skills.RowCount; j++)
                 {
-                    ind = (int)NUP_ExpertIndex.Value - 1;
-                    type = 1;
-                    nup = NUP_ExpertScore;
-                    pb = PB_Expert;
-                    stage = db.StagesExpert;
+                    int skillLevel = 1;
+                    bool iscurrent = false;
+                    for (int i = 0; i < TLP_Skills.ColumnCount; i++)
+                    {
+                        if (TLP_Skills.GetControlFromPosition(i, j) is RadioButton)
+                            iscurrent = (TLP_Skills.GetControlFromPosition(i, j) as RadioButton).Checked;
+                        else if (TLP_Skills.GetControlFromPosition(i, j) is NumericUpDown)
+                            skillLevel = (int)(TLP_Skills.GetControlFromPosition(i, j) as NumericUpDown).Value;
+                    }
+                    SetSkill(ind, j, (GetMon(ind).Caught) ? skillLevel : 1, iscurrent);
                 }
-                else if (lbl == L_RankEv)
-                {
-                    ind = (int)NUP_EventIndex.Value;
-                    type = 2;
-                    nup = NUP_EventScore;
-                    pb = PB_Event;
-                    stage = db.StagesEvent;
-                }
-                else break;
-                GetRankImage(lbl, GetStage(ind, type).Rank, GetStage(ind, type).Completed);
-                (nup as NumericUpDown).Value = GetStage(ind, type).Score;
-                (pb as PictureBox).Image = GetStageImage(BitConverter.ToInt16(stage, 0x50 + BitConverter.ToInt32(stage, 0x4) * ((type == 0) ? ind + 1 : ind)) & 0x7FF, type);
-                //(pb as PictureBox).Image = GetCompletedImage(BitConverter.ToInt16(stage, 0x50 + BitConverter.ToInt32(stage, 0x4) * ((type == 0) ? ind + 1 : ind)) & 0x3FF, type, (type == 0) ? (GetStage(ind, type).Completed || overrideHS) : true);
+
+                //Stages Box Properties
+                SetScore((int)NUP_MainIndex.Value - 1, 0, (int)NUP_MainScore.Value);
+                SetScore((int)NUP_ExpertIndex.Value - 1, 1, (int)NUP_ExpertScore.Value);
+                SetScore((int)NUP_EventIndex.Value, 2, (int)NUP_EventScore.Value);
+
+                //Ressources Box Properties
+                SetResources((int)NUP_Hearts.Value, (uint)NUP_Coins.Value, (uint)NUP_Jewels.Value, SI_Items.Items, SI_Items.Enchantments);
             }
-            PB_override.Image = overrideHS ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("warn")) : new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("valid"));
+            Parse();
+            updating = false;
         }
 
         private void B_CheatsForm_Click(object sender, EventArgs e)
         {
             new Cheats().ShowDialog();
-            updating = true;
             Parse();
-            updating = false;
         }
 
         private void B_Open_Click(object sender, EventArgs e)
@@ -289,120 +259,95 @@ namespace Pokemon_Shuffle_Save_Editor
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllBytes(sfd.FileName, savedata);
-            MessageBox.Show("Saved save file to " + sfd.FileName + "." + Environment.NewLine + "Remember to delete secure value before importing.");
+            MessageBox.Show("Saved save file to " + sfd.FileName + ".");
             }            
-            updating = false;
-        }
-
-        private void PB_Override_Click(object sender, EventArgs e)
-        {
-            overrideHS = !overrideHS;
-            updating = true;
-            Parse();
             updating = false;
         }
 
         private void PB_Owned_Click(object sender, EventArgs e)
         {
-            int s = 0;
-            if ((sender as Control).Name.Contains("SpeedUpX"))
-                s = 1;
-            if ((sender as Control).Name.Contains("SpeedUpY"))
-                s = 2;
-            if ((sender as Control).Name.Contains("Lollipop"))
-                s = 3;
-            if ((sender as Control).Name.Contains("Mon"))
-                s = 4;
-            if ((sender as Control).Name.Contains("Skill"))
-                s = 5;
-            switch (s)
-            {
-                case 1:
-                    NUP_SpeedUpX.Value = (NUP_SpeedUpX.Value == 0) ? NUP_SpeedUpX.Maximum : 0;
-                    break;
-
-                case 2:
-                    NUP_SpeedUpY.Value = (NUP_SpeedUpY.Value == 0) ? NUP_SpeedUpY.Maximum : 0;
-                    break;
-
-                case 3:
-                    NUP_Lollipop.Value = (NUP_Lollipop.Value == 0) ? NUP_Lollipop.Maximum : 0;
-                    NUP_Level.Value = 10 + NUP_Lollipop.Value;
-                    break;
-
-                case 4:
-                    if (!CHK_CaughtMon.Checked)
-                    {
-                        CHK_CaughtMon.Checked = true;
-                        NUP_Lollipop.Value = NUP_Lollipop.Maximum;
-                        NUP_Level.Value = NUP_Level.Maximum;
-                        CHK_MegaX.Checked = db.HasMega[(int)CB_MonIndex.SelectedValue][0];
-                        CHK_MegaY.Checked = db.HasMega[(int)CB_MonIndex.SelectedValue][1];
-                        NUP_SpeedUpX.Value = (db.HasMega[(int)CB_MonIndex.SelectedValue][0]) ? NUP_SpeedUpX.Maximum : 0;
-                        NUP_SpeedUpY.Value = (db.HasMega[(int)CB_MonIndex.SelectedValue][1]) ? NUP_SpeedUpY.Maximum : 0;
-                        for (int i = 0; i < db.Mons[(int)CB_MonIndex.SelectedValue].Rest.Item2; i++)
-                            SetSkill((int)CB_MonIndex.SelectedValue, i, (int)NUP_Skill1.Maximum);
-                    }
-                    else CHK_CaughtMon.Checked = CHK_MegaX.Checked = CHK_MegaY.Checked = false;
-                    break;
-
-                case 5:
-                    bool boool = false;
-                    foreach (int sLv in GetMon((int)CB_MonIndex.SelectedValue).SkillLevel)
-                    {
-                        if (sLv != 5 && sLv != 0)
-                            boool = true;
-                    }
-                    for (int i = 0; i < db.Rest[(int)CB_MonIndex.SelectedValue].Item2; i++)
-                            SetSkill((int)CB_MonIndex.SelectedValue, i, boool ? 5 : 1);
-                    break;
-
-                default:
-                    return;
-            }
             updating = true;
+            if ((sender as Control).Name.Contains("SpeedUpX"))
+                NUP_SpeedUpX.Value = (NUP_SpeedUpX.Value == 0) ? NUP_SpeedUpX.Maximum : 0;
+            else if ((sender as Control).Name.Contains("SpeedUpY"))
+                NUP_SpeedUpY.Value = (NUP_SpeedUpY.Value == 0) ? NUP_SpeedUpY.Maximum : 0;
+            else if ((sender as Control).Name.Contains("Lollipop"))
+            {
+                NUP_Lollipop.Value = (NUP_Lollipop.Value == 0) ? NUP_Lollipop.Maximum : 0;
+                NUP_Level.Value = 10 + NUP_Lollipop.Value;
+            }
+            else if ((sender as Control).Name.Contains("Mon"))
+            {
+                if (!CHK_CaughtMon.Checked)
+                {
+                    CHK_CaughtMon.Checked = true;
+                    NUP_Lollipop.Value = NUP_Lollipop.Maximum;
+                    NUP_Level.Value = NUP_Level.Maximum;
+                    CHK_MegaX.Checked = db.HasMega[(int)CB_MonIndex.SelectedValue][0];
+                    CHK_MegaY.Checked = db.HasMega[(int)CB_MonIndex.SelectedValue][1];
+                    NUP_SpeedUpX.Value = (db.HasMega[(int)CB_MonIndex.SelectedValue][0]) ? NUP_SpeedUpX.Maximum : 0;
+                    NUP_SpeedUpY.Value = (db.HasMega[(int)CB_MonIndex.SelectedValue][1]) ? NUP_SpeedUpY.Maximum : 0;
+                    for (int i = 0; i < db.Mons[(int)CB_MonIndex.SelectedValue].Rest.Item2; i++)
+                        SetSkill((int)CB_MonIndex.SelectedValue, i, (int)NUP_Skill1.Maximum);
+                }
+                else CHK_CaughtMon.Checked = CHK_MegaX.Checked = CHK_MegaY.Checked = false;
+            }
+            else if ((sender as Control).Name.Contains("Skill"))
+            {
+                bool boool = false;
+                foreach (int sLv in GetMon((int)CB_MonIndex.SelectedValue).SkillLevel)
+                {
+                    if (sLv != 5 && sLv != 0)
+                        boool = true;
+                }
+                for (int i = 0; i < db.Rest[(int)CB_MonIndex.SelectedValue].Item2; i++)
+                    SetSkill((int)CB_MonIndex.SelectedValue, i, boool ? 5 : 1);
+            }
+            else return;
             Parse();
             updating = false;
         }
 
         private void PB_Stage_Click(object sender, EventArgs e)
         {
-            int i, ind, max;
+            updating = true;
+            int type, ind;
+            //int max;
             if ((sender as Control).Name.Contains("Main"))
             {
-                i = 0;
+                type = 0;
                 ind = (int)NUP_MainIndex.Value - 1;
-                max = (int)NUP_MainIndex.Maximum;
+                //max = (int)NUP_MainIndex.Maximum;
             }
             else if ((sender as Control).Name.Contains("Expert"))
             {
-                i = 1;
+                type = 1;
                 ind = (int)NUP_ExpertIndex.Value - 1;
-                max = (int)NUP_ExpertIndex.Maximum;
+                //max = (int)NUP_ExpertIndex.Maximum;
             }
             else if ((sender as Control).Name.Contains("Event"))
             {
-                i = 2;
+                type = 2;
                 ind = (int)NUP_EventIndex.Value;
-                max = (int)NUP_EventIndex.Maximum + 1;
+                //max = (int)NUP_EventIndex.Maximum + 1;
             }
             else return;
             if ((e as MouseEventArgs).Button == MouseButtons.Left)    //Left Click = circle ranks down
             {
-                if (GetStage(ind, i).Completed)
+                if (GetStage(ind, type).Completed)
                 {
-                    SetRank(ind, i, (GetStage(ind, i).Rank + 3) % 4);
-                    if (GetStage(ind, i).Rank == 3) { PatchScore(ind, i); }
+                    SetRank(ind, type, (GetStage(ind, type).Rank + 3) % 4);
+                    if (GetStage(ind, type).Rank == 3) { PatchScore(ind, type); }
                 }
                 //Nothing happens if uncompleted
             }
             if ((e as MouseEventArgs).Button == System.Windows.Forms.MouseButtons.Right)   //Right Click = (un)completed
             {
-                SetStage(ind, i, !GetStage(ind, i).Completed);    //invert completed state
-                SetRank(ind, i, GetStage(ind, i).Completed ? 3 : 0);  //rank S or C
-                PatchScore(ind, i);
+                SetStage(ind, type, !GetStage(ind, type).Completed);    //invert completed state
+                SetRank(ind, type, GetStage(ind, type).Completed ? 3 : 0);  //rank S or C
+                PatchScore(ind, type);
                 #region needs better implementation idea
-                //if (GetStage(ind, i).Completed && i == 0 && !overrideHS)
+                //if (GetStage(ind, i).Completed && i == 0)
                 //{
                 //    for (int j = 0; j < ind; j++) //mark every previous stage as completed
                 //    {
@@ -410,7 +355,7 @@ namespace Pokemon_Shuffle_Save_Editor
                 //        PatchScore(j, i);
                 //    }
                 //}
-                //else if (i == 0 && !overrideHS)
+                //else if (i == 0)
                 //{
                 //    for (int j = ind; j < max; j++) //mark every next stage as uncompleted
                 //    {
@@ -421,115 +366,113 @@ namespace Pokemon_Shuffle_Save_Editor
                 //}
                 #endregion
             }
-            updating = true;
             Parse();
             updating = false;
         }
 
         private void PB_Team_Click(object sender, EventArgs e)
         {
-            int s = 0;
-            if ((sender as Control).Name.Contains("Team1"))
-                s = 1;
-            if ((sender as Control).Name.Contains("Team2"))
-                s = 2;
-            if ((sender as Control).Name.Contains("Team3"))
-                s = 3;
-            if ((sender as Control).Name.Contains("Team4"))
-                s = 4;
-            if (s > 0 && s < 5)
+            string[] senderNames = new string[] { "Team1", "Team2", "Team3", "Team4" };
+            int s = -1;
+            for (int i = 0; i < senderNames.Length; i++)
             {
-                if ((e as MouseEventArgs).Button == MouseButtons.Left)
+                if ((sender as Control).Name.Contains(senderNames[i]))
+                    s = i;
+                if (s != -1) { break; }
+            }
+            if (s < 0 || s >= senderNames.Length) { return; }
+            if ((e as MouseEventArgs).Button != MouseButtons.Left && (e as MouseEventArgs).Button != MouseButtons.Right) { return; }
+
+            updating = true;
+            if ((e as MouseEventArgs).Button == MouseButtons.Left)
+            {
+                if (ModifierKeys == Keys.Control)
                 {
-                    if (ModifierKeys == Keys.Control)
+                    int ind = (int)CB_MonIndex.SelectedValue;
+                    SetCaught(ind, true);
+                    for (int i = 0; i < senderNames.Length; i++)
                     {
-                        int ind = (int)CB_MonIndex.SelectedValue;
-                        for (int i = 1; i < 5; i++)
-                        {
-                            if (i != s && GetTeam(i) == ind)
-                                SetTeam(i, GetTeam(s));
-                        }
-                        if (!GetMon(ind).Caught)
-                            SetCaught(ind, true);
-                        SetTeam(s, ind);
+                        if (i != s && GetMonTeamSlot(i) == ind)
+                            SetMonTeamSlot(i, GetMonTeamSlot(s));
                     }
-                    else                    
-                        CB_MonIndex.SelectedValue = GetTeam(s);
-                    updating = true;
-                    Parse();
-                    updating = false;
+                    SetMonTeamSlot(s, ind);
                 }
-                else if ((e as MouseEventArgs).Button == MouseButtons.Right)
+                else
+                    CB_MonIndex.SelectedValue = GetMonTeamSlot(s);
+            }
+            else if ((e as MouseEventArgs).Button == MouseButtons.Right)
+            {
+                if (ltir == -1)
+                    ltir = s;
+                else
                 {
-                    if (ltir == 0)
-                    {
-                        updating = true;
-                        Parse(s);
-                        updating = false;
-                    }
-                    else
-                    {
-                        int temp = GetTeam(ltir);
-                        SetTeam(ltir, GetTeam(s));
-                        SetTeam(s, temp);
-                        updating = true;
-                        Parse();
-                        updating = false;
-                    }
+                    int temp = GetMonTeamSlot(ltir); //important variable, otherwise next instruction changes which pokemon to be set by the one just after.
+                    SetMonTeamSlot(ltir, GetMonTeamSlot(s));
+                    SetMonTeamSlot(s, temp);
+                    ltir = -1;
                 }
             }
-            else return;
+            Parse();
+            updating = false;
         }
 
         private void TB_Filepath_DoubleClick(object sender, EventArgs e)
         {
-            if ((sender as Control).Enabled == true)
+            if ((sender as Control).Enabled == false)
+                return;
+            updating = true;
+            loaded = false;
+            GroupBox[] list = { GB_Caught, GB_HighScore, GB_Resources };
+            foreach (GroupBox gb in list)
             {
-                loaded = false;
-                GroupBox[] list = { GB_Caught, GB_HighScore, GB_Resources };
-                foreach (GroupBox gb in list)
+                foreach (Control ctrl in gb.Controls)
                 {
-                    foreach (Control ctrl in gb.Controls)
+                    if (ctrl is CheckBox)
                     {
-                        if (ctrl is CheckBox)
-                        {
-                            (ctrl as CheckBox).Checked = false;
-                            if (ctrl != CHK_CaughtMon)
-                                (ctrl as CheckBox).Visible = false;
-                        }
-                        if (ctrl is PictureBox)
-                            (ctrl as PictureBox).Image = new Bitmap(ctrl.Width, ctrl.Height);
-                        if (ctrl is NumericUpDown)
-                        {
-                            (ctrl as NumericUpDown).Value = (ctrl as NumericUpDown).Minimum;
-                            if (gb == GB_Caught)
-                                (ctrl as NumericUpDown).Visible = false;
-                        }
-                        if (ctrl is Label)
-                        {
-                            if (gb == GB_Caught)
-                                (ctrl as Label).Visible = false;
-                            if (ctrl.Name.Contains("Rank"))
-                                (ctrl as Label).Text = "-";
-                        }
+                        (ctrl as CheckBox).Checked = false;
+                        if (ctrl != CHK_CaughtMon)
+                            (ctrl as CheckBox).Visible = false;
+                    }
+                    if (ctrl is PictureBox)
+                        (ctrl as PictureBox).Image = new Bitmap(ctrl.Width, ctrl.Height);
+                    if (ctrl is NumericUpDown)
+                    {
+                        (ctrl as NumericUpDown).Value = (ctrl as NumericUpDown).Minimum;
+                        if (gb == GB_Caught)
+                            (ctrl as NumericUpDown).Visible = false;
+                    }
+                    if (ctrl is Label)
+                    {
+                        if (gb == GB_Caught)
+                            (ctrl as Label).Visible = false;
+                        if (ctrl.Name.Contains("Rank"))
+                            (ctrl as Label).Text = "-";
                     }
                 }
-                FormInit();
             }
+            FormInit();
+            updating = false;
         }
 
         protected string GetDragFilename(DragEventArgs e)
         {
-            if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy)
-            {
-                Array data = ((IDataObject)e.Data).GetData("FileName") as Array;
-                if (data != null)
-                {
-                    if ((data.Length == 1) && (data.GetValue(0) is String))
-                        return ((string[])data)[0];
-                }
-            }
-            return null;
+            if ((e.AllowedEffect & DragDropEffects.Copy) != DragDropEffects.Copy)
+                return null;
+            Array data = e.Data.GetData("FileName") as Array;
+            if (data == null || (data.Length != 1) || !(data.GetValue(0) is String))
+                return null;
+            return ((string[])data)[0];
+
+            //if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy)
+            //{
+            //    Array data = ((IDataObject)e.Data).GetData("FileName") as Array;
+            //    if (data != null)
+            //    {
+            //        if ((data.Length == 1) && (data.GetValue(0) is String))
+            //            return ((string[])data)[0];
+            //    }
+            //}
+            //return null;
         }
 
         private void Main_DragDrop(object sender, DragEventArgs e)
@@ -556,8 +499,10 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private void B_resources_Click(object sender, EventArgs e)
         {
+            updating = true;
             db = new Database(true, (ModifierKeys == Keys.Control));
             if (loaded) { Parse(); }
+            updating = false;
         }
 
         private void UpdateProperty(object s, PropertyValueChangedEventArgs e)

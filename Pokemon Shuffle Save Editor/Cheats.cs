@@ -437,7 +437,7 @@ namespace Pokemon_Shuffle_Save_Editor
             //String[] Skills = List.Skip(List.IndexOf("Coup Critique")).Take(List.IndexOf("Augmente parfois les dégâts.") - List.IndexOf("Coup Critique")).ToArray();
             //String[] SkillsTexts = List.Skip(List.IndexOf("Augmente parfois les dégâts.")).Take(List.IndexOf("Augmente parfois les dégâts.") - List.IndexOf("Coup Critique")).ToArray();
             #endregion
-        }
+        } //Set test button to Visible in designer & uncomment desired code to use this.
 
         enum Cases { Full, Select, None };  //for B_MissionCards_Click
     }

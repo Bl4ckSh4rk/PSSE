@@ -120,9 +120,19 @@
   <metadata name="TT_Skill.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <metadata name="TT_Button.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <metadata name="TT_Help.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>108, 17</value>
   </metadata>
+  <data name="GB_Party.ToolTip" xml:space="preserve">
+    <value>Click an icon to display the corresponding pokemon
+in the editor below.
+
+Right-click an icon, then right-click another to swap
+the corresponding pokemons in your team.
+
+Ctrl+clic on an icon will insert the below-displayed
+pokemon into the corresponding team slot.</value>
+  </data>
   <data name="B_resources.ToolTip" xml:space="preserve">
     <value>Click this to re-scan for external resource files. These must be placed
 in a 'resources' folder in the same directory as PSSE.exe.
@@ -134,7 +144,7 @@ Ctrl+click if you want to choose which files to load (strongly NOT
 recomanded).</value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>114</value>
+    <value>25</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
