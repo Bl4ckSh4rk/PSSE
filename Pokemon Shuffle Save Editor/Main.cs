@@ -267,7 +267,6 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private void PB_Owned_Click(object sender, EventArgs e)
         {
-            updating = true;
             if ((sender as Control).Name.Contains("SpeedUpX"))
                 NUP_SpeedUpX.Value = (NUP_SpeedUpX.Value == 0) ? NUP_SpeedUpX.Maximum : 0;
             else if ((sender as Control).Name.Contains("SpeedUpY"))
@@ -306,7 +305,6 @@ namespace Pokemon_Shuffle_Save_Editor
             }
             else return;
             Parse();
-            updating = false;
         }
 
         private void PB_Stage_Click(object sender, EventArgs e)

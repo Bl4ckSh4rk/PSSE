@@ -117,11 +117,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="TT_Skill.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
   <metadata name="TT_Help.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>108, 17</value>
+  </metadata>
+  <data name="GB_Caught.ToolTip" xml:space="preserve">
+    <value>Click on the Mega-Speedups sprite(s) to give either
+0 or the max number of candies to that stone.
+
+Click on the Lollipop sprite to give either 0 or the
+max amount of Raise Max Level candies to the active
+Pokémon.
+
+Click on the Skill+ candy sprite to set every skill of
+active Pokémon to either level 1 or 5.
+
+Finally, click on the Pokémon sprite below to basically
+set everything for that Pokémon to max (caught,
+all stones, max levels &amp; candies) or to nothing (not
+caught, no stone or candy &amp; all levels to 1).</value>
+  </data>
+  <metadata name="TT_Skill.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
   </metadata>
   <data name="GB_Party.ToolTip" xml:space="preserve">
     <value>Click an icon to display the corresponding pokemon
