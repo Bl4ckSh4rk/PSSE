@@ -61,32 +61,32 @@ namespace Pokemon_Shuffle_Save_Editor
         public static void SetLevel(int ind, int lev = 1, int set_rml = -1, int set_exp = -1)
         {
             //level patcher
-            lev = (lev < 2) ? 0 : Math.Min(10 + db.Mons[ind].Item4, lev);    //level capped to 10 + max nb of lollipops for that pokemon
+            lev = (lev < 2) ? 0 : lev;
             short level1 = (short)((BitConverter.ToInt16(savedata, Level1.Ofset(ind)) & ~(0xF << Level1.Shift(ind))) | (Math.Min(lev, 0xF) << Level1.Shift(ind)));
             Array.Copy(BitConverter.GetBytes(level1), 0, savedata, Level1.Ofset(ind), 2);    //write to original ofsets ( <= 15)
-            short level2 = (short)((BitConverter.ToInt16(savedata, Level2.Ofset(ind)) & ~(0x3F << Level2.Shift(ind))) | ((lev >= 15 ? Math.Min(lev, 0x3F) : 0) << Level2.Shift(ind)));
+            short level2 = (short)((BitConverter.ToInt16(savedata, Level2.Ofset(ind)) & ~(0x3F << Level2.Shift(ind))) | ((lev < 15) ? 0 : Math.Min(lev, 0x3F) << Level2.Shift(ind)));
             Array.Copy(BitConverter.GetBytes(level2), 0, savedata, Level2.Ofset(ind), 2);    //write to 1.3.25 ofsets ( >= 15, 0 if below)
 
             //lollipop patcher
-            set_rml = (set_rml < 0 || (set_rml < lev - 10) ? ((lev - 10 < 0) ? 0 : lev - 10) : set_rml);
-            short numRaiseMaxLevel = (short)((BitConverter.ToInt16(savedata, Lollipop.Ofset(ind)) & ~(0x3F << Lollipop.Shift(ind))) | (set_rml << Lollipop.Shift(ind)));
+            set_rml = (set_rml < 0 || (set_rml < lev - 10) ? Math.Max(0, lev - 10) : set_rml);
+            short numRaiseMaxLevel = (short)((BitConverter.ToInt16(savedata, Lollipop.Ofset(ind)) & ~(0x3F << Lollipop.Shift(ind))) | (Math.Min(set_rml, 0x3F) << Lollipop.Shift(ind)));
             Array.Copy(BitConverter.GetBytes(numRaiseMaxLevel), 0, savedata, Lollipop.Ofset(ind), 2);
 
             //experience patcher
             int entrylen = BitConverter.ToInt32(db.MonLevel, 0x4);
-            byte[] data = db.MonLevel.Skip(0x50 + ((((lev < 2) ? 1 : lev) - 1) * entrylen)).Take(entrylen).ToArray(); //corrected level value, because if it's 0 then it means 1
+            byte[] data = db.MonLevel.Skip(0x50 + (Math.Min(db.Mons[ind].Item4 + 10, (Math.Max(0, lev - 1))) * entrylen)).Take(entrylen).ToArray(); //makes sure to read exp values within the correct range (0 to max level)
             set_exp = (set_exp < 0) ? BitConverter.ToInt32(data, 0x4 * (db.Mons[ind].Item5 - 1)) : set_exp;
-            int exp = (BitConverter.ToInt32(savedata, Experience.Ofset(ind)) & ~(0xFFFFFF << Experience.Shift(ind))) | (set_exp << Experience.Shift(ind));
+            int exp = (BitConverter.ToInt32(savedata, Experience.Ofset(ind)) & ~(0xFFFFFF << Experience.Shift(ind))) | (Math.Min(set_exp, 0xFFFFFF) << Experience.Shift(ind));
             Array.Copy(BitConverter.GetBytes(exp), 0, savedata, Experience.Ofset(ind), 4);
         }
 
         public static void SetSkill(int ind, int skind = 0, int lvl = 1, bool current = false)
         {
             //level
-            lvl = (lvl < 2) ? 0 : ((lvl > 5) ? 5 : lvl);    //hardcoded skill level to be 5 max
+            lvl = (lvl < 2) ? 0 : lvl;
             skind = (skind < 0) ? 0 : ((skind > 4) ? 4 : skind); //hardcoded 5 skills maximum
             int skilllvl = BitConverter.ToInt16(savedata, SkillLevel.Ofset(ind, skind));
-            skilllvl = (skilllvl & ~(0x7 << SkillLevel.Shift(ind))) | (lvl << SkillLevel.Shift(ind));
+            skilllvl = (skilllvl & ~(0x7 << SkillLevel.Shift(ind))) | (Math.Min(0x7, lvl) << SkillLevel.Shift(ind));
             Array.Copy(BitConverter.GetBytes(skilllvl), 0, savedata, SkillLevel.Ofset(ind, skind), 2);
 
             //exp
@@ -100,7 +100,7 @@ namespace Pokemon_Shuffle_Save_Editor
                 selskill = (selskill & ~(0x7 << CurrentSkill.Shift(ind))) | (skind << CurrentSkill.Shift(ind));
                 Array.Copy(BitConverter.GetBytes(selskill), 0, savedata, CurrentSkill.Ofset(ind), 2);
             }
-        }
+        }//hardcoded 5 skills maximum
 
         public static void SetSpeedup(int ind, bool X = false, int suX = 0, bool Y = false, int suY = 0)
         {
@@ -150,17 +150,17 @@ namespace Pokemon_Shuffle_Save_Editor
                 items = new int[ShuffleItems.ILength];
             if (enhancements == null)
                 enhancements = new int[ShuffleItems.ELength];
-            Array.Copy(BitConverter.GetBytes((BitConverter.ToUInt32(savedata, Coins.Ofset()) & 0xF0000007) | (coins << Coins.Shift()) | (jewels << Jewels.Shift())), 0, savedata, Coins.Ofset(), 4);
-            Array.Copy(BitConverter.GetBytes((BitConverter.ToUInt16(savedata, Hearts.Ofset()) & 0xC07F) | (hearts << Hearts.Shift())), 0, savedata, Hearts.Ofset(), 2);
+            Array.Copy(BitConverter.GetBytes((BitConverter.ToUInt32(savedata, Coins.Ofset()) & 0xF0000007) | (Math.Min(0x1FFFF, coins) << Coins.Shift()) | (Math.Min(0xFF, jewels) << Jewels.Shift())), 0, savedata, Coins.Ofset(), 4);
+            Array.Copy(BitConverter.GetBytes((BitConverter.ToUInt16(savedata, Hearts.Ofset()) & 0xC07F) | (Math.Min(0x7F, hearts) << Hearts.Shift())), 0, savedata, Hearts.Ofset(), 2);
             for (int i = 0; i < ShuffleItems.ILength; i++) //Items (battle)
             {
                 ushort val = BitConverter.ToUInt16(savedata, Items.Ofset(i));
                 val &= 0x7F;
-                val |= (ushort)(items[i] << Items.Shift());
+                val |= (ushort)(Math.Min(0x7F, items[i]) << Items.Shift());
                 Array.Copy(BitConverter.GetBytes(val), 0, savedata, Items.Ofset(i), 2);
             }
             for (int i = 0; i < ShuffleItems.ELength; i++) //Enhancements (pokemon)
-                savedata[Enhancements.Ofset(i)] = (byte)((((enhancements[i]) << Enhancements.Shift()) & 0xFE) | (savedata[Enhancements.Ofset(i)] & Enhancements.Shift()));
+                savedata[Enhancements.Ofset(i)] = (byte)(((Math.Min(0x7F, enhancements[i]) << Enhancements.Shift()) & 0xFE) | (savedata[Enhancements.Ofset(i)] & Enhancements.Shift()));
         }
 
         public static stgItem GetStage(int ind, int type)
@@ -182,7 +182,7 @@ namespace Pokemon_Shuffle_Save_Editor
 
         public static void SetScore(int ind, int type, int newScore = 0)
         {
-            long score = (BitConverter.ToInt64(savedata, Score.Ofset(ind, type)) & ~(0xFFFFFF << Score.Shift(ind, type))) | (long)newScore << Score.Shift(ind, type);
+            long score = (BitConverter.ToInt64(savedata, Score.Ofset(ind, type)) & ~(0xFFFFFF << Score.Shift(ind, type))) | (Math.Min(0xFFFFFF, (long)newScore) << Score.Shift(ind, type));
             Array.Copy(BitConverter.GetBytes(score), 0, savedata, Score.Ofset(ind, type), 8);
         }
 
@@ -692,7 +692,7 @@ namespace Pokemon_Shuffle_Save_Editor
         }
     }
     public static class Hearts
-    {   //these are stock hearts only
+    {   //these are stock (99) hearts only
         public static int Ofset()
         {
             return 0x2D4A;
@@ -727,6 +727,7 @@ namespace Pokemon_Shuffle_Save_Editor
             return 20;
         }
     }
+
     public static class StreetCount
     {
         public static int Ofset()
@@ -736,13 +737,13 @@ namespace Pokemon_Shuffle_Save_Editor
     }
     public static class StreetTag
     {
-        public static int Length()
-        {
-            return 0x68;
-        }
         public static int Ofset(int i)
         {
             return 0x59A7 + (i * Length());
+        }
+        public static int Length()
+        {
+            return 0x68;
         }
     }
     public static class MissionCards

@@ -120,7 +120,7 @@
   <metadata name="TT_Help.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>108, 17</value>
   </metadata>
-  <data name="GB_Caught.ToolTip" xml:space="preserve">
+  <data name="PB_Mon.ToolTip" xml:space="preserve">
     <value>Click on the Mega-Speedups sprite(s) to give either
 0 or the max number of candies to that stone.
 

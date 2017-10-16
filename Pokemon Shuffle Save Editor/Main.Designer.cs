@@ -423,7 +423,6 @@
             this.GB_Caught.TabIndex = 3;
             this.GB_Caught.TabStop = false;
             this.GB_Caught.Text = "Owned Pokemon";
-            this.TT_Help.SetToolTip(this.GB_Caught, resources.GetString("GB_Caught.ToolTip"));
             // 
             // TLP_Skills
             // 
@@ -464,7 +463,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.NUP_Skill5.Location = new System.Drawing.Point(23, 123);
             this.NUP_Skill5.Maximum = new decimal(new int[] {
-            5,
+            7,
             0,
             0,
             0});
@@ -490,7 +489,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.NUP_Skill4.Location = new System.Drawing.Point(23, 93);
             this.NUP_Skill4.Maximum = new decimal(new int[] {
-            5,
+            7,
             0,
             0,
             0});
@@ -576,7 +575,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.NUP_Skill3.Location = new System.Drawing.Point(23, 63);
             this.NUP_Skill3.Maximum = new decimal(new int[] {
-            5,
+            7,
             0,
             0,
             0});
@@ -602,7 +601,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.NUP_Skill2.Location = new System.Drawing.Point(23, 33);
             this.NUP_Skill2.Maximum = new decimal(new int[] {
-            5,
+            7,
             0,
             0,
             0});
@@ -628,7 +627,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.NUP_Skill1.Location = new System.Drawing.Point(23, 3);
             this.NUP_Skill1.Maximum = new decimal(new int[] {
-            5,
+            7,
             0,
             0,
             0});
@@ -756,7 +755,7 @@
             // 
             this.NUP_Lollipop.Location = new System.Drawing.Point(94, 112);
             this.NUP_Lollipop.Maximum = new decimal(new int[] {
-            20,
+            63,
             0,
             0,
             0});
@@ -869,7 +868,7 @@
             // 
             this.NUP_Level.Location = new System.Drawing.Point(6, 112);
             this.NUP_Level.Maximum = new decimal(new int[] {
-            30,
+            63,
             0,
             0,
             0});
@@ -917,6 +916,7 @@
             this.PB_Mon.Size = new System.Drawing.Size(64, 64);
             this.PB_Mon.TabIndex = 15;
             this.PB_Mon.TabStop = false;
+            this.TT_Help.SetToolTip(this.PB_Mon, resources.GetString("PB_Mon.ToolTip"));
             this.PB_Mon.Click += new System.EventHandler(this.PB_Owned_Click);
             // 
             // GB_Resources
@@ -1017,7 +1017,7 @@
             // 
             this.NUP_Hearts.Location = new System.Drawing.Point(17, 39);
             this.NUP_Hearts.Maximum = new decimal(new int[] {
-            99,
+            127,
             0,
             0,
             0});

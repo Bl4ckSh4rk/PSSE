@@ -258,7 +258,7 @@ namespace Pokemon_Shuffle_Save_Editor
         private void B_StageReset_Click(object sender, EventArgs e)
         {
             int j = 0;
-            foreach (int length in new int[] { (BitConverter.ToInt32(db.StagesMain, 0) - 1), BitConverter.ToInt32(db.StagesExpert, 0), 100 })//{number of Main stages, number of Expert stages, 100}. Max number of event levels could be up to 549 but it's unlikely there ever are more than 100 at any given time (and that space could be used for something else later).
+            foreach (int length in new int[] { (BitConverter.ToInt32(db.StagesMain, 0) - 1), BitConverter.ToInt32(db.StagesExpert, 0), BitConverter.ToInt32(db.StagesEvent, 0) })//Max number of event levels could be up to 549 but it's unlikely there ever are more than 100 at any given time (and that space could be used for something else later).
             {
                 for (int i = 0; i < length; i++)
                 {

@@ -88,79 +88,103 @@ namespace Pokemon_Shuffle_Save_Editor
             updating = true;
 
             #region UpdateOwnedBox()
-            int ind = (int)CB_MonIndex.SelectedValue;
-
-            //team preview
-            int pbIndex = 0;
-            foreach (PictureBox pb in new[] { PB_Team1, PB_Team2, PB_Team3, PB_Team4 })
+            if (CB_MonIndex.SelectedValue != null)
             {
-                pb.Image = GetTeamImage(GetMonFrommSlot(pbIndex), pbIndex, (ltir == pbIndex));
-                pbIndex++;
-            }
+                int ind = (int)CB_MonIndex.SelectedValue;
 
-            //caught CHK
-            CHK_CaughtMon.Checked = GetMon(ind).Caught;
-
-            //level view
-            NUP_Lollipop.Maximum = db.Mons[ind].Item4;
-            NUP_Lollipop.Value = GetMon(ind).Lollipops;
-            NUP_Level.Maximum = 10 + NUP_Lollipop.Maximum;
-            NUP_Level.Value = GetMon(ind).Level;
-
-            //Skill level
-            for (int i = 0; i < TLP_Skills.ColumnCount; i++)
-            {
-                for (int j = 0; j < TLP_Skills.RowCount; j++)
+                //team preview
+                int pbIndex = 0;
+                foreach (PictureBox pb in new[] { PB_Team1, PB_Team2, PB_Team3, PB_Team4 })
                 {
-                    if (TLP_Skills.GetControlFromPosition(i, j) is RadioButton)
-                        (TLP_Skills.GetControlFromPosition(i, j) as RadioButton).Checked = (GetMon(ind).CurrentSkill == j);
-                    else if (TLP_Skills.GetControlFromPosition(i, j) is Label)
-                    {
-                        (TLP_Skills.GetControlFromPosition(i, j) as Label).Text = (db.Mons[(int)CB_MonIndex.SelectedValue].Item6[j] != 0 || j == 0) ? db.SkillsList[db.Mons[(int)CB_MonIndex.SelectedValue].Item6[j] - 1] : "";
-                        TT_Skill.SetToolTip((TLP_Skills.GetControlFromPosition(i, j) as Label), (db.Mons[ind].Item6[j] > 0) ? db.SkillsTextList[db.Mons[ind].Item6[j] - 1] : "default");
-                    }
-                    else if (TLP_Skills.GetControlFromPosition(i, j) is NumericUpDown)
-                        (TLP_Skills.GetControlFromPosition(i, j) as NumericUpDown).Value = Math.Max(GetMon(ind).SkillLevel[j], 1);
-
-                    (TLP_Skills.GetControlFromPosition(i, j) as Control).Visible = (GetMon((int)CB_MonIndex.SelectedValue).Caught && j < db.Mons[ind].Rest.Item2); //visibility stuff for convenience
+                    pb.Image = GetTeamImage(GetMonFrommSlot(pbIndex), pbIndex, (ltir == pbIndex));
+                    pbIndex++;
                 }
-            }
 
-            //Speedup values
-            if (db.MegaList.IndexOf(ind) != -1) //temporary fix while there are still some mega forms missing in megastone.bin
-            {
-                NUP_SpeedUpX.Maximum = db.HasMega[ind][0] ? db.Megas[db.MegaList.IndexOf(ind)].Item2 : 0;
-                NUP_SpeedUpY.Maximum = db.HasMega[ind][1] ? db.Megas[db.MegaList.IndexOf(ind, db.MegaList.IndexOf(ind) + 1)].Item2 : 0;
-                NUP_SpeedUpX.Value = GetMon(ind).SpeedUpX;
-                NUP_SpeedUpY.Value = GetMon(ind).SpeedUpY;
-            }
-            else
-            {
-                NUP_SpeedUpX.Maximum = NUP_SpeedUpY.Maximum = 1;
-                NUP_SpeedUpX.Value = NUP_SpeedUpY.Value = 0;
-            }
+                //caught CHK
+                CHK_CaughtMon.Checked = GetMon(ind).Caught;
 
-            #region Visibility
+                //level view
+                if (GetMon(ind).Lollipops > db.Mons[ind].Item4 || GetMon(ind).Level > 10 + db.Mons[ind].Item4)
+                {
+                    NUP_Lollipop.Maximum = NUP_Level.Maximum = 63;
+                    NUP_Lollipop.ForeColor = NUP_Level.ForeColor = Color.Red;
+                }
+                else
+                {
+                    NUP_Lollipop.Maximum = db.Mons[ind].Item4;
+                    NUP_Level.Maximum = 10 + NUP_Lollipop.Maximum;
+                    NUP_Lollipop.ForeColor = NUP_Level.ForeColor = SystemColors.WindowText;
+                }
+                NUP_Lollipop.Value = GetMon(ind).Lollipops;
+                NUP_Level.Value = GetMon(ind).Level;
 
-            L_Level.Visible = L_Skill.Visible = NUP_Level.Visible = PB_Skill.Visible = CHK_CaughtMon.Checked;
-            PB_Lollipop.Visible = NUP_Lollipop.Visible = (CHK_CaughtMon.Checked && NUP_Lollipop.Maximum != 0);
-            PB_Mon.Image = GetCaughtImage(ind, CHK_CaughtMon.Checked);
-            PB_MegaX.Visible = CHK_MegaX.Visible = db.HasMega[ind][0];
-            PB_MegaY.Visible = CHK_MegaY.Visible = db.HasMega[ind][1];
-            PB_MegaX.Image = db.HasMega[ind][0] ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MegaStone" + db.Mons[ind].Item1.ToString("000") + (db.HasMega[ind][1] ? "_X" : string.Empty))) : new Bitmap(16, 16);
-            PB_MegaY.Image = db.HasMega[ind][1] ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MegaStone" + db.Mons[ind].Item1.ToString("000") + "_Y")) : new Bitmap(16, 16);
-            CHK_MegaX.Checked = (GetMon(ind).Stone & 1) != 0;
-            CHK_MegaY.Checked = (GetMon(ind).Stone & 2) != 0;
-            NUP_SpeedUpX.Visible = PB_SpeedUpX.Visible = CHK_CaughtMon.Checked && CHK_MegaX.Visible && CHK_MegaX.Checked;
-            NUP_SpeedUpY.Visible = PB_SpeedUpY.Visible = CHK_CaughtMon.Checked && CHK_MegaY.Visible && CHK_MegaY.Checked; //Else NUP_SpeedUpY appears if the next mega in terms of offsets has been obtained
-            PB_SpeedUpX.Image = db.HasMega[ind][0] ? new Bitmap(ResizeImage((Image)Properties.Resources.ResourceManager.GetObject("mega_speedup"), 24, 24)) : new Bitmap(16, 16);
-            PB_SpeedUpY.Image = db.HasMega[ind][1] ? new Bitmap(ResizeImage((Image)Properties.Resources.ResourceManager.GetObject("mega_speedup"), 24, 24)) : new Bitmap(16, 16);
-            RB_Skill1.Enabled = (db.Mons[ind].Rest.Item2 > 1);
-            #endregion Visibility            
+                //Skill level
+                for (int i = 0; i < TLP_Skills.ColumnCount; i++)
+                {
+                    for (int j = 0; j < TLP_Skills.RowCount; j++)
+                    {
+                        if (TLP_Skills.GetControlFromPosition(i, j) is RadioButton)
+                            (TLP_Skills.GetControlFromPosition(i, j) as RadioButton).Checked = (GetMon(ind).CurrentSkill == j);
+                        else if (TLP_Skills.GetControlFromPosition(i, j) is Label)
+                        {
+                            (TLP_Skills.GetControlFromPosition(i, j) as Label).Text = (db.Mons[(int)CB_MonIndex.SelectedValue].Item6[j] != 0 || j == 0) ? db.SkillsList[db.Mons[(int)CB_MonIndex.SelectedValue].Item6[j] - 1] : "";
+                            TT_Skill.SetToolTip((TLP_Skills.GetControlFromPosition(i, j) as Label), (db.Mons[ind].Item6[j] > 0) ? db.SkillsTextList[db.Mons[ind].Item6[j] - 1] : "default");
+                        }
+                        else if (TLP_Skills.GetControlFromPosition(i, j) is NumericUpDown)
+                            (TLP_Skills.GetControlFromPosition(i, j) as NumericUpDown).Value = Math.Max(GetMon(ind).SkillLevel[j], 1);
+
+                        (TLP_Skills.GetControlFromPosition(i, j) as Control).Visible = (GetMon((int)CB_MonIndex.SelectedValue).Caught && j < db.Mons[ind].Rest.Item2); //visibility stuff for convenience
+                    }
+                }
+
+                #region Visibility
+
+                L_Level.Visible = L_Skill.Visible = NUP_Level.Visible = PB_Skill.Visible = CHK_CaughtMon.Checked;
+                PB_Lollipop.Visible = NUP_Lollipop.Visible = (CHK_CaughtMon.Checked && NUP_Lollipop.Maximum != 0);
+                PB_Mon.Image = GetCaughtImage(ind, CHK_CaughtMon.Checked);
+                PB_MegaX.Visible = CHK_MegaX.Visible = db.HasMega[ind][0];
+                PB_MegaY.Visible = CHK_MegaY.Visible = db.HasMega[ind][1];
+                PB_MegaX.Image = db.HasMega[ind][0] ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MegaStone" + db.Mons[ind].Item1.ToString("000") + (db.HasMega[ind][1] ? "_X" : string.Empty))) : new Bitmap(16, 16);
+                PB_MegaY.Image = db.HasMega[ind][1] ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MegaStone" + db.Mons[ind].Item1.ToString("000") + "_Y")) : new Bitmap(16, 16);
+                CHK_MegaX.Checked = (GetMon(ind).Stone & 1) != 0;
+                CHK_MegaY.Checked = (GetMon(ind).Stone & 2) != 0;
+                PB_SpeedUpX.Image = db.HasMega[ind][0] ? new Bitmap(ResizeImage((Image)Properties.Resources.ResourceManager.GetObject("mega_speedup"), 24, 24)) : new Bitmap(16, 16);
+                PB_SpeedUpY.Image = db.HasMega[ind][1] ? new Bitmap(ResizeImage((Image)Properties.Resources.ResourceManager.GetObject("mega_speedup"), 24, 24)) : new Bitmap(16, 16);
+                RB_Skill1.Enabled = (db.Mons[ind].Rest.Item2 > 1);
+                #endregion Visibility    
+
+                //Speedup values
+                if (db.MegaList.IndexOf(ind) == -1) //temporary fix while there are still some mega forms missing in megastone.bin
+                {
+                    NUP_SpeedUpX.Maximum = NUP_SpeedUpY.Maximum = NUP_SpeedUpX.Value = NUP_SpeedUpY.Value = 0;
+                    NUP_SpeedUpX.Visible = NUP_SpeedUpY.Visible = false;
+                }
+                else
+                {
+                    NUP_SpeedUpX.Maximum = db.HasMega[ind][0] ? db.Megas[db.MegaList.IndexOf(ind)].Item2 : 0;
+                    NUP_SpeedUpY.Maximum = db.HasMega[ind][1] ? db.Megas[db.MegaList.IndexOf(ind, db.MegaList.IndexOf(ind) + 1)].Item2 : 0;
+                    NUP_SpeedUpX.Value = GetMon(ind).SpeedUpX;
+                    NUP_SpeedUpY.Value = GetMon(ind).SpeedUpY;
+                    NUP_SpeedUpX.Visible = CHK_CaughtMon.Checked && CHK_MegaX.Visible && CHK_MegaX.Checked;
+                    NUP_SpeedUpY.Visible = CHK_CaughtMon.Checked && CHK_MegaY.Visible && CHK_MegaY.Checked; //Else NUP_SpeedUpY appears if the next mega in terms of offsets has been obtained
+                }
+
+                PB_SpeedUpX.Visible = NUP_SpeedUpX.Visible;
+                PB_SpeedUpY.Visible = NUP_SpeedUpY.Visible;
+            }
             #endregion
 
             #region UpdateResourceBox()
             rsItem rsI = GetRessources();
+            NumericUpDown[] nup = new NumericUpDown[] { NUP_Coins, NUP_Jewels, NUP_Hearts };
+            var val = new[] { rsI.Coins, rsI.Jewels, rsI.Hearts };
+            int[] legit = new int[] { 99999, 150, 99 };
+            int[] max = new int[] { 131071, 255, 127 };
+            for (int i = 0; i < nup.Length; i++)
+            {
+                nup[i].Maximum = (val[i] > legit[i]) ? max[i] : legit[i];
+                nup[i].ForeColor = (val[i] > legit[i]) ? Color.Red : SystemColors.WindowText;
+            }
             NUP_Coins.Value = rsI.Coins;
             NUP_Jewels.Value = rsI.Jewels;
             NUP_Hearts.Value = rsI.Hearts;
@@ -193,36 +217,39 @@ namespace Pokemon_Shuffle_Save_Editor
             if (!loaded || updating)
                 return;
             updating = true;
-            if(!(new Control[] { null, CB_MonIndex, NUP_MainIndex, NUP_ExpertIndex, NUP_ExpertScore}.Contains(sender)))
+            if(!(new Control[] { null, CB_MonIndex, NUP_MainIndex, NUP_ExpertIndex, NUP_EventIndex}.Contains(sender)))
             {//add above any control which purpose is to change info displayed on another control, to prevent it from writing to savedata when doing so.
                 //Owned Box Properties
-                int ind = (int)CB_MonIndex.SelectedValue;
-                ushort set_level = (ushort)(CHK_CaughtMon.Checked ? (NUP_Level.Value == 1 ? 0 : NUP_Level.Value) : 0);
-                ushort set_rml = (ushort)(CHK_CaughtMon.Checked ? NUP_Lollipop.Value : 0);
-                if (set_level > 10 + set_rml)
+                if (CB_MonIndex.SelectedValue != null)
                 {
-                    if ((sender as Control).Name.Contains("Level"))
-                        set_rml = (ushort)(set_level - 10);
-                    if ((sender as Control).Name.Contains("Lollipop"))
-                        set_level = (ushort)(10 + set_rml);
-                }
-                SetCaught(ind, CHK_CaughtMon.Checked);
-                SetLevel(ind, set_level, set_rml);
-                SetStone(ind, CHK_MegaX.Checked, CHK_MegaY.Checked);
-                SetSpeedup(ind, (db.HasMega[ind][0] && CHK_CaughtMon.Checked && CHK_MegaX.Checked), (int)NUP_SpeedUpX.Value, (db.HasMega[ind][1] && CHK_CaughtMon.Checked && CHK_MegaY.Checked), (int)NUP_SpeedUpY.Value);
-                for (int j = 0; j < TLP_Skills.RowCount; j++)
-                {
-                    int skillLevel = 1;
-                    bool iscurrent = false;
-                    for (int i = 0; i < TLP_Skills.ColumnCount; i++)
+                    int ind = (int)CB_MonIndex.SelectedValue;
+                    ushort set_level = (ushort)((CHK_CaughtMon.Checked || NUP_Level.Value == 1) ? NUP_Level.Value : 0);
+                    ushort set_rml = (ushort)(CHK_CaughtMon.Checked ? NUP_Lollipop.Value : 0);
+                    if (set_level > 10 + set_rml)
                     {
-                        if (TLP_Skills.GetControlFromPosition(i, j) is RadioButton)
-                            iscurrent = (TLP_Skills.GetControlFromPosition(i, j) as RadioButton).Checked;
-                        else if (TLP_Skills.GetControlFromPosition(i, j) is NumericUpDown)
-                            skillLevel = (int)(TLP_Skills.GetControlFromPosition(i, j) as NumericUpDown).Value;
+                        if ((sender as Control).Name.Contains("Level"))
+                            set_rml = (ushort)(set_level - 10);
+                        if ((sender as Control).Name.Contains("Lollipop"))
+                            set_level = (ushort)(10 + set_rml);
                     }
-                    SetSkill(ind, j, (GetMon(ind).Caught) ? skillLevel : 1, iscurrent);
-                }
+                    SetCaught(ind, CHK_CaughtMon.Checked);
+                    SetLevel(ind, set_level, set_rml);
+                    SetStone(ind, CHK_MegaX.Checked, CHK_MegaY.Checked);
+                    SetSpeedup(ind, (db.HasMega[ind][0] && CHK_CaughtMon.Checked && CHK_MegaX.Checked), (int)NUP_SpeedUpX.Value, (db.HasMega[ind][1] && CHK_CaughtMon.Checked && CHK_MegaY.Checked), (int)NUP_SpeedUpY.Value);
+                    for (int j = 0; j < TLP_Skills.RowCount; j++)
+                    {
+                        int skillLevel = 1;
+                        bool iscurrent = false;
+                        for (int i = 0; i < TLP_Skills.ColumnCount; i++)
+                        {
+                            if (TLP_Skills.GetControlFromPosition(i, j) is RadioButton)
+                                iscurrent = (TLP_Skills.GetControlFromPosition(i, j) as RadioButton).Checked;
+                            else if (TLP_Skills.GetControlFromPosition(i, j) is NumericUpDown)
+                                skillLevel = (int)(TLP_Skills.GetControlFromPosition(i, j) as NumericUpDown).Value;
+                        }
+                        SetSkill(ind, j, (GetMon(ind).Caught) ? skillLevel : 1, iscurrent);
+                    }
+                }                
 
                 //Stages Box Properties
                 SetScore((int)NUP_MainIndex.Value - 1, 0, (int)NUP_MainScore.Value);
@@ -267,13 +294,15 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private void PB_Owned_Click(object sender, EventArgs e)
         {
+            if (CB_MonIndex.SelectedValue == null) { return; }
+
             if ((sender as Control).Name.Contains("SpeedUpX"))
                 NUP_SpeedUpX.Value = (NUP_SpeedUpX.Value == 0) ? NUP_SpeedUpX.Maximum : 0;
             else if ((sender as Control).Name.Contains("SpeedUpY"))
                 NUP_SpeedUpY.Value = (NUP_SpeedUpY.Value == 0) ? NUP_SpeedUpY.Maximum : 0;
             else if ((sender as Control).Name.Contains("Lollipop"))
             {
-                NUP_Lollipop.Value = (NUP_Lollipop.Value == 0) ? NUP_Lollipop.Maximum : 0;
+                NUP_Lollipop.Value = (NUP_Lollipop.Value == 0) ? db.Mons[(int)CB_MonIndex.SelectedValue].Item4 : 0;
                 NUP_Level.Value = 10 + NUP_Lollipop.Value;
             }
             else if ((sender as Control).Name.Contains("Mon"))
@@ -281,8 +310,8 @@ namespace Pokemon_Shuffle_Save_Editor
                 if (!CHK_CaughtMon.Checked)
                 {
                     CHK_CaughtMon.Checked = true;
-                    NUP_Lollipop.Value = NUP_Lollipop.Maximum;
-                    NUP_Level.Value = NUP_Level.Maximum;
+                    NUP_Lollipop.Value = db.Mons[(int)CB_MonIndex.SelectedValue].Item4;
+                    NUP_Level.Value = 10 + NUP_Lollipop.Value;
                     CHK_MegaX.Checked = db.HasMega[(int)CB_MonIndex.SelectedValue][0];
                     CHK_MegaY.Checked = db.HasMega[(int)CB_MonIndex.SelectedValue][1];
                     NUP_SpeedUpX.Value = (db.HasMega[(int)CB_MonIndex.SelectedValue][0]) ? NUP_SpeedUpX.Maximum : 0;
@@ -363,6 +392,12 @@ namespace Pokemon_Shuffle_Save_Editor
             updating = true;
             if ((e as MouseEventArgs).Button == MouseButtons.Left)
             {
+                if (CB_MonIndex.SelectedValue == null)
+                {
+                    updating = false;
+                    return;
+                }
+
                 if (ModifierKeys == Keys.Control)
                 {
                     int ind = (int)CB_MonIndex.SelectedValue;
