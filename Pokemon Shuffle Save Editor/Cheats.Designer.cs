@@ -134,7 +134,7 @@
             this.B_StreetPassDelete.Location = new System.Drawing.Point(12, 231);
             this.B_StreetPassDelete.Name = "B_StreetPassDelete";
             this.B_StreetPassDelete.Size = new System.Drawing.Size(138, 23);
-            this.B_StreetPassDelete.TabIndex = 10;
+            this.B_StreetPassDelete.TabIndex = 102;
             this.B_StreetPassDelete.Text = "(Reset) StreetPass";
             this.TT_Cheats.SetToolTip(this.B_StreetPassDelete, resources.GetString("B_StreetPassDelete.ToolTip"));
             this.B_StreetPassDelete.UseVisualStyleBackColor = true;
@@ -214,7 +214,7 @@
             this.B_Test.Location = new System.Drawing.Point(229, 157);
             this.B_Test.Name = "B_Test";
             this.B_Test.Size = new System.Drawing.Size(65, 23);
-            this.B_Test.TabIndex = 51;
+            this.B_Test.TabIndex = 999;
             this.B_Test.Text = "Test stuff";
             this.TT_Cheats.SetToolTip(this.B_Test, "Used w/ B_Test_Click event for various stuff.\r\nYou shouldn\'t see this unless you " +
         "specifically wanted to.\r\nIn case no one told you today : You\'re awesome !");
@@ -240,7 +240,7 @@
             this.B_MissionCards.Location = new System.Drawing.Point(85, 157);
             this.B_MissionCards.Name = "B_MissionCards";
             this.B_MissionCards.Size = new System.Drawing.Size(138, 23);
-            this.B_MissionCards.TabIndex = 11;
+            this.B_MissionCards.TabIndex = 10;
             this.B_MissionCards.Text = "Complete Mission cards";
             this.TT_Cheats.SetToolTip(this.B_MissionCards, "Completes all cards missions. \r\n\r\nCtrl+clic to select which missions to complete " +
         "and\r\nsee/choose active card.");
@@ -253,7 +253,7 @@
             this.B_LimitedShop.Location = new System.Drawing.Point(156, 231);
             this.B_LimitedShop.Name = "B_LimitedShop";
             this.B_LimitedShop.Size = new System.Drawing.Size(138, 23);
-            this.B_LimitedShop.TabIndex = 102;
+            this.B_LimitedShop.TabIndex = 103;
             this.B_LimitedShop.Text = "Reset Limited Shop";
             this.TT_Cheats.SetToolTip(this.B_LimitedShop, resources.GetString("B_LimitedShop.ToolTip"));
             this.B_LimitedShop.UseVisualStyleBackColor = true;
@@ -284,8 +284,9 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(328, 305);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(328, 273);
+            this.MinimumSize = new System.Drawing.Size(328, 305);
             this.Name = "Cheats";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

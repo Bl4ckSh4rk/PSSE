@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            Pokemon_Shuffle_Save_Editor.ShuffleItems shuffleItems1 = new Pokemon_Shuffle_Save_Editor.ShuffleItems();
+            Pokemon_Shuffle_Save_Editor.ShuffleItems shuffleItems2 = new Pokemon_Shuffle_Save_Editor.ShuffleItems();
             this.B_Open = new System.Windows.Forms.Button();
             this.TB_FilePath = new System.Windows.Forms.TextBox();
             this.B_Save = new System.Windows.Forms.Button();
@@ -942,10 +942,10 @@
             this.ItemsGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.ItemsGrid.Location = new System.Drawing.Point(6, 65);
             this.ItemsGrid.Name = "ItemsGrid";
-            shuffleItems1.AttackUp = 0;
-            shuffleItems1.Complexity = 0;
-            shuffleItems1.Disruption = 0;
-            shuffleItems1.Enchantments = new int[] {
+            shuffleItems2.AttackUp = 0;
+            shuffleItems2.Complexity = 0;
+            shuffleItems2.Disruption = 0;
+            shuffleItems2.Enchantments = new int[] {
         0,
         0,
         0,
@@ -956,11 +956,11 @@
         0,
         0,
         0};
-            shuffleItems1.Experience = 0;
-            shuffleItems1.ExperienceBoostL = 0;
-            shuffleItems1.ExperienceBoostM = 0;
-            shuffleItems1.ExperienceBoostS = 0;
-            shuffleItems1.Items = new int[] {
+            shuffleItems2.Experience = 0;
+            shuffleItems2.ExperienceBoostL = 0;
+            shuffleItems2.ExperienceBoostM = 0;
+            shuffleItems2.ExperienceBoostS = 0;
+            shuffleItems2.Items = new int[] {
         0,
         0,
         0,
@@ -968,17 +968,17 @@
         0,
         0,
         0};
-            shuffleItems1.LevelUp = 0;
-            shuffleItems1.MegaSpeedup = 0;
-            shuffleItems1.MegaStart = 0;
-            shuffleItems1.Moves = 0;
-            shuffleItems1.RaiseMaxLevel = 0;
-            shuffleItems1.SkillBoosterL = 0;
-            shuffleItems1.SkillBoosterM = 0;
-            shuffleItems1.SkillBoosterS = 0;
-            shuffleItems1.SkillSwap = 0;
-            shuffleItems1.Time = 0;
-            this.ItemsGrid.SelectedObject = shuffleItems1;
+            shuffleItems2.LevelUp = 0;
+            shuffleItems2.MegaSpeedup = 0;
+            shuffleItems2.MegaStart = 0;
+            shuffleItems2.Moves = 0;
+            shuffleItems2.RaiseMaxLevel = 0;
+            shuffleItems2.SkillBoosterL = 0;
+            shuffleItems2.SkillBoosterM = 0;
+            shuffleItems2.SkillBoosterS = 0;
+            shuffleItems2.SkillSwap = 0;
+            shuffleItems2.Time = 0;
+            this.ItemsGrid.SelectedObject = shuffleItems2;
             this.ItemsGrid.Size = new System.Drawing.Size(241, 369);
             this.ItemsGrid.TabIndex = 54;
             this.ItemsGrid.ToolbarVisible = false;

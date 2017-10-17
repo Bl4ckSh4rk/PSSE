@@ -67,7 +67,7 @@ namespace Pokemon_Shuffle_Save_Editor
             }
 
             B_Save.Enabled = GB_Caught.Enabled = GB_HighScore.Enabled = GB_Resources.Enabled = B_CheatsForm.Enabled = ItemsGrid.Enabled = true;
-            TB_FilePath.Text = file;
+            TB_FilePath.Text = file.ToString();
             savedata = File.ReadAllBytes(file);
             loaded = true; //this needs to be set AFTER everything else has been loaded/initialized properly
             Parse();
