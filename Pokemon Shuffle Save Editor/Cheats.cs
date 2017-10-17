@@ -378,6 +378,11 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private void B_Test_Click(object sender, EventArgs e)
         {   //don't bother, testing stuff
+            #region limited edition
+            //number of purchased items : 0x2EC7-2ED1, Offset = [item index (list order)] * 8 / 8, Shift = 7
+            //active bonus offsets : 0x2EF9-A (bonus type) & 0x 2F04-7 (some kind of timestamp, likely the time when bonus timer runs out)
+            #endregion
+
             #region catch'em all
             //for (int i = 1; i < db.MegaStartIndex; i++)
             //    SetCaught(i, true);
@@ -440,5 +445,12 @@ namespace Pokemon_Shuffle_Save_Editor
         } //Set test button to Visible in designer & uncomment desired code to use this.
 
         enum Cases { Full, Select, None };  //for B_MissionCards_Click
+
+        private void B_LimitedShop_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 10; i++)
+                savedata[0x2EC7 + i] = 0x00;
+            MessageBox.Show("You can now buy all items from the \"Limited Shop\" again.\nPlease note this'll have no effect if the \"Limited Shop\" isn't currently available.");
+        }
     }
 }

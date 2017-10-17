@@ -196,6 +196,18 @@ than one active at the same time, only one should be affected.</value>
 /!\ Manually add at least Espurr, Bulbasaur, Squirtle and charmander,
 or reset stages too.</value>
   </data>
+  <data name="B_LimitedShop.ToolTip" xml:space="preserve">
+    <value>Resets count of how many of the special items you
+purchased from the "limited shop", allowing you
+to buy more with your unlimited diamonds !
+
+Nothing will happen in-game if the "Limited Shop" is
+currently not available.
+
+FYI, I know where the timer is set so if someone can
+help me figure out how Shuffle stores dates I'll be able
+to grant permanent items (including unlimited hearts).</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>143</value>
   </metadata>

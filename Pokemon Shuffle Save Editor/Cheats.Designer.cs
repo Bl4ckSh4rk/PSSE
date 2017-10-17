@@ -47,6 +47,7 @@
             this.B_Test = new System.Windows.Forms.Button();
             this.B_PokathlonStep = new System.Windows.Forms.Button();
             this.B_MissionCards = new System.Windows.Forms.Button();
+            this.B_LimitedShop = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // B_LevelMax
@@ -129,7 +130,8 @@
             // 
             // B_StreetPassDelete
             // 
-            this.B_StreetPassDelete.Location = new System.Drawing.Point(12, 157);
+            this.B_StreetPassDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.B_StreetPassDelete.Location = new System.Drawing.Point(12, 231);
             this.B_StreetPassDelete.Name = "B_StreetPassDelete";
             this.B_StreetPassDelete.Size = new System.Drawing.Size(138, 23);
             this.B_StreetPassDelete.TabIndex = 10;
@@ -151,8 +153,7 @@
             // 
             // Line
             // 
-            this.Line.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Line.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.Line.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Line.Location = new System.Drawing.Point(12, 189);
             this.Line.MaximumSize = new System.Drawing.Size(288, 2);
@@ -164,7 +165,7 @@
             // B_PokemonReset
             // 
             this.B_PokemonReset.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.B_PokemonReset.Location = new System.Drawing.Point(12, 199);
+            this.B_PokemonReset.Location = new System.Drawing.Point(12, 202);
             this.B_PokemonReset.Name = "B_PokemonReset";
             this.B_PokemonReset.Size = new System.Drawing.Size(138, 23);
             this.B_PokemonReset.TabIndex = 100;
@@ -176,7 +177,7 @@
             // B_StageReset
             // 
             this.B_StageReset.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.B_StageReset.Location = new System.Drawing.Point(156, 199);
+            this.B_StageReset.Location = new System.Drawing.Point(156, 202);
             this.B_StageReset.Name = "B_StageReset";
             this.B_StageReset.Size = new System.Drawing.Size(138, 23);
             this.B_StageReset.TabIndex = 101;
@@ -210,7 +211,7 @@
             // 
             // B_Test
             // 
-            this.B_Test.Location = new System.Drawing.Point(119, 185);
+            this.B_Test.Location = new System.Drawing.Point(229, 157);
             this.B_Test.Name = "B_Test";
             this.B_Test.Size = new System.Drawing.Size(65, 23);
             this.B_Test.TabIndex = 51;
@@ -236,7 +237,7 @@
             // 
             // B_MissionCards
             // 
-            this.B_MissionCards.Location = new System.Drawing.Point(156, 157);
+            this.B_MissionCards.Location = new System.Drawing.Point(85, 157);
             this.B_MissionCards.Name = "B_MissionCards";
             this.B_MissionCards.Size = new System.Drawing.Size(138, 23);
             this.B_MissionCards.TabIndex = 11;
@@ -246,11 +247,24 @@
             this.B_MissionCards.UseVisualStyleBackColor = true;
             this.B_MissionCards.Click += new System.EventHandler(this.B_MissionCards_Click);
             // 
+            // B_LimitedShop
+            // 
+            this.B_LimitedShop.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.B_LimitedShop.Location = new System.Drawing.Point(156, 231);
+            this.B_LimitedShop.Name = "B_LimitedShop";
+            this.B_LimitedShop.Size = new System.Drawing.Size(138, 23);
+            this.B_LimitedShop.TabIndex = 102;
+            this.B_LimitedShop.Text = "Reset Limited Shop";
+            this.TT_Cheats.SetToolTip(this.B_LimitedShop, resources.GetString("B_LimitedShop.ToolTip"));
+            this.B_LimitedShop.UseVisualStyleBackColor = true;
+            this.B_LimitedShop.Click += new System.EventHandler(this.B_LimitedShop_Click);
+            // 
             // Cheats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(312, 234);
+            this.ClientSize = new System.Drawing.Size(312, 266);
+            this.Controls.Add(this.B_LimitedShop);
             this.Controls.Add(this.B_MissionCards);
             this.Controls.Add(this.B_PokathlonStep);
             this.Controls.Add(this.B_Test);
@@ -270,7 +284,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(328, 273);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(328, 273);
             this.Name = "Cheats";
@@ -300,5 +313,6 @@
         private System.Windows.Forms.Button B_Test;
         private System.Windows.Forms.Button B_PokathlonStep;
         private System.Windows.Forms.Button B_MissionCards;
+        private System.Windows.Forms.Button B_LimitedShop;
     }
 }
