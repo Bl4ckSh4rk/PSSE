@@ -75,11 +75,11 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private bool IsShuffleSave(string file) // Try to do a better job at filtering files rather than just saying "oh, it's not savedata.bin quit"
         {
-            FileInfo info = new FileInfo(file);
-            if (info.Length != 74807) return false; // Probably not
+            if (new FileInfo(file).Length != 74807) return false; // Probably not
 
             var contents = new byte[8];
-            File.OpenRead(file).Read(contents, 0, contents.Length);
+            using (var fs = File.OpenRead(file))
+                fs.Read(contents, 0, contents.Length);
             return BitConverter.ToInt64(contents, 0) == 0x4000000009L;
         }
 
@@ -157,21 +157,24 @@ namespace Pokemon_Shuffle_Save_Editor
                 #endregion Visibility    
 
                 //Speedup values
-                if (db.MegaList.IndexOf(ind) == -1) //temporary fix while there are still some mega forms missing in megastone.bin
+                if (!(db.HasMega[ind][0] || db.HasMega[ind][1]) || db.MegaList.IndexOf(ind) == -1) //temporary fix while there are still some mega forms missing in megastone.bin
                 {
                     NUP_SpeedUpX.Maximum = NUP_SpeedUpY.Maximum = NUP_SpeedUpX.Value = NUP_SpeedUpY.Value = 0;
-                    NUP_SpeedUpX.Visible = NUP_SpeedUpY.Visible = false;
+                    NUP_SpeedUpX.Visible = NUP_SpeedUpY.Visible = (db.MegaList.IndexOf(ind) == -1);
                 }
                 else
                 {
-                    NUP_SpeedUpX.Maximum = db.HasMega[ind][0] ? db.Megas[db.MegaList.IndexOf(ind)].Item2 : 0;
-                    NUP_SpeedUpY.Maximum = db.HasMega[ind][1] ? db.Megas[db.MegaList.IndexOf(ind, db.MegaList.IndexOf(ind) + 1)].Item2 : 0;
-                    NUP_SpeedUpX.Value = GetMon(ind).SpeedUpX;
-                    NUP_SpeedUpY.Value = GetMon(ind).SpeedUpY;
+                    bool boolX = GetMon(ind).SpeedUpX > db.Megas[db.MegaList.IndexOf(ind)].Item2;
+                    bool boolY = db.HasMega[ind][1] && GetMon(ind).SpeedUpY > db.Megas[db.MegaList.IndexOf(ind, db.MegaList.IndexOf(ind) + 1)].Item2;
+                    NUP_SpeedUpX.ForeColor = boolX ? Color.Red : SystemColors.WindowText;
+                    NUP_SpeedUpY.ForeColor = boolY ? Color.Red : SystemColors.WindowText;
+                    NUP_SpeedUpX.Maximum = boolX ? 127 : (db.HasMega[ind][0] ? db.Megas[db.MegaList.IndexOf(ind)].Item2 : 0);
+                    NUP_SpeedUpY.Maximum = boolY ? 127 : (db.HasMega[ind][1] ? db.Megas[db.MegaList.IndexOf(ind, db.MegaList.IndexOf(ind) + 1)].Item2 : 0);
+                    NUP_SpeedUpX.Value = db.HasMega[ind][0] ? GetMon(ind).SpeedUpX : 0;
+                    NUP_SpeedUpY.Value = db.HasMega[ind][1] ? GetMon(ind).SpeedUpY : 0;
                     NUP_SpeedUpX.Visible = CHK_CaughtMon.Checked && CHK_MegaX.Visible && CHK_MegaX.Checked;
                     NUP_SpeedUpY.Visible = CHK_CaughtMon.Checked && CHK_MegaY.Visible && CHK_MegaY.Checked; //Else NUP_SpeedUpY appears if the next mega in terms of offsets has been obtained
                 }
-
                 PB_SpeedUpX.Visible = NUP_SpeedUpX.Visible;
                 PB_SpeedUpY.Visible = NUP_SpeedUpY.Visible;
             }
@@ -278,7 +281,10 @@ namespace Pokemon_Shuffle_Save_Editor
         {
             OpenFileDialog ofd = new OpenFileDialog { FileName = "savedata.bin", Filter = ".bin files (*.bin)|*.bin|All files (*.*)|*.*", FilterIndex = 1 };
             if (ofd.ShowDialog() == DialogResult.OK)
+            {
                 Open(ofd.FileName);
+                //ofd.Dispose();
+            }
         }
 
         private void B_Save_Click(object sender, EventArgs e)
@@ -320,7 +326,7 @@ namespace Pokemon_Shuffle_Save_Editor
                     NUP_SpeedUpX.Value = (db.HasMega[(int)CB_MonIndex.SelectedValue][0]) ? NUP_SpeedUpX.Maximum : 0;
                     NUP_SpeedUpY.Value = (db.HasMega[(int)CB_MonIndex.SelectedValue][1]) ? NUP_SpeedUpY.Maximum : 0;
                     for (int i = 0; i < db.Mons[(int)CB_MonIndex.SelectedValue].Rest.Item2; i++)
-                        SetSkill((int)CB_MonIndex.SelectedValue, i, (int)NUP_Skill1.Maximum);
+                        SetSkill((int)CB_MonIndex.SelectedValue, i, 5);
                 }
                 else CHK_CaughtMon.Checked = CHK_MegaX.Checked = CHK_MegaY.Checked = false;
             }

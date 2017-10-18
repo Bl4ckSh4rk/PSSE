@@ -25,10 +25,8 @@ namespace Pokemon_Shuffle_Save_Editor
         public bool[][] HasMega { get; private set; }   // [X][0] = X, [X][1] = Y
         public int[] Forms { get; private set; }
         public List<int>[] Pokathlon { get; private set; }
-        //public int[][] PokathlonRand { get; private set; }  // [step][0] = min, [step][1] = max
         public bool[][] Missions { get; private set; }
         public string[] MonsList { get; private set; }
-        //public string[] PokathlonList { get; private set; }
         public string[] SpeciesList { get; private set; }
         public string[] SkillsList { get; private set; }
         public string[] SkillsTextList { get; private set; }
@@ -44,7 +42,7 @@ namespace Pokemon_Shuffle_Save_Editor
 
         public Database(bool shwmsg = false, bool dev = false)
         {
-            //if a new resource file is needed, don't forget to add to Resource_Popup's TLP !
+            //if a new resource file is needed, don't forget to add a line to Resource_Popup's TLP !
             string[] filenames = { "megaStone.bin", "pokemonData.bin", "stageData.bin", "stageDataEvent.bin", "stageDataExtra.bin", "pokemonLevel.bin", "pokemonAbility.bin", "missionCard.bin", "messagePokedex_US.bin", "pokeLoad.bin" };
             string resourcedir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + Path.DirectorySeparatorChar + "resources" + Path.DirectorySeparatorChar;
             bool[] overRide = new bool[filenames.Length];
@@ -69,30 +67,6 @@ namespace Pokemon_Shuffle_Save_Editor
                         }
                     }
                 }
-                //string blabla = null;
-                //List<string> found = new List<string>();
-                //if (!Directory.Exists(resourcedir))
-                //    blabla = "No resources folder found.\nCreate a new folder in the same directory as PSSE and name it exactly \"resources\".\n";
-                //else
-                //{
-                //    blabla = "A \"resources\" folder has been found";
-                //    foreach (string file in filenames)
-                //        if (File.Exists(resourcedir + file)) { found.Add("\n\t" + file + "\t" + File.GetLastWriteTime(resourcedir + file)); }
-                //    if (found != null)
-                //    {
-                //        blabla += ".\n\nFiles found :";
-                //        found.Sort();
-                //        foreach (string str in found)
-                //            blabla += str;
-                //        blabla += "\n";
-                //    }
-                //    else blabla += ", but it looks empty.\n";
-                //}
-                //blabla += ("\nClick OK to use " + ((found == null) ? "built-in files" : "those files") + ", or use Abort to, well, abort.");
-                //var result = MessageBox.Show(blabla + "\nPlease click the Help button below for more informations.", "Resources scan", MessageBoxButtons.OKCancel, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, 0, "https://github.com/supercarotte/PSSE/wiki/Extract-needed-resource-files-from-the-game");
-                //if (result != DialogResult.OK)
-                //    return;
-
             }
 
             //bin init
