@@ -131,7 +131,10 @@ namespace Pokemon_Shuffle_Save_Editor
                             TT_Skill.SetToolTip((TLP_Skills.GetControlFromPosition(i, j) as Label), (db.Mons[ind].Item6[j] > 0) ? db.SkillsTextList[db.Mons[ind].Item6[j] - 1] : "default");
                         }
                         else if (TLP_Skills.GetControlFromPosition(i, j) is NumericUpDown)
+                        {
+                            (TLP_Skills.GetControlFromPosition(i, j) as NumericUpDown).Maximum = GetMon(ind).SkillLevel[j] > 5 ? 7 : 5;
                             (TLP_Skills.GetControlFromPosition(i, j) as NumericUpDown).Value = Math.Max(GetMon(ind).SkillLevel[j], 1);
+                        }
 
                         (TLP_Skills.GetControlFromPosition(i, j) as Control).Visible = (GetMon((int)CB_MonIndex.SelectedValue).Caught && j < db.Mons[ind].Rest.Item2); //visibility stuff for convenience
                     }
