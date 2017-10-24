@@ -144,14 +144,14 @@ namespace Pokemon_Shuffle_Save_Editor
             };
         }
 
-        public static void SetResources(int hearts = 0, uint coins = 0, uint jewels = 0, int[] items = null, int[] enhancements = null)
+        public static void SetResources(uint hearts = 0, uint coins = 0, uint jewels = 0, int[] items = null, int[] enhancements = null)
         {
             if (items == null)
                 items = new int[ShuffleItems.ILength];
             if (enhancements == null)
                 enhancements = new int[ShuffleItems.ELength];
             Array.Copy(BitConverter.GetBytes((BitConverter.ToUInt32(savedata, Coins.Ofset()) & 0xF0000007) | (Math.Min(0x1FFFF, coins) << Coins.Shift()) | (Math.Min(0xFF, jewels) << Jewels.Shift())), 0, savedata, Coins.Ofset(), 4);
-            Array.Copy(BitConverter.GetBytes((BitConverter.ToUInt16(savedata, Hearts.Ofset()) & 0xC07F) | (Math.Min(0x7F, hearts) << Hearts.Shift())), 0, savedata, Hearts.Ofset(), 2);
+            Array.Copy(BitConverter.GetBytes((BitConverter.ToUInt16(savedata, Hearts.Ofset()) & (uint)0xC07F) | (Math.Min(0x7F, hearts) << Hearts.Shift())), 0, savedata, Hearts.Ofset(), 2);
             for (int i = 0; i < ShuffleItems.ILength; i++) //Items (battle)
             {
                 ushort val = BitConverter.ToUInt16(savedata, Items.Ofset(i));
@@ -298,13 +298,17 @@ namespace Pokemon_Shuffle_Save_Editor
                 using (Graphics g = Graphics.FromImage(GetShadow(bmp, GetDominantColor(bmp))))
                     g.DrawImage(bmp2, new Point(5, 5));
             }
+            bmp = ResizeImage(bmp, 48, 48);
             if (megaOverlay)
             {
                 Bitmap bmp3 = db.HasMega[ind][0] ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MegaStone" + db.Mons[ind].Item1.ToString("000") + (db.HasMega[ind][1] ? "_X" : string.Empty))) : new Bitmap(16, 16);
                 using (Graphics g = Graphics.FromImage(bmp))
-                    g.DrawImage(bmp3, new Point(48, 48));
+                {
+                    g.DrawImage(Properties.Resources.MegaStoneBase, new Point(0, 0));
+                    g.DrawImage(bmp3, new Point(3, 2));
+                }                    
             }
-            return ResizeImage(bmp, 48, 48);
+            return bmp;
             //return ResizeImage(ChangeOpacity(GetMonImage(ind), opacity ? 0.5F : 1), w, h);
         }
 

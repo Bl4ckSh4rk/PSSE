@@ -16,7 +16,7 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private List<cbItem> monsel = new List<cbItem>();
         private List<cbItem> skillsel = new List<cbItem>();
-        private ShuffleItems SI_Items = new ShuffleItems();
+        private ShuffleItems SI_Items = default(ShuffleItems);
 
         private bool loaded, updating;
         public static int ltir; //Last TeamIndex Right-clicked, -1 is default
@@ -195,9 +195,9 @@ namespace Pokemon_Shuffle_Save_Editor
             NUP_Jewels.Value = rsI.Jewels;
             NUP_Hearts.Value = rsI.Hearts;
             for (int i = 0; i < SI_Items.Items.Length; i++)
-                SI_Items.Items[i] = rsI.Items[i];
+                SI_Items.Items[i] = rsI.Items[i].Range();
             for (int i = 0; i < SI_Items.Enchantments.Length; i++)
-                SI_Items.Enchantments[i] = rsI.Enhancements[i];
+                SI_Items.Enchantments[i] = rsI.Enhancements[i].Range();
             ItemsGrid.Refresh();
             #endregion
 
@@ -263,7 +263,7 @@ namespace Pokemon_Shuffle_Save_Editor
                 SetScore((int)NUP_EventIndex.Value, 2, (int)NUP_EventScore.Value);
 
                 //Ressources Box Properties
-                SetResources((int)NUP_Hearts.Value, (uint)NUP_Coins.Value, (uint)NUP_Jewels.Value, SI_Items.Items, SI_Items.Enchantments);
+                SetResources((uint)NUP_Hearts.Value, (uint)NUP_Coins.Value, (uint)NUP_Jewels.Value, SI_Items.Items, SI_Items.Enchantments);
             }
             Parse();
             updating = false;
@@ -509,7 +509,7 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private void ItemsGrid_EnabledChanged(object sender, EventArgs e)
         {
-            ItemsGrid.SelectedObject = (ItemsGrid.Enabled) ? SI_Items : null;
+            ItemsGrid.SelectedObject = (ItemsGrid.Enabled) ? SI_Items = new ShuffleItems() : null;
         }
 
         private void ItemsGrid_Enter(object sender, EventArgs e)

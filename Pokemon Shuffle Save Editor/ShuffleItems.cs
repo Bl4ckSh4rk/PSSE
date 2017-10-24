@@ -1,12 +1,14 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace Pokemon_Shuffle_Save_Editor
 {
     internal class ShuffleItems
     {
         //Edit these to change number of supported items globally. Don't forget to change parameters in ItemsGrid's intialisation (Main.Designer) too! 
-        public static int ILength { get { return 7; } }
-        public static int ELength { get { return 10; } }
+        public static ushort ILength { get { return 7; } }
+        public static ushort ELength { get { return 10; } }
+        public static ushort MaxItem { get { return 99; } }
 
         private int[] items = new int[ILength];
         private int[] enchantments = new int[ELength];
@@ -218,6 +220,17 @@ namespace Pokemon_Shuffle_Save_Editor
         {
             get { return enchantments[9]; }
             set { enchantments[9] = value; }
+        }
+    }
+
+    public static class Extensions
+    {
+        public static int Range(this int value, int min = 0, int max = 99)
+        {
+            if (value > max)
+                value = max;
+            if (value < min)
+                value = min;return value;
         }
     }
 }

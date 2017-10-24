@@ -1841,6 +1841,16 @@ namespace Pokemon_Shuffle_Save_Editor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MegaStoneBase {
+            get {
+                object obj = ResourceManager.GetObject("MegaStoneBase", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] messagePokedex_US {
@@ -1939,6 +1949,16 @@ namespace Pokemon_Shuffle_Save_Editor.Properties {
         internal static System.Drawing.Bitmap PlateMega {
             get {
                 object obj = ResourceManager.GetObject("PlateMega", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PlateRanking {
+            get {
+                object obj = ResourceManager.GetObject("PlateRanking", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -217,6 +217,7 @@
     <Content Include="Resources\img\MegaStone475.png" />
     <Content Include="Resources\img\MegaStone531.png" />
     <Content Include="Resources\img\MegaStone719.png" />
+    <None Include="Resources\img\MegaStoneBase.png" />
     <Content Include="Resources\img\mega_pokemon_003.png" />
     <Content Include="Resources\img\mega_pokemon_003_lo.png" />
     <Content Include="Resources\img\mega_pokemon_006.png" />
@@ -347,6 +348,7 @@
     <Content Include="Resources\img\Plate.png" />
     <None Include="Resources\img\PlateMega.png" />
     <None Include="Resources\img\Plate1.png" />
+    <None Include="Resources\img\PlateRanking.png" />
     <Content Include="Resources\img\pokemon_000.png" />
     <Content Include="Resources\img\pokemon_001.png" />
     <None Include="Resources\img\pokemon_001_01.png" />
