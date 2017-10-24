@@ -41,7 +41,7 @@ namespace Pokemon_Shuffle_Save_Editor
             {
                 for (int i = 0; i < db.MegaStartIndex; i++)
                 {   //if (caught && (hasMegaX || hasMegaY) && (at least 1 of these not equals to "default" : talent, type, max speedups). Doesn't check if Y form has been released, but both Charizard's & Mewtwo's already have.
-                    if (GetMon(i).Caught && (db.HasMega[i][0] || db.HasMega[i][1]) && ((db.Mons[db.MegaStartIndex + db.MegaList.IndexOf(i)].Item6[0] != 7) || (db.Mons[db.MegaStartIndex + db.MegaList.IndexOf(i)].Item7 != 0) || (db.Megas[db.MegaList.IndexOf(i)].Item2 != 1)))
+                    if (GetMon(i).Caught && (db.HasMega[i][0] || db.HasMega[i][1]) && ((db.Mons[db.MegaStartIndex + db.MegaList.IndexOf(i)].Skills[0] != 7) || (db.Mons[db.MegaStartIndex + db.MegaList.IndexOf(i)].Type != 0) || (db.Megas[db.MegaList.IndexOf(i)].Item2 != 1)))
                         SetStone(i, db.HasMega[i][0], db.HasMega[i][1]);
                 }
                 MessageBox.Show("You now own every released stone for each of your caught pokemons.");
@@ -71,14 +71,14 @@ namespace Pokemon_Shuffle_Save_Editor
         private void B_CaughtObtainables_Click(object sender, EventArgs e)
         {
             for (int i = 1; i < db.MegaStartIndex; i++)
-                SetCaught(i, ((db.Mons[i].Item5 != 1) || (db.Mons[i].Item6 != new int[] { 1, 0, 0, 0, 0 }) || (db.Mons[i].Item7 != 0)) && (db.Mons[i].Rest.Item1 != 999)); //displayed number isn't 999 & at least 1 of these isn't "default" : base power, talent, type
+                SetCaught(i, ((db.Mons[i].BasePower != 1) || (db.Mons[i].Skills != new int[] { 1, 0, 0, 0, 0 }) || (db.Mons[i].Type != 0)) && (db.Mons[i].DexNum != 999)); //displayed number isn't 999 & at least 1 of these isn't "default" : base power, talent, type
             int stagelen = BitConverter.ToInt32(db.StagesMain, 0x4);
             foreach (byte[] stage in new byte[][] { db.StagesMain, db.StagesExpert }) //also catches all Pokemons from Main or Expert stages (excluding Mega), because previous algorythm would skip legit Pokemons like Happiny (number isn't 999 but stats do match defaults).
             {                                                                         //any Event-only Pokemon with such stats would still be missing but that's unlikely to ever happen.
                 for (int i = 1; i < BitConverter.ToInt32(stage, 0); i++)
                 {
                     int ind = BitConverter.ToUInt16(stage, 0x50 + stagelen * (i)) & 0x7FF;
-                    if (!db.Mons[ind].Item3)
+                    if (!db.Mons[ind].IsMega)
                         SetCaught(ind, true);
                 }
             }
@@ -88,8 +88,8 @@ namespace Pokemon_Shuffle_Save_Editor
         private void B_LevelMax_Click(object sender, EventArgs e)
         {
             int value = 10, lollipops = 10;
-            foreach (Tuple<int, int, bool, int, int, int[], int, Tuple<int, int>> tuple in db.Mons)
-                if (tuple.Item4 > lollipops) { lollipops = tuple.Item4; }
+            foreach (dbItem dbI in db.Mons)
+                if (dbI.MaxLollipops > lollipops) { lollipops = dbI.MaxLollipops; }
             value += lollipops;    //default value
             bool boool = false;
             if (ModifierKeys == Keys.Control)
@@ -108,7 +108,7 @@ namespace Pokemon_Shuffle_Save_Editor
             for (int i = 0; i < db.MegaStartIndex; i++)
             {
                 if (GetMon(i).Caught)
-                    SetLevel(i, Math.Min(10 + db.Mons[i].Item4, value));
+                    SetLevel(i, Math.Min(10 + db.Mons[i].MaxLollipops, value));
             }
             if (boool)
                 MessageBox.Show("Everything you've caught is now level " + value + ((value > 10) ? " or below." : "."));
@@ -202,7 +202,7 @@ namespace Pokemon_Shuffle_Save_Editor
             {
                 if (GetMon(i).Caught)
                 {
-                    for (int j = 0; j < db.Rest[i].Item2; j++)
+                    for (int j = 0; j < db.Mons[i].SkillCount; j++)
                         SetSkill(i, j, value);
                 }
             }

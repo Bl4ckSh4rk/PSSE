@@ -18,16 +18,13 @@ namespace Pokemon_Shuffle_Save_Editor
             get
             {
                 if (!dev) { return new bool[] { true, true, true, true, true, true, true, true, true, true }; }
-                else
+                bool[] retChk = new bool[TLP_Files.RowCount - 1];
+                for (int i = 0; i < retChk.Length; i++)
                 {
-                    bool[] retChk = new bool[TLP_Files.RowCount - 1];
-                    for (int i = 0; i < retChk.Length; i++)
-                    {
-                        CheckBox CB = TLP_Files.GetControlFromPosition(3, i + 1) as CheckBox;
-                        retChk[i] = (CB != null) ? CB.Checked : false;
-                    }
-                    return retChk;
-                }                
+                    CheckBox CB = TLP_Files.GetControlFromPosition(3, i + 1) as CheckBox;
+                    retChk[i] = (CB != null) ? CB.Checked : false;
+                }
+                return retChk;
             }
         }
 

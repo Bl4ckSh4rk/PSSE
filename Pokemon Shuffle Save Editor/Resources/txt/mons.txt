@@ -796,7 +796,7 @@ Pikachu Dejected
 Pikachu Smiling
 Pikachu Dizzy
 Pikachu Happy
-Pikachu Costumed
+Pikachu Spooky
 Pikachu Holiday
 Raichu Winking
 Clefairy Winking
@@ -867,26 +867,26 @@ Gourgeist Smiling
 Zygarde 10% Forme
 Zygarde Complete Forme
 Charizard Shiny
-Pikachu Poncho Charizard
-Pikachu Poncho Magikarp
-Pikachu Poncho Gyarados
-Pikachu Poncho Gyarados Shiny
-Pikachu Poncho Ho-Oh
-Pikachu Poncho Lugia
-Pikachu Traditional Male
-Pikachu Traditional Female
-Pikachu Poncho Rayquaza
-Pikachu Poncho Rayquaza Shiny
+Pikachu Costume (Charizard)
+Pikachu Costume (Magikarp)
+Pikachu Costume (Gyarados)
+Pikachu Costume (Shiny Gyarados)
+Pikachu Costume  (Ho-Oh)
+Pikachu Costume (Lugia)
+Pikachu Kimono Boy
+Pikachu Kimono Girl
+Pikachu Costume (Rayquaza)
+Pikachu Costume (Shiny Rayquaza)
 Pikachu Smart
-Pikachu W
+Pikachu W Hat
 Pikachu Hoodie
-Pikachu Chef Traditional
-Pikachu Chef Blue
-Pikachu Chef Red
-Pikachu Party
+Pikachu Celebration (Traditional)
+Pikachu Celebration (Blue)
+Pikachu Celebration (Red)
+Pikachu Celebration (Pen)
 Pikachu Hoodie Blue
 Pikachu Present
-Pikachu Entei
+Pikachu Costume (Entei)
 Pikachu Futon
 Pikachu Graduate
 Gengar Shiny
@@ -915,12 +915,12 @@ Zygarde Cell
 Diancie Shiny
 Rattata Alola
 Raticate Alola
-Pikachu Kanto
-Pikachu Johto
-Pikachu Hoenn
-Pikachu Shinoh
-Pikachu Unova
-Pikachu Kalos
+Pikachu Original Cap
+Pikachu Hoenn Cap
+Pikachu Shinnoh Cap
+Pikachu Unova Cap
+Pikachu Kalos Cap
+Pikachu Alola Cap
 Raichu Alola
 Sandshrew Alola
 Sandslash Alola

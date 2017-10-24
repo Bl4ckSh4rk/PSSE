@@ -6,6 +6,7 @@ using System.Linq;
 using Pokemon_Shuffle_Save_Editor.Properties;
 using static Pokemon_Shuffle_Save_Editor.Main;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Pokemon_Shuffle_Save_Editor
 {
@@ -41,8 +42,8 @@ namespace Pokemon_Shuffle_Save_Editor
             short speedUpX = (short)(db.HasMega[ind][0] ? (BitConverter.ToInt16(savedata, SpeedUpX.Ofset(ind)) >> SpeedUpX.Shift(ind)) & 0x7F : 0);
             short speedUpY = (short)(db.HasMega[ind][1] ? (BitConverter.ToInt32(savedata, SpeedUpY.Ofset(ind)) >> SpeedUpY.Shift(ind)) & 0x7F : 0);
             short selSkill = (short)((BitConverter.ToInt16(savedata, CurrentSkill.Ofset(ind)) >> CurrentSkill.Shift(ind)) & 0x7);
-            int[] skillLvl = new int[5], skillExp = new int[5];
-            for (int i = 0; i < db.Rest[ind].Item2; i++)
+            int[] skillLvl = new int[8], skillExp = new int[8];
+            for (int i = 0; i < db.Mons[ind].SkillCount; i++)
             {
                 int sLv = (BitConverter.ToInt16(savedata, SkillLevel.Ofset(ind, i)) >> SkillLevel.Shift(ind)) & 0x7;
                 skillLvl[i] = (sLv < 2) ? 1 : sLv;
@@ -74,8 +75,8 @@ namespace Pokemon_Shuffle_Save_Editor
 
             //experience patcher
             int entrylen = BitConverter.ToInt32(db.MonLevel, 0x4);
-            byte[] data = db.MonLevel.Skip(0x50 + (Math.Min(db.Mons[ind].Item4 + 10, (Math.Max(0, lev - 1))) * entrylen)).Take(entrylen).ToArray(); //makes sure to read exp values within the correct range (0 to max level)
-            set_exp = (set_exp < 0) ? BitConverter.ToInt32(data, 0x4 * (db.Mons[ind].Item5 - 1)) : set_exp;
+            byte[] data = db.MonLevel.Skip(0x50 + (Math.Min(db.Mons[ind].MaxLollipops + 10, (Math.Max(0, lev - 1))) * entrylen)).Take(entrylen).ToArray(); //makes sure to read exp values within the correct range (0 to max level)
+            set_exp = (set_exp < 0) ? BitConverter.ToInt32(data, 0x4 * (db.Mons[ind].BasePower - 1)) : set_exp;
             int exp = (BitConverter.ToInt32(savedata, Experience.Ofset(ind)) & ~(0xFFFFFF << Experience.Shift(ind))) | (Math.Min(set_exp, 0xFFFFFF) << Experience.Shift(ind));
             Array.Copy(BitConverter.GetBytes(exp), 0, savedata, Experience.Ofset(ind), 4);
         }
@@ -91,7 +92,7 @@ namespace Pokemon_Shuffle_Save_Editor
 
             //exp
             int entrylen = BitConverter.ToInt32(db.MonAbility, 0x4);
-            savedata[SkillExp.Ofset(ind, skind)] = (lvl < 2) ? (byte)0 : db.MonAbility.Skip(0x50 + db.Mons[ind].Item6[skind] * entrylen).Take(entrylen).ToArray()[0x1A + lvl];
+            savedata[SkillExp.Ofset(ind, skind)] = (lvl < 2) ? (byte)0 : db.MonAbility.Skip(0x50 + db.Mons[ind].Skills[skind] * entrylen).Take(entrylen).ToArray()[0x1A + lvl];
 
             //current
             if (current)
@@ -228,12 +229,12 @@ namespace Pokemon_Shuffle_Save_Editor
         //    Array.Copy(BitConverter.GetBytes((BitConverter.ToInt16(savedata, PokathlonOpponent.Ofset()) & ~(0x3FF << PokathlonOpponent.Shift())) | (opponent << PokathlonOpponent.Shift())), 0, savedata, PokathlonOpponent.Ofset(), 2);
         //}
 
-        public static Bitmap GetMonImage(int ind, bool megaWithOverlay = false)
+        public static Bitmap GetMonImage(int ind, bool mega = false)
         {
             string imgname = string.Empty;
-            int mon_num = db.Mons[ind].Item1, form = db.Mons[ind].Item2;
-            bool mega = db.Mons[ind].Item3;
-            if (mega || megaWithOverlay)
+            int mon_num = db.Mons[ind].SpecieIndex, form = db.Mons[ind].FormIndex;
+            mega |= db.Mons[ind].IsMega;
+            if (mega)
             {
                 form -= db.HasMega[mon_num][1] ? 1 : 2; //Differenciate Rayquaza/Gyarados from Charizard/Mewtwo, otherwise either stage 300 is Shiny M-Ray or stage 150 is M-mewtwo X
                 imgname += "mega_";
@@ -259,7 +260,7 @@ namespace Pokemon_Shuffle_Save_Editor
             Bitmap bmp = new Bitmap(64, 80);
             using (Graphics g = Graphics.FromImage(bmp))
             {
-                if (db.Mons[ind].Item3 && (type == 0))
+                if (db.Mons[ind].IsMega && (type == 0))
                     g.DrawImage(Properties.Resources.PlateMega, new Point(0, 16));
                 else
                     g.DrawImage(Properties.Resources.Plate, new Point(0, 16));
@@ -290,8 +291,8 @@ namespace Pokemon_Shuffle_Save_Editor
 
         public static Bitmap GetTeamImage(int ind, int slot = -1, bool selected = false, int w = 48, int h = 48)
         {
-            bool megaOverlay = (GetMon(ind).Stone != 0 && slot == 0);
-            Bitmap bmp = GetMonImage(ind, megaOverlay);
+            bool mega = (GetMon(ind).Stone != 0 && slot == 0);
+            Bitmap bmp = GetMonImage(ind, mega);
             if (selected)
             {
                 Bitmap bmp2 = ResizeImage(bmp, 54, 54);
@@ -299,9 +300,9 @@ namespace Pokemon_Shuffle_Save_Editor
                     g.DrawImage(bmp2, new Point(5, 5));
             }
             bmp = ResizeImage(bmp, 48, 48);
-            if (megaOverlay)
+            if (mega)
             {
-                Bitmap bmp3 = db.HasMega[ind][0] ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MegaStone" + db.Mons[ind].Item1.ToString("000") + (db.HasMega[ind][1] ? "_X" : string.Empty))) : new Bitmap(16, 16);
+                Bitmap bmp3 = db.HasMega[ind][0] ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MegaStone" + db.Mons[ind].SpecieIndex.ToString("000") + (db.HasMega[ind][1] ? "_X" : string.Empty))) : new Bitmap(16, 16);
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
                     g.DrawImage(Properties.Resources.MegaStoneBase, new Point(0, 0));
@@ -355,7 +356,9 @@ namespace Pokemon_Shuffle_Save_Editor
 
         public static Color GetDominantColor(Bitmap bmp)
         {
-            int r = 0, g = 0, b = 0, total = 0;
+            //int r = 0, g = 0, b = 0, total = 0;
+            List<Color> cList = new List<Color>();
+            List<ushort> nList = new List<ushort>();
 
             for (int x = 0; x < bmp.Width; x++)
             {
@@ -363,17 +366,26 @@ namespace Pokemon_Shuffle_Save_Editor
                 {
                     Color c = bmp.GetPixel(x, y);
                     if (c.A == 0) { continue; } //ignore transparent pixels
-                    r += c.R;
-                    g += c.G;
-                    b += c.B;
-                    total++;
+                    if (!(Math.Abs(c.R - c.G) > 80 || Math.Abs(c.R - c.B) > 80 || Math.Abs(c.G - c.B) > 80)) { continue; } //ignore transparent pixels
+                    if (cList.Contains(c))
+                    {
+                        nList[cList.IndexOf(c)]++;
+                        continue;
+                    }
+                    cList.Add(c);
+                    nList.Add(1);
+                    //r += c.R;
+                    //g += c.G;
+                    //b += c.B;
+                    //total++;
                 }
             }
-            r /= total;
-            g /= total;
-            b /= total;
+            //r /= total;
+            //g /= total;
+            //b /= total;
 
-            return Color.FromArgb(r, g, b);
+            //return Color.FromArgb(r, g, b);
+            return cList[nList.IndexOf(nList.Max())];
         }
 
         //public static Bitmap ChangeOpacity(Image img, float opacityvalue)
@@ -837,11 +849,37 @@ namespace Pokemon_Shuffle_Save_Editor
         public int Score { get; set; }
     }
 
-    public class smItem
+    public class dbItem
     {
-        public int Opponent { get; set; }
-        public int Step { get; set; }
-        public int Moves { get; set; }
+        public int SpecieIndex { get; set; }
+        public int FormIndex { get; set; }
+        public bool IsMega { get; set; }
+        public int MaxLollipops { get; set; }
+        public int BasePower { get; set; }
+        public int[] Skills { get; set; }
+        public int Type { get; set; }
+        public int DexNum { get; set; }
+        public int SkillCount { get; set; }
+
+        public dbItem(int spec, int form, bool ismega, int maxRML, int basepower, int[] skills, int type, int dexnum, int skillcount)
+        {
+            SpecieIndex = spec;
+            FormIndex = form;
+            IsMega = ismega;
+            MaxLollipops = maxRML;
+            BasePower = basepower;
+            Skills = skills;
+            Type = type;
+            DexNum = dexnum;
+            SkillCount = skillcount;
+        }
     }
+
+    //public class smItem
+    //{
+    //    public int Opponent { get; set; }
+    //    public int Step { get; set; }
+    //    public int Moves { get; set; }
+    //}
     #endregion Custom Objects
 }
