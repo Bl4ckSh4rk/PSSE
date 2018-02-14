@@ -141,9 +141,10 @@ namespace Pokemon_Shuffle_Save_Editor
             Megas = new Tuple<int, int>[BitConverter.ToUInt32(MegaStone, 0) - 1];
             for (int i = 0; i < Megas.Length; i++)
             {
-                int monIndex = BitConverter.ToUInt16(MegaStone, MegaStone[0x10] + (i+1) * 4) & 0x3FF;
+                int monIndex = BitConverter.ToUInt16(MegaStone, MegaStone[0x10] + (i + 1) * 4) & 0x3FF;
                 string str = "Mega " + MonsList[monIndex];
-                if (monIndex == 6 || monIndex == 150)
+                int spec = (BitConverter.ToInt32(MonData.Skip(0x50 + entrylen * monIndex).Take(entrylen).ToArray(), 0xE) >> 6) & 0x7FF;
+                if (spec == 6 || spec == 150)
                     str += (monIndex != (BitConverter.ToUInt16(MegaStone, MegaStone[0x10] + i * 4) & 0x3FF)) ? " X" : " Y";
                 byte[] data = MonData.Skip(0x50 + entrylen * MonsList.ToList().IndexOf(str)).Take(entrylen).ToArray();
                 int maxSpeedup = (BitConverter.ToInt32(data, 0xA) >> 7) & 0x7F;
@@ -246,15 +247,16 @@ namespace Pokemon_Shuffle_Save_Editor
                     arr[i] = "-Placeholder-"; //make sure there is no empty strings just in case
             }
 
-            /* This code below separates Skills entries from Text entries while ignoring a few mega-skills entries
-             * Right now (1.4.19) the list of strings looks like that : [Skills1][Text for Skills1][Text for mega skills][Skills2][Text for Skills2]
-             * It shouldn't be a problem is more skills are added to [Skills2] (after all placeholders have been filled), but if another [Text for mega skills] is ever added this will need a 3rd string to concatenate
-             * Also, note that there is no [Mega Skills], so if I ever want to implement them the same way I did normal skills another resource file will be needed.
+            /* This code below separates Skills entries from Text entries while ignoring a few mega-skills entries :
+             * Right now (1.5.7) the list of strings looks like that : [Skills1][Text for Skills1][Text for mega skills][Skills2][Text for Skills2][Skills3][Text for Skills3].
+             * If another group of [Skills][Text for skills] is ever added this will need a 3rd string to concatenate.
+             * Also, note that there is no [Mega Skills], which is why I didn't implement it yet (the names of Mega Skills are probably inside another file).
              */
 
-            int a = Array.IndexOf(arr, "Opportunist"), b = Array.IndexOf(arr, "Rarely, attacks can deal\ngreater damage than usual."), c = Array.IndexOf(arr, "Big Wave"), d = Array.IndexOf(arr, "Increases damage done by\nany Water types in a combo.");
-            string[] s1 = arr.Skip(a).Take(b - a).ToArray(), s2 = arr.Skip(c).Take(d - c).ToArray(), Skills = new string[s1.Length + s2.Length];
-            string[] st1 = arr.Skip(b).Take(b - a).ToArray(), st2 = arr.Skip(d).Take(d - c).ToArray(), SkillsT = new string[st1.Length + st2.Length];
+            int a = Array.IndexOf(arr, "Opportunist"), b = Array.IndexOf(arr, "Transform") + 1, c = Array.IndexOf(arr, "Big Wave"), d = Array.IndexOf(arr, "Super Cheer") + 1, e = Array.IndexOf(arr, "Not Caught"), f = Array.IndexOf(arr, "Hammering Streak") + 1;
+            string[] s1 = arr.Skip(a).Take(b - a).ToArray(), s2 = arr.Skip(c).Take(d - c).ToArray(), s3 = arr.Skip(e).Take(f - e).ToArray();
+            string[] st1 = arr.Skip(b).Take(b - a).ToArray(), st2 = arr.Skip(d).Take(d - c).ToArray(), st3 = arr.Skip(f).Take(f - e).ToArray();
+            string[] Skills = new string[s1.Length + s2.Length + s3.Length], SkillsT = new string[Skills.Length]; ;
             s1.CopyTo(Skills, 0);
             s2.CopyTo(Skills, s1.Length);
             SkillsList = Skills;

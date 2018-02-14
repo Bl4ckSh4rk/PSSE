@@ -871,24 +871,24 @@ Pikachu Costume (Charizard)
 Pikachu Costume (Magikarp)
 Pikachu Costume (Gyarados)
 Pikachu Costume (Shiny Gyarados)
-Pikachu Costume  (Ho-Oh)
+Pikachu Costume (Ho-Oh)
 Pikachu Costume (Lugia)
-Pikachu Kimono Boy
-Pikachu Kimono Girl
+Pikachu Imperial
+Pikachu Kimono
 Pikachu Costume (Rayquaza)
 Pikachu Costume (Shiny Rayquaza)
-Pikachu Smart
-Pikachu W Hat
-Pikachu Hoodie
-Pikachu Celebration (Traditional)
-Pikachu Celebration (Blue)
-Pikachu Celebration (Red)
-Pikachu Celebration (Pen)
-Pikachu Hoodie Blue
-Pikachu Present
-Pikachu Costume (Entei)
-Pikachu Futon
-Pikachu Graduate
+Pikachu Celebration (Smart)
+Pikachu Celebration (W Hat)
+Pikachu Celebration (Hoodie)
+Pikachu Celebration (Festival)
+Pikachu Celebration (Sailor)
+Pikachu Celebration (Chef)
+Pikachu Celebration (Artist)
+Pikachu Celebration (Dark Hoodie)
+Pikachu Celebration (Present)
+Pikachu Celebration (Entei)
+Pikachu Celebration (Futon)
+Pikachu Celebration (Graduate)
 Gengar Shiny
 Mewtwo Shiny
 Wobbuffet Female
