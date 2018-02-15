@@ -43,27 +43,27 @@
             this.L_Main = new System.Windows.Forms.Label();
             this.L_IndexEv = new System.Windows.Forms.Label();
             this.L_IndexEx = new System.Windows.Forms.Label();
-            this.NUP_EventScore = new System.Windows.Forms.NumericUpDown();
-            this.NUP_EventIndex = new System.Windows.Forms.NumericUpDown();
-            this.NUP_ExpertScore = new System.Windows.Forms.NumericUpDown();
-            this.NUP_ExpertIndex = new System.Windows.Forms.NumericUpDown();
-            this.NUP_MainScore = new System.Windows.Forms.NumericUpDown();
-            this.NUP_MainIndex = new System.Windows.Forms.NumericUpDown();
+            this.NUP_EventScore = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_EventIndex = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_ExpertScore = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_ExpertIndex = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_MainScore = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_MainIndex = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.L_IndexM = new System.Windows.Forms.Label();
             this.PB_Event = new System.Windows.Forms.PictureBox();
             this.PB_Expert = new System.Windows.Forms.PictureBox();
             this.PB_Main = new System.Windows.Forms.PictureBox();
             this.GB_Caught = new System.Windows.Forms.GroupBox();
             this.TLP_Skills = new System.Windows.Forms.TableLayoutPanel();
-            this.NUP_Skill5 = new System.Windows.Forms.NumericUpDown();
-            this.NUP_Skill4 = new System.Windows.Forms.NumericUpDown();
+            this.NUP_Skill5 = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_Skill4 = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.RB_Skill2 = new System.Windows.Forms.RadioButton();
             this.RB_Skill3 = new System.Windows.Forms.RadioButton();
             this.RB_Skill4 = new System.Windows.Forms.RadioButton();
             this.RB_Skill5 = new System.Windows.Forms.RadioButton();
-            this.NUP_Skill3 = new System.Windows.Forms.NumericUpDown();
-            this.NUP_Skill2 = new System.Windows.Forms.NumericUpDown();
-            this.NUP_Skill1 = new System.Windows.Forms.NumericUpDown();
+            this.NUP_Skill3 = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_Skill2 = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_Skill1 = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.RB_Skill1 = new System.Windows.Forms.RadioButton();
             this.L_Skill1 = new System.Windows.Forms.Label();
             this.L_Skill2 = new System.Windows.Forms.Label();
@@ -73,24 +73,25 @@
             this.L_Skill = new System.Windows.Forms.Label();
             this.PB_Skill = new System.Windows.Forms.PictureBox();
             this.PB_Lollipop = new System.Windows.Forms.PictureBox();
-            this.NUP_Lollipop = new System.Windows.Forms.NumericUpDown();
+            this.NUP_Lollipop = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.L_Level = new System.Windows.Forms.Label();
             this.PB_SpeedUpY = new System.Windows.Forms.PictureBox();
             this.PB_SpeedUpX = new System.Windows.Forms.PictureBox();
-            this.NUP_SpeedUpY = new System.Windows.Forms.NumericUpDown();
-            this.NUP_SpeedUpX = new System.Windows.Forms.NumericUpDown();
+            this.NUP_SpeedUpY = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_SpeedUpX = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.PB_MegaX = new System.Windows.Forms.PictureBox();
             this.PB_MegaY = new System.Windows.Forms.PictureBox();
             this.CHK_MegaX = new System.Windows.Forms.CheckBox();
             this.CHK_MegaY = new System.Windows.Forms.CheckBox();
-            this.NUP_Level = new System.Windows.Forms.NumericUpDown();
+            this.NUP_Level = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.CHK_CaughtMon = new System.Windows.Forms.CheckBox();
             this.CB_MonIndex = new System.Windows.Forms.ComboBox();
             this.PB_Mon = new System.Windows.Forms.PictureBox();
             this.GB_Resources = new System.Windows.Forms.GroupBox();
-            this.NUP_Jewels = new System.Windows.Forms.NumericUpDown();
-            this.NUP_Coins = new System.Windows.Forms.NumericUpDown();
-            this.NUP_Hearts = new System.Windows.Forms.NumericUpDown();
+            this.ItemsGrid = new Pokemon_Shuffle_Save_Editor.TabbedPropertyGrid();
+            this.NUP_Jewels = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_Coins = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_Hearts = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.L_Jewels = new System.Windows.Forms.Label();
             this.L_Coins = new System.Windows.Forms.Label();
             this.L_Hearts = new System.Windows.Forms.Label();
@@ -103,7 +104,6 @@
             this.GB_Party = new System.Windows.Forms.GroupBox();
             this.B_resources = new System.Windows.Forms.Button();
             this.TT_Help = new System.Windows.Forms.ToolTip(this.components);
-            this.ItemsGrid = new Pokemon_Shuffle_Save_Editor.TabbedPropertyGrid();
             this.GB_HighScore.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NUP_EventScore)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUP_EventIndex)).BeginInit();
@@ -147,7 +147,7 @@
             // 
             this.B_Open.Location = new System.Drawing.Point(12, 38);
             this.B_Open.Name = "B_Open";
-            this.B_Open.Size = new System.Drawing.Size(242, 32);
+            this.B_Open.Size = new System.Drawing.Size(278, 32);
             this.B_Open.TabIndex = 1;
             this.B_Open.Text = "Open savedata.bin";
             this.B_Open.UseVisualStyleBackColor = true;
@@ -158,7 +158,7 @@
             this.TB_FilePath.Location = new System.Drawing.Point(39, 12);
             this.TB_FilePath.Name = "TB_FilePath";
             this.TB_FilePath.ReadOnly = true;
-            this.TB_FilePath.Size = new System.Drawing.Size(215, 20);
+            this.TB_FilePath.Size = new System.Drawing.Size(251, 20);
             this.TB_FilePath.TabIndex = 0;
             this.TB_FilePath.TabStop = false;
             this.TB_FilePath.DoubleClick += new System.EventHandler(this.TB_Filepath_DoubleClick);
@@ -168,7 +168,7 @@
             this.B_Save.Enabled = false;
             this.B_Save.Location = new System.Drawing.Point(12, 76);
             this.B_Save.Name = "B_Save";
-            this.B_Save.Size = new System.Drawing.Size(242, 32);
+            this.B_Save.Size = new System.Drawing.Size(278, 32);
             this.B_Save.TabIndex = 2;
             this.B_Save.Text = "Save savedata.bin";
             this.B_Save.UseVisualStyleBackColor = true;
@@ -197,7 +197,7 @@
             this.GB_HighScore.Enabled = false;
             this.GB_HighScore.Location = new System.Drawing.Point(12, 530);
             this.GB_HighScore.Name = "GB_HighScore";
-            this.GB_HighScore.Size = new System.Drawing.Size(501, 118);
+            this.GB_HighScore.Size = new System.Drawing.Size(537, 118);
             this.GB_HighScore.TabIndex = 6;
             this.GB_HighScore.TabStop = false;
             this.GB_HighScore.Text = "High-Scores";
@@ -205,7 +205,7 @@
             // L_ScoreEv
             // 
             this.L_ScoreEv.AutoSize = true;
-            this.L_ScoreEv.Location = new System.Drawing.Point(394, 76);
+            this.L_ScoreEv.Location = new System.Drawing.Point(442, 76);
             this.L_ScoreEv.Name = "L_ScoreEv";
             this.L_ScoreEv.Size = new System.Drawing.Size(38, 13);
             this.L_ScoreEv.TabIndex = 17;
@@ -214,7 +214,7 @@
             // L_ScoreEx
             // 
             this.L_ScoreEx.AutoSize = true;
-            this.L_ScoreEx.Location = new System.Drawing.Point(234, 76);
+            this.L_ScoreEx.Location = new System.Drawing.Point(261, 76);
             this.L_ScoreEx.Name = "L_ScoreEx";
             this.L_ScoreEx.Size = new System.Drawing.Size(38, 13);
             this.L_ScoreEx.TabIndex = 16;
@@ -223,7 +223,7 @@
             // L_ScoreM
             // 
             this.L_ScoreM.AutoSize = true;
-            this.L_ScoreM.Location = new System.Drawing.Point(76, 76);
+            this.L_ScoreM.Location = new System.Drawing.Point(82, 76);
             this.L_ScoreM.Name = "L_ScoreM";
             this.L_ScoreM.Size = new System.Drawing.Size(38, 13);
             this.L_ScoreM.TabIndex = 15;
@@ -232,7 +232,7 @@
             // L_Event
             // 
             this.L_Event.AutoSize = true;
-            this.L_Event.Location = new System.Drawing.Point(401, 19);
+            this.L_Event.Location = new System.Drawing.Point(449, 19);
             this.L_Event.Name = "L_Event";
             this.L_Event.Size = new System.Drawing.Size(71, 13);
             this.L_Event.TabIndex = 14;
@@ -241,7 +241,7 @@
             // L_Expert
             // 
             this.L_Expert.AutoSize = true;
-            this.L_Expert.Location = new System.Drawing.Point(237, 19);
+            this.L_Expert.Location = new System.Drawing.Point(264, 19);
             this.L_Expert.Name = "L_Expert";
             this.L_Expert.Size = new System.Drawing.Size(73, 13);
             this.L_Expert.TabIndex = 13;
@@ -250,7 +250,7 @@
             // L_Main
             // 
             this.L_Main.AutoSize = true;
-            this.L_Main.Location = new System.Drawing.Point(85, 19);
+            this.L_Main.Location = new System.Drawing.Point(91, 19);
             this.L_Main.Name = "L_Main";
             this.L_Main.Size = new System.Drawing.Size(66, 13);
             this.L_Main.TabIndex = 12;
@@ -259,7 +259,7 @@
             // L_IndexEv
             // 
             this.L_IndexEv.AutoSize = true;
-            this.L_IndexEv.Location = new System.Drawing.Point(393, 45);
+            this.L_IndexEv.Location = new System.Drawing.Point(441, 45);
             this.L_IndexEv.Name = "L_IndexEv";
             this.L_IndexEv.Size = new System.Drawing.Size(36, 13);
             this.L_IndexEv.TabIndex = 11;
@@ -268,7 +268,7 @@
             // L_IndexEx
             // 
             this.L_IndexEx.AutoSize = true;
-            this.L_IndexEx.Location = new System.Drawing.Point(234, 45);
+            this.L_IndexEx.Location = new System.Drawing.Point(261, 45);
             this.L_IndexEx.Name = "L_IndexEx";
             this.L_IndexEx.Size = new System.Drawing.Size(36, 13);
             this.L_IndexEx.TabIndex = 10;
@@ -276,7 +276,7 @@
             // 
             // NUP_EventScore
             // 
-            this.NUP_EventScore.Location = new System.Drawing.Point(397, 92);
+            this.NUP_EventScore.Location = new System.Drawing.Point(445, 92);
             this.NUP_EventScore.Maximum = new decimal(new int[] {
             16777215,
             0,
@@ -290,7 +290,7 @@
             // 
             // NUP_EventIndex
             // 
-            this.NUP_EventIndex.Location = new System.Drawing.Point(435, 43);
+            this.NUP_EventIndex.Location = new System.Drawing.Point(483, 43);
             this.NUP_EventIndex.Name = "NUP_EventIndex";
             this.NUP_EventIndex.Size = new System.Drawing.Size(39, 20);
             this.NUP_EventIndex.TabIndex = 64;
@@ -298,7 +298,7 @@
             // 
             // NUP_ExpertScore
             // 
-            this.NUP_ExpertScore.Location = new System.Drawing.Point(240, 92);
+            this.NUP_ExpertScore.Location = new System.Drawing.Point(267, 92);
             this.NUP_ExpertScore.Maximum = new decimal(new int[] {
             16777215,
             0,
@@ -312,7 +312,7 @@
             // 
             // NUP_ExpertIndex
             // 
-            this.NUP_ExpertIndex.Location = new System.Drawing.Point(278, 43);
+            this.NUP_ExpertIndex.Location = new System.Drawing.Point(305, 43);
             this.NUP_ExpertIndex.Minimum = new decimal(new int[] {
             1,
             0,
@@ -330,7 +330,7 @@
             // 
             // NUP_MainScore
             // 
-            this.NUP_MainScore.Location = new System.Drawing.Point(81, 92);
+            this.NUP_MainScore.Location = new System.Drawing.Point(87, 92);
             this.NUP_MainScore.Maximum = new decimal(new int[] {
             16777215,
             0,
@@ -344,7 +344,7 @@
             // 
             // NUP_MainIndex
             // 
-            this.NUP_MainIndex.Location = new System.Drawing.Point(119, 43);
+            this.NUP_MainIndex.Location = new System.Drawing.Point(125, 43);
             this.NUP_MainIndex.Minimum = new decimal(new int[] {
             1,
             0,
@@ -363,7 +363,7 @@
             // L_IndexM
             // 
             this.L_IndexM.AutoSize = true;
-            this.L_IndexM.Location = new System.Drawing.Point(76, 45);
+            this.L_IndexM.Location = new System.Drawing.Point(82, 45);
             this.L_IndexM.Name = "L_IndexM";
             this.L_IndexM.Size = new System.Drawing.Size(36, 13);
             this.L_IndexM.TabIndex = 3;
@@ -371,30 +371,34 @@
             // 
             // PB_Event
             // 
-            this.PB_Event.Location = new System.Drawing.Point(323, 32);
+            this.PB_Event.Location = new System.Drawing.Point(362, 32);
             this.PB_Event.Name = "PB_Event";
-            this.PB_Event.Size = new System.Drawing.Size(64, 80);
+            this.PB_Event.Size = new System.Drawing.Size(72, 72);
             this.PB_Event.TabIndex = 2;
             this.PB_Event.TabStop = false;
             this.PB_Event.Click += new System.EventHandler(this.PB_Stage_Click);
+            this.PB_Event.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.PB_Stage_Click);
             // 
             // PB_Expert
             // 
-            this.PB_Expert.Location = new System.Drawing.Point(164, 32);
+            this.PB_Expert.Location = new System.Drawing.Point(186, 32);
             this.PB_Expert.Name = "PB_Expert";
-            this.PB_Expert.Size = new System.Drawing.Size(64, 80);
+            this.PB_Expert.Size = new System.Drawing.Size(72, 72);
             this.PB_Expert.TabIndex = 1;
             this.PB_Expert.TabStop = false;
             this.PB_Expert.Click += new System.EventHandler(this.PB_Stage_Click);
+            this.PB_Expert.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.PB_Stage_Click);
             // 
             // PB_Main
             // 
+            this.PB_Main.BackColor = System.Drawing.SystemColors.Control;
             this.PB_Main.Location = new System.Drawing.Point(6, 32);
             this.PB_Main.Name = "PB_Main";
-            this.PB_Main.Size = new System.Drawing.Size(64, 80);
+            this.PB_Main.Size = new System.Drawing.Size(72, 72);
             this.PB_Main.TabIndex = 0;
             this.PB_Main.TabStop = false;
             this.PB_Main.Click += new System.EventHandler(this.PB_Stage_Click);
+            this.PB_Main.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.PB_Stage_Click);
             // 
             // GB_Caught
             // 
@@ -419,7 +423,7 @@
             this.GB_Caught.Enabled = false;
             this.GB_Caught.Location = new System.Drawing.Point(12, 197);
             this.GB_Caught.Name = "GB_Caught";
-            this.GB_Caught.Size = new System.Drawing.Size(242, 327);
+            this.GB_Caught.Size = new System.Drawing.Size(278, 327);
             this.GB_Caught.TabIndex = 3;
             this.GB_Caught.TabStop = false;
             this.GB_Caught.Text = "Owned Pokemon";
@@ -929,12 +933,62 @@
             this.GB_Resources.Controls.Add(this.L_Coins);
             this.GB_Resources.Controls.Add(this.L_Hearts);
             this.GB_Resources.Enabled = false;
-            this.GB_Resources.Location = new System.Drawing.Point(260, 12);
+            this.GB_Resources.Location = new System.Drawing.Point(296, 16);
             this.GB_Resources.Name = "GB_Resources";
             this.GB_Resources.Size = new System.Drawing.Size(253, 439);
             this.GB_Resources.TabIndex = 5;
             this.GB_Resources.TabStop = false;
             this.GB_Resources.Text = "Resources";
+            // 
+            // ItemsGrid
+            // 
+            this.ItemsGrid.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.ItemsGrid.LineColor = System.Drawing.SystemColors.ControlDark;
+            this.ItemsGrid.Location = new System.Drawing.Point(6, 65);
+            this.ItemsGrid.Name = "ItemsGrid";
+            shuffleItems1.AttackUp = 0;
+            shuffleItems1.Complexity = 0;
+            shuffleItems1.Disruption = 0;
+            shuffleItems1.Enchantments = new int[] {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0};
+            shuffleItems1.Experience = 0;
+            shuffleItems1.ExperienceBoostL = 0;
+            shuffleItems1.ExperienceBoostM = 0;
+            shuffleItems1.ExperienceBoostS = 0;
+            shuffleItems1.Items = new int[] {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0};
+            shuffleItems1.LevelUp = 0;
+            shuffleItems1.MegaSpeedup = 0;
+            shuffleItems1.MegaStart = 0;
+            shuffleItems1.Moves = 0;
+            shuffleItems1.RaiseMaxLevel = 0;
+            shuffleItems1.SkillBoosterL = 0;
+            shuffleItems1.SkillBoosterM = 0;
+            shuffleItems1.SkillBoosterS = 0;
+            shuffleItems1.SkillSwap = 0;
+            shuffleItems1.Time = 0;
+            this.ItemsGrid.SelectedObject = shuffleItems1;
+            this.ItemsGrid.Size = new System.Drawing.Size(241, 369);
+            this.ItemsGrid.TabIndex = 54;
+            this.ItemsGrid.ToolbarVisible = false;
+            this.ItemsGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.UpdateProperty);
+            this.ItemsGrid.EnabledChanged += new System.EventHandler(this.ItemsGrid_EnabledChanged);
+            this.ItemsGrid.Enter += new System.EventHandler(this.ItemsGrid_Enter);
             // 
             // NUP_Jewels
             // 
@@ -1006,7 +1060,7 @@
             // B_CheatsForm
             // 
             this.B_CheatsForm.Enabled = false;
-            this.B_CheatsForm.Location = new System.Drawing.Point(283, 465);
+            this.B_CheatsForm.Location = new System.Drawing.Point(323, 468);
             this.B_CheatsForm.Name = "B_CheatsForm";
             this.B_CheatsForm.Size = new System.Drawing.Size(203, 47);
             this.B_CheatsForm.TabIndex = 4;
@@ -1016,36 +1070,36 @@
             // 
             // PB_Team1
             // 
-            this.PB_Team1.Location = new System.Drawing.Point(6, 19);
+            this.PB_Team1.Location = new System.Drawing.Point(24, 16);
             this.PB_Team1.Name = "PB_Team1";
-            this.PB_Team1.Size = new System.Drawing.Size(48, 48);
+            this.PB_Team1.Size = new System.Drawing.Size(54, 54);
             this.PB_Team1.TabIndex = 28;
             this.PB_Team1.TabStop = false;
             this.PB_Team1.Click += new System.EventHandler(this.PB_Team_Click);
             // 
             // PB_Team2
             // 
-            this.PB_Team2.Location = new System.Drawing.Point(66, 19);
+            this.PB_Team2.Location = new System.Drawing.Point(84, 16);
             this.PB_Team2.Name = "PB_Team2";
-            this.PB_Team2.Size = new System.Drawing.Size(48, 48);
+            this.PB_Team2.Size = new System.Drawing.Size(54, 54);
             this.PB_Team2.TabIndex = 29;
             this.PB_Team2.TabStop = false;
             this.PB_Team2.Click += new System.EventHandler(this.PB_Team_Click);
             // 
             // PB_Team3
             // 
-            this.PB_Team3.Location = new System.Drawing.Point(126, 19);
+            this.PB_Team3.Location = new System.Drawing.Point(144, 16);
             this.PB_Team3.Name = "PB_Team3";
-            this.PB_Team3.Size = new System.Drawing.Size(48, 48);
+            this.PB_Team3.Size = new System.Drawing.Size(54, 54);
             this.PB_Team3.TabIndex = 30;
             this.PB_Team3.TabStop = false;
             this.PB_Team3.Click += new System.EventHandler(this.PB_Team_Click);
             // 
             // PB_Team4
             // 
-            this.PB_Team4.Location = new System.Drawing.Point(186, 19);
+            this.PB_Team4.Location = new System.Drawing.Point(204, 16);
             this.PB_Team4.Name = "PB_Team4";
-            this.PB_Team4.Size = new System.Drawing.Size(48, 48);
+            this.PB_Team4.Size = new System.Drawing.Size(54, 54);
             this.PB_Team4.TabIndex = 31;
             this.PB_Team4.TabStop = false;
             this.PB_Team4.Click += new System.EventHandler(this.PB_Team_Click);
@@ -1066,7 +1120,7 @@
             this.GB_Party.Controls.Add(this.PB_Team3);
             this.GB_Party.Location = new System.Drawing.Point(12, 115);
             this.GB_Party.Name = "GB_Party";
-            this.GB_Party.Size = new System.Drawing.Size(242, 76);
+            this.GB_Party.Size = new System.Drawing.Size(278, 76);
             this.GB_Party.TabIndex = 32;
             this.GB_Party.TabStop = false;
             this.GB_Party.Text = "Active Party";
@@ -1090,62 +1144,12 @@
             this.TT_Help.ReshowDelay = 100;
             this.TT_Help.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             // 
-            // ItemsGrid
-            // 
-            this.ItemsGrid.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.ItemsGrid.LineColor = System.Drawing.SystemColors.ControlDark;
-            this.ItemsGrid.Location = new System.Drawing.Point(6, 65);
-            this.ItemsGrid.Name = "ItemsGrid";
-            shuffleItems1.AttackUp = 0;
-            shuffleItems1.Complexity = 0;
-            shuffleItems1.Disruption = 0;
-            shuffleItems1.Enchantments = new int[] {
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0};
-            shuffleItems1.Experience = 0;
-            shuffleItems1.ExperienceBoostL = 0;
-            shuffleItems1.ExperienceBoostM = 0;
-            shuffleItems1.ExperienceBoostS = 0;
-            shuffleItems1.Items = new int[] {
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0};
-            shuffleItems1.LevelUp = 0;
-            shuffleItems1.MegaSpeedup = 0;
-            shuffleItems1.MegaStart = 0;
-            shuffleItems1.Moves = 0;
-            shuffleItems1.RaiseMaxLevel = 0;
-            shuffleItems1.SkillBoosterL = 0;
-            shuffleItems1.SkillBoosterM = 0;
-            shuffleItems1.SkillBoosterS = 0;
-            shuffleItems1.SkillSwap = 0;
-            shuffleItems1.Time = 0;
-            this.ItemsGrid.SelectedObject = shuffleItems1;
-            this.ItemsGrid.Size = new System.Drawing.Size(241, 369);
-            this.ItemsGrid.TabIndex = 54;
-            this.ItemsGrid.ToolbarVisible = false;
-            this.ItemsGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.UpdateProperty);
-            this.ItemsGrid.EnabledChanged += new System.EventHandler(this.ItemsGrid_EnabledChanged);
-            this.ItemsGrid.Enter += new System.EventHandler(this.ItemsGrid_Enter);
-            // 
             // Main
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(523, 651);
+            this.ClientSize = new System.Drawing.Size(561, 656);
             this.Controls.Add(this.B_resources);
             this.Controls.Add(this.GB_Party);
             this.Controls.Add(this.B_CheatsForm);
@@ -1157,7 +1161,6 @@
             this.Controls.Add(this.B_Open);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(539, 690);
             this.MinimumSize = new System.Drawing.Size(539, 690);
             this.Name = "Main";
             this.Text = "Pokemon Shuffle Save Editor";
@@ -1220,21 +1223,14 @@
         private System.Windows.Forms.PictureBox PB_Expert;
         private System.Windows.Forms.GroupBox GB_Caught;
         private System.Windows.Forms.Label L_IndexM;
-        private System.Windows.Forms.NumericUpDown NUP_MainIndex;
-        private System.Windows.Forms.NumericUpDown NUP_MainScore;
         private System.Windows.Forms.Label L_IndexEv;
         private System.Windows.Forms.Label L_IndexEx;
-        private System.Windows.Forms.NumericUpDown NUP_EventScore;
-        private System.Windows.Forms.NumericUpDown NUP_EventIndex;
-        private System.Windows.Forms.NumericUpDown NUP_ExpertScore;
-        private System.Windows.Forms.NumericUpDown NUP_ExpertIndex;
         private System.Windows.Forms.Label L_Event;
         private System.Windows.Forms.Label L_Expert;
         private System.Windows.Forms.Label L_Main;
         private System.Windows.Forms.PictureBox PB_Mon;
         private System.Windows.Forms.ComboBox CB_MonIndex;
         private System.Windows.Forms.CheckBox CHK_CaughtMon;
-        private System.Windows.Forms.NumericUpDown NUP_Level;
         private System.Windows.Forms.Label L_ScoreEv;
         private System.Windows.Forms.Label L_ScoreEx;
         private System.Windows.Forms.Label L_ScoreM;
@@ -1242,17 +1238,12 @@
         private System.Windows.Forms.Label L_Jewels;
         private System.Windows.Forms.Label L_Coins;
         private System.Windows.Forms.Label L_Hearts;
-        private System.Windows.Forms.NumericUpDown NUP_Hearts;
-        private System.Windows.Forms.NumericUpDown NUP_Jewels;
-        private System.Windows.Forms.NumericUpDown NUP_Coins;
         private System.Windows.Forms.PictureBox PB_MegaX;
         private System.Windows.Forms.PictureBox PB_MegaY;
         private System.Windows.Forms.CheckBox CHK_MegaX;
         private System.Windows.Forms.CheckBox CHK_MegaY;
         private System.Windows.Forms.Button B_CheatsForm;
         private Pokemon_Shuffle_Save_Editor.TabbedPropertyGrid ItemsGrid;
-        private System.Windows.Forms.NumericUpDown NUP_SpeedUpX;
-        private System.Windows.Forms.NumericUpDown NUP_SpeedUpY;
         private System.Windows.Forms.PictureBox PB_SpeedUpX;
         private System.Windows.Forms.PictureBox PB_SpeedUpY;
         private System.Windows.Forms.PictureBox PB_Team1;
@@ -1260,14 +1251,11 @@
         private System.Windows.Forms.PictureBox PB_Team3;
         private System.Windows.Forms.PictureBox PB_Team4;
         private System.Windows.Forms.PictureBox PB_Lollipop;
-        private System.Windows.Forms.NumericUpDown NUP_Lollipop;
         private System.Windows.Forms.Label L_Level;
         private System.Windows.Forms.Label L_Skill;
         private System.Windows.Forms.ToolTip TT_Skill;
         private System.Windows.Forms.GroupBox GB_Party;
         private System.Windows.Forms.TableLayoutPanel TLP_Skills;
-        private System.Windows.Forms.NumericUpDown NUP_Skill5;
-        private System.Windows.Forms.NumericUpDown NUP_Skill4;
         private System.Windows.Forms.RadioButton RB_Skill1;
         private System.Windows.Forms.RadioButton RB_Skill2;
         private System.Windows.Forms.RadioButton RB_Skill3;
@@ -1278,12 +1266,27 @@
         private System.Windows.Forms.Label L_Skill3;
         private System.Windows.Forms.Label L_Skill4;
         private System.Windows.Forms.Label L_Skill5;
-        private System.Windows.Forms.NumericUpDown NUP_Skill3;
-        private System.Windows.Forms.NumericUpDown NUP_Skill2;
-        private System.Windows.Forms.NumericUpDown NUP_Skill1;
         private System.Windows.Forms.PictureBox PB_Skill;
         private System.Windows.Forms.Button B_resources;
         private System.Windows.Forms.ToolTip TT_Help;
+        private NumericUpDownFix NUP_MainIndex;
+        private NumericUpDownFix NUP_MainScore;
+        private NumericUpDownFix NUP_EventScore;
+        private NumericUpDownFix NUP_EventIndex;
+        private NumericUpDownFix NUP_ExpertScore;
+        private NumericUpDownFix NUP_ExpertIndex;
+        private NumericUpDownFix NUP_Level;
+        private NumericUpDownFix NUP_Hearts;
+        private NumericUpDownFix NUP_Jewels;
+        private NumericUpDownFix NUP_Coins;
+        private NumericUpDownFix NUP_SpeedUpX;
+        private NumericUpDownFix NUP_SpeedUpY;
+        private NumericUpDownFix NUP_Lollipop;
+        private NumericUpDownFix NUP_Skill5;
+        private NumericUpDownFix NUP_Skill4;
+        private NumericUpDownFix NUP_Skill3;
+        private NumericUpDownFix NUP_Skill2;
+        private NumericUpDownFix NUP_Skill1;
     }
 }
 

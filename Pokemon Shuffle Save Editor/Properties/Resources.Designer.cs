@@ -63,9 +63,29 @@ namespace Pokemon_Shuffle_Save_Editor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _lock {
+            get {
+                object obj = ResourceManager.GetObject("_lock", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap folder {
             get {
                 object obj = ResourceManager.GetObject("folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap kirakira {
+            get {
+                object obj = ResourceManager.GetObject("kirakira", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1959,6 +1979,16 @@ namespace Pokemon_Shuffle_Save_Editor.Properties {
         internal static System.Drawing.Bitmap PlateRanking {
             get {
                 object obj = ResourceManager.GetObject("PlateRanking", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap pokeball {
+            get {
+                object obj = ResourceManager.GetObject("pokeball", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

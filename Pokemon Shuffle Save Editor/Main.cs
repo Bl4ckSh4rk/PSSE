@@ -41,7 +41,7 @@ namespace Pokemon_Shuffle_Save_Editor
             CB_MonIndex.SelectedIndex = 0;
             B_Save.Enabled = GB_Caught.Enabled = GB_HighScore.Enabled = GB_Resources.Enabled = B_CheatsForm.Enabled = ItemsGrid.Enabled = loaded = false;
             PB_Mon.Image = GetCaughtImage((int)CB_MonIndex.SelectedValue, CHK_CaughtMon.Checked);
-            PB_Main.Image = PB_Event.Image = PB_Expert.Image = GetStageImage(0, 0);
+            PB_Main.Image = PB_Event.Image = PB_Expert.Image = GetStageImage();
             PB_Team1.Image = PB_Team2.Image = PB_Team3.Image = PB_Team4.Image = ResizeImage(GetMonImage(0), 48, 48);
             PB_Lollipop.Image = new Bitmap(ResizeImage((Image)Properties.Resources.ResourceManager.GetObject("lollipop"), 24, 24));
             PB_Skill.Image = new Bitmap(ResizeImage((Image)Properties.Resources.ResourceManager.GetObject("skill"), 24, 24));
@@ -209,9 +209,8 @@ namespace Pokemon_Shuffle_Save_Editor
 
             for (int i = 0; i < stagesData.Length; i++)
             {
-                stgItem stgI = GetStage(index[i], i);
-                nups[i].Value = stgI.Score;
-                stagesPics[i].Image = GetRankImage(BitConverter.ToInt16(stagesData[i], 0x50 + BitConverter.ToInt32(stagesData[i], 0x4) * ((i == 0) ? index[i] + 1 : index[i])) & 0x7FF, i, stgI.Completed, stgI.Rank);
+                nups[i].Value = GetStage(index[i], i).Score;
+                stagesPics[i].Image = GetStageImage(index[i], i);
             }
             #endregion
 
@@ -347,20 +346,38 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private void PB_Stage_Click(object sender, EventArgs e)
         {
-            if ((e as MouseEventArgs).Button != MouseButtons.Left && (e as MouseEventArgs).Button != MouseButtons.Right)
+            if ((e as MouseEventArgs).Button != MouseButtons.Left && (e as MouseEventArgs).Button != MouseButtons.Right && (e as MouseEventArgs).Delta == 0)
                 return;
-            int type = Array.IndexOf(new Control[] { PB_Main, PB_Expert, PB_Event }, (sender as Control));
-            if (type < 0)
+            int stgType = Array.IndexOf(new Control[] { PB_Main, PB_Expert, PB_Event }, (sender as Control));
+            if (stgType < 0)
                 return;
             updating = true;
-            int ind = new int[] { (int)NUP_MainIndex.Value - 1, (int)NUP_ExpertIndex.Value - 1, (int)NUP_EventIndex.Value }[type];
+            int stgInd = new int[] { (int)NUP_MainIndex.Value - 1, (int)NUP_ExpertIndex.Value - 1, (int)NUP_EventIndex.Value }[stgType];
 
-            if ((e as MouseEventArgs).Button == MouseButtons.Left && GetStage(ind, type).Completed)    //Left Click = circle ranks up
-                SetRank(ind, type, (GetStage(ind, type).Rank + 1) % 4);
-            if ((e as MouseEventArgs).Button == MouseButtons.Right)   //Right Click = (un)completed
+            if ((e as MouseEventArgs).Button == MouseButtons.None && GetStage(stgInd, stgType).State == LvlState.Defeated)    //Wheel =  scroll ranks
             {
-                SetStage(ind, type, !GetStage(ind, type).Completed);
-                SetRank(ind, type, 0);
+                if ((e as MouseEventArgs).Delta > 0)    //Up
+                    SetRank(stgInd, stgType, (GetStage(stgInd, stgType).Rank + 1) % 4);
+                if ((e as MouseEventArgs).Delta < 0)    //Down
+                    SetRank(stgInd, stgType, (GetStage(stgInd, stgType).Rank - 1) % 4);
+            }
+            if ((e as MouseEventArgs).Button == MouseButtons.Left)   //Left Click = (un)completed
+            {
+                if (stgType == 0)
+                    SetStage(stgInd, stgType, GetStage(stgInd, stgType).State.Next());
+                else
+                {
+                    if (GetStage(stgInd, stgType).State == LvlState.Locked)
+                        SetStage(stgInd, stgType, LvlState.Defeated);
+                    else
+                        SetStage(stgInd, stgType, LvlState.Locked);
+                }
+                SetRank(stgInd, stgType, 0);
+            }
+            if ((e as MouseEventArgs).Button == MouseButtons.Right)   //Right Click = go to Pokemon
+            {
+                byte[] stagesData = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent }[stgType];
+                CB_MonIndex.SelectedValue = BitConverter.ToInt16(stagesData, 0x50 + BitConverter.ToInt32(stagesData, 0x4) * ((stgType == 0) ? stgInd + 1 : stgInd)) & 0x7FF;
             }
             #region needs better implementation idea
             //if (GetStage(ind, i).Completed && i == 0)
@@ -399,7 +416,7 @@ namespace Pokemon_Shuffle_Save_Editor
             if ((e as MouseEventArgs).Button != MouseButtons.Left && (e as MouseEventArgs).Button != MouseButtons.Right) { return; }
 
             updating = true;
-            if ((e as MouseEventArgs).Button == MouseButtons.Left)
+            if ((e as MouseEventArgs).Button == MouseButtons.Right)
             {
                 if (CB_MonIndex.SelectedValue == null)
                 {
@@ -407,6 +424,10 @@ namespace Pokemon_Shuffle_Save_Editor
                     return;
                 }
 
+                CB_MonIndex.SelectedValue = GetMonFrommSlot(s);
+            }
+            else if ((e as MouseEventArgs).Button == MouseButtons.Left)
+            {
                 if (ModifierKeys == Keys.Control)
                 {
                     int ind = (int)CB_MonIndex.SelectedValue;
@@ -417,12 +438,9 @@ namespace Pokemon_Shuffle_Save_Editor
                             SetMonToSlot(i, GetMonFrommSlot(s));
                     }
                     SetMonToSlot(s, ind);
+                    return;
                 }
-                else
-                    CB_MonIndex.SelectedValue = GetMonFrommSlot(s);
-            }
-            else if ((e as MouseEventArgs).Button == MouseButtons.Right)
-            {
+
                 if (ltir == -1)
                     ltir = s;
                 else
@@ -542,4 +560,5 @@ namespace Pokemon_Shuffle_Save_Editor
             return base.ProcessCmdKey(ref msg, keyData);
         }
     }
+
 }

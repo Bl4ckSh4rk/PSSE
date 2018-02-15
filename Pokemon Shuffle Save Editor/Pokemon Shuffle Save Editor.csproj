@@ -25,7 +25,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.4.1.%2a</ApplicationVersion>
+    <ApplicationVersion>1.5.7.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -169,6 +169,8 @@
     <None Include="Resources\bin\stageDataExtra1.bin" />
     <None Include="Resources\img\lollipop.png" />
     <None Include="Resources\img\folder.png" />
+    <None Include="Resources\img\kirakira.png" />
+    <None Include="Resources\img\lock.png" />
     <Content Include="Resources\img\MegaStone003.png" />
     <Content Include="Resources\img\MegaStone006_X.png" />
     <Content Include="Resources\img\MegaStone006_Y.png" />
@@ -349,6 +351,7 @@
     <None Include="Resources\img\PlateMega.png" />
     <None Include="Resources\img\Plate1.png" />
     <None Include="Resources\img\PlateRanking.png" />
+    <None Include="Resources\img\pokeball.png" />
     <Content Include="Resources\img\pokemon_000.png" />
     <Content Include="Resources\img\pokemon_001.png" />
     <None Include="Resources\img\pokemon_001_01.png" />

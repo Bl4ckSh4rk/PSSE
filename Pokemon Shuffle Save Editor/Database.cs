@@ -144,7 +144,7 @@ namespace Pokemon_Shuffle_Save_Editor
                 int monIndex = BitConverter.ToUInt16(MegaStone, MegaStone[0x10] + (i + 1) * 4) & 0x3FF;
                 string str = "Mega " + MonsList[monIndex];
                 int spec = (BitConverter.ToInt32(MonData.Skip(0x50 + entrylen * monIndex).Take(entrylen).ToArray(), 0xE) >> 6) & 0x7FF;
-                if (spec == 6 || spec == 150)
+                if (spec == 6 || spec == 150) //if specie is Mewtwo/Charizard, specify if entry is for X or Y stone.
                     str += (monIndex != (BitConverter.ToUInt16(MegaStone, MegaStone[0x10] + i * 4) & 0x3FF)) ? " X" : " Y";
                 byte[] data = MonData.Skip(0x50 + entrylen * MonsList.ToList().IndexOf(str)).Take(entrylen).ToArray();
                 int maxSpeedup = (BitConverter.ToInt32(data, 0xA) >> 7) & 0x7F;
@@ -236,7 +236,7 @@ namespace Pokemon_Shuffle_Save_Editor
             }
 
             //dictionnary (new)
-            string temp = Encoding.Unicode.GetString(MessageDex.Skip(BitConverter.ToInt32(MessageDex, 0x08)).Take(BitConverter.ToInt32(MessageDex, 0x0C) - 0x17).ToArray()); //Relevant chunk specified in .bin file, UTF16 Encoding, 17 bytes at the end are a useless stamp (data.messagePokedex)
+            string temp = Encoding.Unicode.GetString(MessageDex.Skip(BitConverter.ToInt32(MessageDex, 0x08)).Take(BitConverter.ToInt32(MessageDex, 0x0C) - 0x17).ToArray()); //Relevant chunk specified in .bin file, UTF16 Encoding, 0x17 bytes at the end are a useless stamp (data.messagePokedex)
             temp = temp.Replace(Encoding.Unicode.GetString(MessageDex.Skip(BitConverter.ToInt32(MessageDex, 0x08)).Take(0x10).ToArray()), "[name]"); //because this variable ends with 0x00 it messes with Split() later on, so I replace it here
             temp = temp.Replace(Encoding.Unicode.GetString(new byte[] { 0x01, 0x00, 0x03, 0x01, 0x01, 0x00, 0x03, 0x00, 0x05, 0x00, 0x6D, 0x65, 0x67, 0x61, 0x4E, 0x61, 0x6D, 0x65, 0x00, 0x00 }), "[megaName]"); //same but this variable isn't declared on a fixed position so I copied it directly
             string[] arr = temp.Split( (char)0x00); //split the single string in an array

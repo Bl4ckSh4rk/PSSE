@@ -59,7 +59,7 @@ namespace Pokemon_Shuffle_Save_Editor
                     byte[] data = stage.Skip(0x50 + i * entrylen).Take(entrylen).ToArray();
                     if ((BitConverter.ToInt16(data, 0x4C) & 0x3FF) != 999)  //checks number of S ranks needed to unlock in order to skip "unreleased" expert stages. Not-expert stages should always return 0.
                     {
-                        SetStage(i, j, true);
+                        SetStage(i, j, LvlState.Defeated);
                         PatchScore(i, j);
                     }
                 }
@@ -244,7 +244,7 @@ namespace Pokemon_Shuffle_Save_Editor
                 int entrylen = BitConverter.ToInt32(stage, 0x4);
                 for (int i = 0; i < (BitConverter.ToInt32(stage, 0) - ((stage == db.StagesMain) ? 1 : 0)); i++)
                 {
-                    if (GetStage(i, j).Completed)
+                    if (GetStage(i, j).State == LvlState.Defeated)
                     {
                         SetRank(i, j, value);
                         PatchScore(i, j);

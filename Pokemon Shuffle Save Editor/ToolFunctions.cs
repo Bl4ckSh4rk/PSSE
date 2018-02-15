@@ -166,9 +166,10 @@ namespace Pokemon_Shuffle_Save_Editor
 
         public static stgItem GetStage(int ind, int type)
         {
+            //I need to try casting an incorrect value into a LvlState variable to see what happens 
             return new stgItem
             {
-                Completed = ((BitConverter.ToInt16(savedata, Completed.Ofset(ind, type)) >> Completed.Shift(ind, type)) & 7) == 5,
+                State = (LvlState)((BitConverter.ToInt16(savedata, Completed.Ofset(ind, type)) >> Completed.Shift(ind, type)) & 7),
                 Rank = (BitConverter.ToInt16(savedata, Rank.Ofset(ind, type)) >> Rank.Shift(ind, type)) & 0x3,
                 Score = (int)((BitConverter.ToUInt64(savedata, Score.Ofset(ind, type)) >> Score.Shift(ind, type)) & 0xFFFFFF)
             };
@@ -187,20 +188,20 @@ namespace Pokemon_Shuffle_Save_Editor
             Array.Copy(BitConverter.GetBytes(score), 0, savedata, Score.Ofset(ind, type), 8);
         }
 
-        public static void SetStage(int ind, int type, bool completed = false)
+        public static void SetStage(int ind, int type, LvlState state = LvlState.Locked)
         {
-            short stage = (short)(BitConverter.ToInt16(savedata, Completed.Ofset(ind, type)) & (~(0x7 << Completed.Shift(ind, type))) | ((completed ? 5 : 0) << Completed.Shift(ind, type)));
+            short stage = (short)(BitConverter.ToInt16(savedata, Completed.Ofset(ind, type)) & (~(0x7 << Completed.Shift(ind, type))) | ((short)(state) << Completed.Shift(ind, type)));
             Array.Copy(BitConverter.GetBytes(stage), 0, savedata, Completed.Ofset(ind, type), 2);
             PatchScore(ind, type);
         }
 
         public static void PatchScore(int ind, int type)
-        {  
-            byte[] stage = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent}[type];
+        {
+            byte[] stage = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent }[type];
             int entrylen = BitConverter.ToInt32(stage, 0x4);
             byte[] data = stage.Skip(0x50 + (ind + ((type == 0) ? 1 : 0)) * entrylen).Take(entrylen).ToArray();
             int score = (int)Math.Max((ulong)GetStage(ind, type).Score, (BitConverter.ToUInt64(data, 0x4) & 0xFFFFFF) + (ulong)(Math.Min(7000, ((GetStage(ind, type).Rank > 0) ? ((BitConverter.ToInt16(data, 0x30 + GetStage(ind, type).Rank - 1) >> 4) & 0xFF) : 0) * 500)));  //score = Max(current_highscore, hitpoints + minimum_bonus_points (a.k.a min moves left times 500, capped at 7000))
-            SetScore(ind, type, GetStage(ind,type).Completed ? score : 0); 
+            SetScore(ind, type, (GetStage(ind, type).State == LvlState.Defeated) ? score : 0);
         }
 
         public static void SetExcalationStep(int step = 1)
@@ -255,59 +256,64 @@ namespace Pokemon_Shuffle_Save_Editor
             return bmp;
         }
 
-        public static Bitmap GetStageImage(int ind, int type, bool hidden = false)
+        public static Bitmap GetStageImage(int monInd, bool mega, bool caught, bool locked, bool unlocked, bool ranked, int rank)
         {
-            Bitmap bmp = new Bitmap(64, 80);
+            Bitmap bmp = new Bitmap(72, 72);
+            ranked &= (rank >= 0 && rank < 4);
             using (Graphics g = Graphics.FromImage(bmp))
             {
-                if (db.Mons[ind].IsMega && (type == 0))
-                    g.DrawImage(Properties.Resources.PlateMega, new Point(0, 16));
-                else
-                    g.DrawImage(Properties.Resources.Plate, new Point(0, 16));
-                g.DrawImage(ResizeImage(GetCaughtImage(ind, !hidden), 48, 48), new Point(8, 7));
+                //if (db.Mons[ind].IsMega && (type == 0))
+                //    g.DrawImage(Properties.Resources.PlateMega, new Point(0, 16));
+                //else
+                //    g.DrawImage(Properties.Resources.Plate, new Point(0, 16));
+                //g.DrawImage(ResizeImage(GetCaughtImage(ind, state != LvlState.Locked), 48, 48), new Point(8, 7));
+                g.DrawImage(mega ? Resources.PlateMega : Resources.Plate, new Point(0, 16));
+                g.DrawImage(ResizeImage(ChangeOpacity(GetMonImage(monInd), locked ? 0.6f : 1f), 48, 48), new Point(8, 7));
+                if (ranked)
+                    g.DrawImage(ResizeImage(new Bitmap[] { Resources.Rank_C, Resources.Rank_B, Resources.Rank_A, Resources.Rank_S }[rank], 32, 32), new Point(36, 40));
+                if (caught)
+                    g.DrawImage(ResizeImage(Resources.pokeball, 16, 16), new Point(52, 32));
+                if (unlocked || locked)
+                    g.DrawImage(ResizeImage(ChangeOpacity(Resources._lock, unlocked ? 0.6f : 1f), 48, 48), new Point(24, 32));
             }
-
             return bmp;
-        }
+        }   //"Base" function, returns a fully customized img
 
-        public static Bitmap GetRankImage(int ind, int type, bool completed, int rank, bool hidden = false)
+        public static Bitmap GetStageImage(int stgInd, int stgType)
         {
-            Bitmap stage = GetStageImage(ind, type, hidden);
-            if (completed && rank >= 0 && rank <= 4)
-            {
-                using (Graphics g = Graphics.FromImage(stage))
-                    g.DrawImage(ResizeImage(new Bitmap[] { Resources.Rank_C, Resources.Rank_B, Resources.Rank_A, Resources.Rank_S }[rank], 32, 32), new Point(32, 48));
-            }
-            return stage;
-        }
+            byte[] stagesData = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent }[stgType];
+            int monInd = BitConverter.ToInt16(stagesData, 0x50 + BitConverter.ToInt32(stagesData, 0x4) * ((stgType == 0) ? stgInd + 1 : stgInd)) & 0x7FF;
+            LvlState state = GetStage(stgInd, stgType).State;
+            return GetStageImage(monInd, (db.Mons[monInd].IsMega && stgType == 0), GetMon(monInd).Caught, (state == LvlState.Locked && stgType == 0), (state == LvlState.Unlocked && stgType == 0), (state == LvlState.Defeated), GetStage(stgInd, stgType).Rank);
+        }   //Returns an img corresponding to a certain stage
 
-        //public static Bitmap GetCompletedImage(int ind, int type, bool completed = true)
-        //{
-        //    Bitmap bmp = GetStageImage(ind, type);
-        //    if (!completed)
-        //        bmp = GetShadow(bmp);
-        //    return bmp;
-        //}
+        public static Bitmap GetStageImage()
+        {
+            return GetStageImage(0, false, false, false, false, false, 0);
+        }   //Returns default "?" img
 
-        public static Bitmap GetTeamImage(int ind, int slot = -1, bool selected = false, int w = 48, int h = 48)
+        public static Bitmap GetTeamImage(int ind, int slot = -1, bool selected = false)
         {
             bool mega = (GetMon(ind).Stone != 0 && slot == 0);
-            Bitmap bmp = GetMonImage(ind, mega);
-            if (selected)
+            Bitmap bmp = new Bitmap(54, 54), mon = GetMonImage(ind, mega);
+            //GetMonImage(ind, mega);
+            using (Graphics g = Graphics.FromImage(bmp))
             {
-                Bitmap bmp2 = ResizeImage(bmp, 54, 54);
-                using (Graphics g = Graphics.FromImage(GetShadow(bmp, GetDominantColor(bmp))))
-                    g.DrawImage(bmp2, new Point(5, 5));
-            }
-            bmp = ResizeImage(bmp, 48, 48);
-            if (mega)
-            {
-                Bitmap bmp3 = db.HasMega[ind][0] ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MegaStone" + db.Mons[ind].SpecieIndex.ToString("000") + (db.HasMega[ind][1] ? "_X" : string.Empty))) : new Bitmap(16, 16);
-                using (Graphics g = Graphics.FromImage(bmp))
+                if (selected)
+                    g.DrawImage(GetShadow(ResizeImage(mon, 54, 54), GetDominantColor(mon)), new Point(0, 0));
+                g.DrawImage(ResizeImage(mon, 48, 48), new Point(3, 3));
+                if (mega)
                 {
                     g.DrawImage(Properties.Resources.MegaStoneBase, new Point(0, 0));
-                    g.DrawImage(bmp3, new Point(3, 2));
-                }                    
+                    g.DrawImage(db.HasMega[ind][0] ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MegaStone" + db.Mons[ind].SpecieIndex.ToString("000") + (db.HasMega[ind][1] ? "_X" : string.Empty))) : new Bitmap(16, 16), new Point(3, 2));
+
+                    //Bitmap bmp3 = db.HasMega[ind][0] ? new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MegaStone" + db.Mons[ind].SpecieIndex.ToString("000") + (db.HasMega[ind][1] ? "_X" : string.Empty))) : new Bitmap(16, 16);
+                    //using (Graphics g = Graphics.FromImage(bmp))
+                    //{
+                    //    g.DrawImage(Properties.Resources.MegaStoneBase, new Point(0, 0));
+                    //    g.DrawImage(bmp3, new Point(3, 2));
+                    //}
+                }
             }
             return bmp;
             //return ResizeImage(ChangeOpacity(GetMonImage(ind), opacity ? 0.5F : 1), w, h);
@@ -366,7 +372,9 @@ namespace Pokemon_Shuffle_Save_Editor
                 {
                     Color c = bmp.GetPixel(x, y);
                     if (c.A == 0) { continue; } //ignore transparent pixels
-                    if (!(Math.Abs(c.R - c.G) > 80 || Math.Abs(c.R - c.B) > 80 || Math.Abs(c.G - c.B) > 80)) { continue; } //ignore transparent pixels
+                    if (!(Math.Abs(c.R - c.G) > 20 || Math.Abs(c.R - c.B) > 20 || Math.Abs(c.G - c.B) > 20)) { continue; } //ignore black/white-ish colors for better results
+                    short lum = (short)((c.R * 299 + c.G * 587 + c.B * 114) / 1000);
+                    if (lum > 200 || lum < 50) { continue; }   //ignore bright/dark colors that wouldn't display well
                     if (cList.Contains(c))
                     {
                         nList[cList.IndexOf(c)]++;
@@ -388,18 +396,54 @@ namespace Pokemon_Shuffle_Save_Editor
             return cList[nList.IndexOf(nList.Max())];
         }
 
-        //public static Bitmap ChangeOpacity(Image img, float opacityvalue)
+        //public static Bitmap GetCompletedImage(int ind, int type, bool completed = true)
         //{
-        //    Bitmap bmp = new Bitmap(img.Width, img.Height); // Determining Width and Height of Source Image
-        //    Graphics graphics = Graphics.FromImage(bmp);
-        //    ColorMatrix colormatrix = new ColorMatrix();
-        //    colormatrix.Matrix33 = opacityvalue;
-        //    ImageAttributes imgAttribute = new ImageAttributes();
-        //    imgAttribute.SetColorMatrix(colormatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-        //    graphics.DrawImage(img, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imgAttribute);
-        //    graphics.Dispose();   // Releasing all resource used by graphics
+        //    Bitmap bmp = GetStageImage(ind, type);
+        //    if (!completed)
+        //        bmp = GetShadow(bmp);
         //    return bmp;
         //}
+
+        public static Bitmap ChangeOpacity(Bitmap img, float opacityvalue)
+        {
+            if (opacityvalue == 1f) { return img; }
+
+            Bitmap bmp = new Bitmap(img.Width, img.Height); // Determining Width and Height of Source Image
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                ColorMatrix colormatrix = new ColorMatrix();
+                colormatrix.Matrix33 = opacityvalue;
+                ImageAttributes imgAttribute = new ImageAttributes();
+                imgAttribute.SetColorMatrix(colormatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                g.DrawImage(img, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imgAttribute);
+            }
+
+            return bmp;
+        }
+
+        public static T Next<T>(this T src) where T : struct
+        {
+            if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argumnent {0} is not an Enum", typeof(T).FullName));
+
+            T[] Arr = (T[])Enum.GetValues(src.GetType());
+            int j = Array.IndexOf<T>(Arr, src) + 1;
+            return (Arr.Length == j) ? Arr[0] : Arr[j];
+        } //Allows to circle through possible LvlState values in Main.PB_Stage_Click()
+    }
+
+    public class NumericUpDownFix : NumericUpDown
+    {
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            HandledMouseEventArgs hme = e as HandledMouseEventArgs;
+            if (hme != null)
+                hme.Handled = true;
+
+            if (e.Delta > 0 && (this.Value + this.Increment) <= this.Maximum)
+                this.Value += this.Increment;
+            else if (e.Delta < 0 && (this.Value - this.Increment) >= this.Minimum)
+                this.Value -= this.Increment;
+        }
     }
 
     #region Shifts&Ofsets
@@ -844,7 +888,7 @@ namespace Pokemon_Shuffle_Save_Editor
 
     public class stgItem
     {
-        public bool Completed { get; set; }
+        public LvlState State { get; set; }
         public int Rank { get; set; }
         public int Score { get; set; }
     }
@@ -875,11 +919,13 @@ namespace Pokemon_Shuffle_Save_Editor
         }
     }
 
+    public enum LvlState { Defeated = 5, Unlocked = 3, Locked = 0 };
+
     //public class smItem
     //{
     //    public int Opponent { get; set; }
     //    public int Step { get; set; }
     //    public int Moves { get; set; }
     //}
-    #endregion Custom Objects
+    #endregion
 }
