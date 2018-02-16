@@ -352,6 +352,8 @@
     <None Include="Resources\img\Plate1.png" />
     <None Include="Resources\img\PlateRanking.png" />
     <None Include="Resources\img\pokeball.png" />
+    <None Include="Resources\img\PlateUX.png" />
+    <None Include="Resources\img\PlateMegaUX.png" />
     <Content Include="Resources\img\pokemon_000.png" />
     <Content Include="Resources\img\pokemon_001.png" />
     <None Include="Resources\img\pokemon_001_01.png" />

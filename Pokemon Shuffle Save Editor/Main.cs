@@ -49,7 +49,7 @@ namespace Pokemon_Shuffle_Save_Editor
             RB_Skill1.Visible = RB_Skill2.Visible = RB_Skill3.Visible = RB_Skill4.Visible = RB_Skill5.Visible = false;
             NUP_Skill1.Visible = NUP_Skill2.Visible = NUP_Skill3.Visible = NUP_Skill4.Visible = NUP_Skill5.Visible = false;
             L_Skill1.Visible = L_Skill2.Visible = L_Skill3.Visible = L_Skill4.Visible = L_Skill5.Visible = false;
-            NUP_MainIndex.Maximum = BitConverter.ToInt32(db.StagesMain, 0) - 1;
+            NUP_MainIndex.Maximum = (BitConverter.ToInt32(db.StagesMain, 0) - 1) * 2;   //+ UX stages
             NUP_ExpertIndex.Maximum = BitConverter.ToInt32(db.StagesExpert, 0);
             NUP_EventIndex.Maximum = BitConverter.ToInt32(db.StagesEvent, 0) - 1;
             ItemsGrid.SelectedObject = null;
@@ -202,12 +202,12 @@ namespace Pokemon_Shuffle_Save_Editor
             #endregion
 
             #region UpdateStageBox()
-            byte[][] stagesData = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent };
-            int[] index = new int[] { (int)NUP_MainIndex.Value - 1, (int)NUP_ExpertIndex.Value - 1, (int)NUP_EventIndex.Value };
+            //byte[][] stagesData = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent };
+            int[] index = new int[] { (int)NUP_MainIndex.Value - 1, (int)NUP_ExpertIndex.Value - 1, (int)NUP_EventIndex.Value }; 
             PictureBox[] stagesPics = new[] { PB_Main, PB_Expert, PB_Event };
             NumericUpDown[] nups = new[] { NUP_MainScore, NUP_ExpertScore, NUP_EventScore };
 
-            for (int i = 0; i < stagesData.Length; i++)
+            for (int i = 0; i < index.Length; i++)
             {
                 nups[i].Value = GetStage(index[i], i).Score;
                 stagesPics[i].Image = GetStageImage(index[i], i);
@@ -377,7 +377,13 @@ namespace Pokemon_Shuffle_Save_Editor
             if ((e as MouseEventArgs).Button == MouseButtons.Right)   //Right Click = go to Pokemon
             {
                 byte[] stagesData = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent }[stgType];
-                CB_MonIndex.SelectedValue = BitConverter.ToInt16(stagesData, 0x50 + BitConverter.ToInt32(stagesData, 0x4) * ((stgType == 0) ? stgInd + 1 : stgInd)) & 0x7FF;
+                if (stgType == 0)
+                {
+                    stgInd++;
+                    if (stgInd >= BitConverter.ToInt32(stagesData, 0))
+                        stgInd -= (BitConverter.ToInt32(stagesData, 0) - 1);    //UX stages
+                }
+                CB_MonIndex.SelectedValue = BitConverter.ToInt16(stagesData, 0x50 + BitConverter.ToInt32(stagesData, 0x4) * stgInd) & 0x7FF;
             }
             #region needs better implementation idea
             //if (GetStage(ind, i).Completed && i == 0)

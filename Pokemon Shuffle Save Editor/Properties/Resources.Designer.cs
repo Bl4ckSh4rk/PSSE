@@ -1976,9 +1976,29 @@ namespace Pokemon_Shuffle_Save_Editor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap PlateMegaUX {
+            get {
+                object obj = ResourceManager.GetObject("PlateMegaUX", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap PlateRanking {
             get {
                 object obj = ResourceManager.GetObject("PlateRanking", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PlateUX {
+            get {
+                object obj = ResourceManager.GetObject("PlateUX", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

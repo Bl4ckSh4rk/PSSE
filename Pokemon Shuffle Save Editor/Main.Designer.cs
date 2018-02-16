@@ -283,7 +283,7 @@
             0,
             0});
             this.NUP_EventScore.Name = "NUP_EventScore";
-            this.NUP_EventScore.Size = new System.Drawing.Size(77, 20);
+            this.NUP_EventScore.Size = new System.Drawing.Size(85, 20);
             this.NUP_EventScore.TabIndex = 65;
             this.NUP_EventScore.ThousandsSeparator = true;
             this.NUP_EventScore.ValueChanged += new System.EventHandler(this.UpdateForm);
@@ -292,7 +292,7 @@
             // 
             this.NUP_EventIndex.Location = new System.Drawing.Point(483, 43);
             this.NUP_EventIndex.Name = "NUP_EventIndex";
-            this.NUP_EventIndex.Size = new System.Drawing.Size(39, 20);
+            this.NUP_EventIndex.Size = new System.Drawing.Size(48, 20);
             this.NUP_EventIndex.TabIndex = 64;
             this.NUP_EventIndex.ValueChanged += new System.EventHandler(this.UpdateForm);
             // 
@@ -305,7 +305,7 @@
             0,
             0});
             this.NUP_ExpertScore.Name = "NUP_ExpertScore";
-            this.NUP_ExpertScore.Size = new System.Drawing.Size(77, 20);
+            this.NUP_ExpertScore.Size = new System.Drawing.Size(85, 20);
             this.NUP_ExpertScore.TabIndex = 63;
             this.NUP_ExpertScore.ThousandsSeparator = true;
             this.NUP_ExpertScore.ValueChanged += new System.EventHandler(this.UpdateForm);
@@ -319,7 +319,7 @@
             0,
             0});
             this.NUP_ExpertIndex.Name = "NUP_ExpertIndex";
-            this.NUP_ExpertIndex.Size = new System.Drawing.Size(39, 20);
+            this.NUP_ExpertIndex.Size = new System.Drawing.Size(48, 20);
             this.NUP_ExpertIndex.TabIndex = 62;
             this.NUP_ExpertIndex.Value = new decimal(new int[] {
             1,
@@ -337,21 +337,26 @@
             0,
             0});
             this.NUP_MainScore.Name = "NUP_MainScore";
-            this.NUP_MainScore.Size = new System.Drawing.Size(77, 20);
+            this.NUP_MainScore.Size = new System.Drawing.Size(85, 20);
             this.NUP_MainScore.TabIndex = 61;
             this.NUP_MainScore.ThousandsSeparator = true;
             this.NUP_MainScore.ValueChanged += new System.EventHandler(this.UpdateForm);
             // 
             // NUP_MainIndex
             // 
-            this.NUP_MainIndex.Location = new System.Drawing.Point(125, 43);
+            this.NUP_MainIndex.Location = new System.Drawing.Point(124, 43);
+            this.NUP_MainIndex.Maximum = new decimal(new int[] {
+            1400,
+            0,
+            0,
+            0});
             this.NUP_MainIndex.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.NUP_MainIndex.Name = "NUP_MainIndex";
-            this.NUP_MainIndex.Size = new System.Drawing.Size(39, 20);
+            this.NUP_MainIndex.Size = new System.Drawing.Size(48, 20);
             this.NUP_MainIndex.TabIndex = 60;
             this.NUP_MainIndex.Value = new decimal(new int[] {
             1,

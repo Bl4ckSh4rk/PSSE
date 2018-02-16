@@ -54,9 +54,13 @@ namespace Pokemon_Shuffle_Save_Editor
             foreach (byte[] stage in new byte[][] { db.StagesMain, db.StagesExpert })
             {
                 int entrylen = BitConverter.ToInt32(stage, 4);
-                for (int i = 0; i < (BitConverter.ToInt32(stage, 0) - ((stage == db.StagesMain) ? 1 : 0)); i++)
+                int lim = BitConverter.ToInt32(stage, 0), stgInd;
+                if (stage == db.StagesMain)
+                    lim = 1200;
+                for (int i = 0; i < lim; i++)
                 {
-                    byte[] data = stage.Skip(0x50 + i * entrylen).Take(entrylen).ToArray();
+                    stgInd = (i > lim / 2) ? i - (lim / 2) : i; //UX stages
+                    byte[] data = stage.Skip(0x50 + stgInd * entrylen).Take(entrylen).ToArray();
                     if ((BitConverter.ToInt16(data, 0x4C) & 0x3FF) != 999)  //checks number of S ranks needed to unlock in order to skip "unreleased" expert stages. Not-expert stages should always return 0.
                     {
                         SetStage(i, j, LvlState.Defeated);
@@ -242,7 +246,10 @@ namespace Pokemon_Shuffle_Save_Editor
             foreach (byte[] stage in new byte[][] { db.StagesMain, db.StagesExpert })
             {
                 int entrylen = BitConverter.ToInt32(stage, 0x4);
-                for (int i = 0; i < (BitConverter.ToInt32(stage, 0) - ((stage == db.StagesMain) ? 1 : 0)); i++)
+                int lim = BitConverter.ToInt32(stage, 0);
+                if (stage == db.StagesMain)
+                    lim = (lim - 1) * 2;    //UX stages
+                for (int i = 0; i < lim; i++)
                 {
                     if (GetStage(i, j).State == LvlState.Defeated)
                     {
@@ -258,7 +265,7 @@ namespace Pokemon_Shuffle_Save_Editor
         private void B_StageReset_Click(object sender, EventArgs e)
         {
             int j = 0;
-            foreach (int length in new int[] { (BitConverter.ToInt32(db.StagesMain, 0) - 1), BitConverter.ToInt32(db.StagesExpert, 0), BitConverter.ToInt32(db.StagesEvent, 0) })//Max number of event levels could be up to 549 but it's unlikely there ever are more than 100 at any given time (and that space could be used for something else later).
+            foreach (int length in new int[] { (BitConverter.ToInt32(db.StagesMain, 0) - 1) * 2, BitConverter.ToInt32(db.StagesExpert, 0), BitConverter.ToInt32(db.StagesEvent, 0) })
             {
                 for (int i = 0; i < length; i++)
                 {
