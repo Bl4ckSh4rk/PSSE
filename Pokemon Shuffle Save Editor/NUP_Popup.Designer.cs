@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.L_Text = new System.Windows.Forms.Label();
-            this.NUP_Value = new System.Windows.Forms.NumericUpDown();
+            this.NUP_Value = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.L_Range = new System.Windows.Forms.Label();
             this.B_OK = new System.Windows.Forms.Button();
             this.CHK_Value = new System.Windows.Forms.CheckBox();

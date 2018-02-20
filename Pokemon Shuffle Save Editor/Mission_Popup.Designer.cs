@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.NUP_Mission = new System.Windows.Forms.NumericUpDown();
+            this.NUP_Mission = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.L_Top = new System.Windows.Forms.Label();
             this.GB_States = new System.Windows.Forms.GroupBox();
             this.CHK_10 = new System.Windows.Forms.CheckBox();
@@ -43,7 +43,7 @@
             this.CHK_01 = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             this.L_Active = new System.Windows.Forms.Label();
-            this.NUP_Active = new System.Windows.Forms.NumericUpDown();
+            this.NUP_Active = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.B_Erase = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.NUP_Mission)).BeginInit();
             this.GB_States.SuspendLayout();

@@ -11,16 +11,16 @@ namespace Pokemon_Shuffle_Save_Editor
     {
         #region Properties
 
-        public byte[] MegaStone { get; private set; }
-        public byte[] MonAbility { get; private set; }
-        public byte[] MonData { get; private set; }
-        public byte[] MonLevel { get; private set; }
-        public byte[] MissionCard { get; private set; }
-        public byte[] MessageDex { get; private set; }
-        public byte[] StagesEvent { get; private set; }
-        public byte[] StagesExpert { get; private set; }
-        public byte[] StagesMain { get; private set; }
-        public byte[] PokeLoad { get; private set; }
+        public byte[] MegaStoneBin { get; private set; }
+        public byte[] MonAbilityBin { get; private set; }
+        public byte[] MonDataBin { get; private set; }
+        public byte[] MonLevelBin { get; private set; }
+        public byte[] MissionCardBin { get; private set; }
+        public byte[] MessageDexBin { get; private set; }
+        public byte[] StagesEventBin { get; private set; }
+        public byte[] StagesExpertBin { get; private set; }
+        public byte[] StagesMainBin { get; private set; }
+        public byte[] PokeLoadBin { get; private set; }
 
         public bool[][] HasMega { get; private set; }   // [X][0] = X, [X][1] = Y
         public int[] Forms { get; private set; }
@@ -31,8 +31,9 @@ namespace Pokemon_Shuffle_Save_Editor
         public string[] SkillsList { get; private set; }
         public string[] SkillsTextList { get; private set; }
         public Tuple<int, int>[] Megas { get; private set; }    //monsIndex, speedups
-        public dbItem[] Mons { get; private set; }   //specieIndex, formIndex, isMega, raiseMaxLevel, basePower, skills, type, stageNum, skillsCount
+        public dbMon[] Mons { get; private set; }   //specieIndex, formIndex, isMega, raiseMaxLevel, basePower, skills, type, stageNum, skillsCount
         public List<int> MegaList { get; private set; } //derivate a List from Megas.Item1 to use with IndexOf() functions (in UpdateForms() & UpdateOwnedBox())
+        public dbStage[][] Stages { get; private set; }
 
         public int MegaStartIndex { get; private set; } // Indexes of first mega & second "---", respectively,...
         public int MonStopIndex { get; private set; }   //...should allow PSSE to work longer without needing an update.
@@ -65,16 +66,16 @@ namespace Pokemon_Shuffle_Save_Editor
             }
 
             //bin init
-            MegaStone = Properties.Resources.megaStone;
-            MissionCard = Properties.Resources.missionCard;
-            MonAbility = Properties.Resources.pokemonAbility;
-            MonData = Properties.Resources.pokemonData;
-            MonLevel = Properties.Resources.pokemonLevel;
-            StagesMain = Properties.Resources.stageData;
-            StagesEvent = Properties.Resources.stageDataEvent;
-            StagesExpert = Properties.Resources.stageDataExtra;
-            MessageDex = Properties.Resources.messagePokedex_US;
-            PokeLoad = Properties.Resources.pokeLoad;
+            MegaStoneBin = Properties.Resources.megaStone;
+            MissionCardBin = Properties.Resources.missionCard;
+            MonAbilityBin = Properties.Resources.pokemonAbility;
+            MonDataBin = Properties.Resources.pokemonData;
+            MonLevelBin = Properties.Resources.pokemonLevel;
+            StagesMainBin = Properties.Resources.stageData;
+            StagesEventBin = Properties.Resources.stageDataEvent;
+            StagesExpertBin = Properties.Resources.stageDataExtra;
+            MessageDexBin = Properties.Resources.messagePokedex_US;
+            PokeLoadBin = Properties.Resources.pokeLoad;
 
             //resources override            
             if (Directory.Exists(resourcedir))
@@ -85,40 +86,40 @@ namespace Pokemon_Shuffle_Save_Editor
                         switch (i) //don't forget that part or resources files won't override Database files, add an entry if a file is added above
                         {
                             case 0:
-                                MegaStone = File.ReadAllBytes(resourcedir + filenames[i]);
+                                MegaStoneBin = File.ReadAllBytes(resourcedir + filenames[i]);
                                 break;
 
                             case 1:
-                                MonData = File.ReadAllBytes(resourcedir + filenames[i]);
+                                MonDataBin = File.ReadAllBytes(resourcedir + filenames[i]);
                                 break;
 
                             case 2:
-                                StagesMain = File.ReadAllBytes(resourcedir + filenames[i]);
+                                StagesMainBin = File.ReadAllBytes(resourcedir + filenames[i]);
                                 break;
 
                             case 3:
-                                StagesEvent = File.ReadAllBytes(resourcedir + filenames[i]);
+                                StagesEventBin = File.ReadAllBytes(resourcedir + filenames[i]);
                                 break;
 
                             case 4:
-                                StagesExpert = File.ReadAllBytes(resourcedir + filenames[i]);
+                                StagesExpertBin = File.ReadAllBytes(resourcedir + filenames[i]);
                                 break;
 
                             case 5:
-                                MonLevel = File.ReadAllBytes(resourcedir + filenames[i]);
+                                MonLevelBin = File.ReadAllBytes(resourcedir + filenames[i]);
                                 break;
 
                             case 6:
-                                MonAbility = File.ReadAllBytes(resourcedir + filenames[i]);
+                                MonAbilityBin = File.ReadAllBytes(resourcedir + filenames[i]);
                                 break;
                             case 7:
-                                MissionCard = File.ReadAllBytes(resourcedir + filenames[i]);
+                                MissionCardBin = File.ReadAllBytes(resourcedir + filenames[i]);
                                 break;
                             case 8:
-                                MessageDex = File.ReadAllBytes(resourcedir + filenames[i]);
+                                MessageDexBin = File.ReadAllBytes(resourcedir + filenames[i]);
                                 break;
                             case 9:
-                                PokeLoad = File.ReadAllBytes(resourcedir + filenames[i]);
+                                PokeLoadBin = File.ReadAllBytes(resourcedir + filenames[i]);
                                 break;
                             default:
                                 MessageBox.Show("Error loading resources :\nfilename = " + (filenames[i] != null ? filenames[i] : "null") + "\ni = " + i);
@@ -137,16 +138,16 @@ namespace Pokemon_Shuffle_Save_Editor
             MonStopIndex = MonsList.ToList().IndexOf("---", 1);
 
             //megas
-            int entrylen = BitConverter.ToInt32(MonData, 0x4);
-            Megas = new Tuple<int, int>[BitConverter.ToUInt32(MegaStone, 0) - 1];
+            int entrylen = BitConverter.ToInt32(MonDataBin, 0x4);
+            Megas = new Tuple<int, int>[BitConverter.ToUInt32(MegaStoneBin, 0) - 1];
             for (int i = 0; i < Megas.Length; i++)
             {
-                int monIndex = BitConverter.ToUInt16(MegaStone, MegaStone[0x10] + (i + 1) * 4) & 0x3FF;
+                int monIndex = BitConverter.ToUInt16(MegaStoneBin, MegaStoneBin[0x10] + (i + 1) * 4) & 0x3FF;
                 string str = "Mega " + MonsList[monIndex];
-                int spec = (BitConverter.ToInt32(MonData.Skip(0x50 + entrylen * monIndex).Take(entrylen).ToArray(), 0xE) >> 6) & 0x7FF;
+                int spec = (BitConverter.ToInt32(MonDataBin.Skip(0x50 + entrylen * monIndex).Take(entrylen).ToArray(), 0xE) >> 6) & 0x7FF;
                 if (spec == 6 || spec == 150) //if specie is Mewtwo/Charizard, specify if entry is for X or Y stone.
-                    str += (monIndex != (BitConverter.ToUInt16(MegaStone, MegaStone[0x10] + i * 4) & 0x3FF)) ? " X" : " Y";
-                byte[] data = MonData.Skip(0x50 + entrylen * MonsList.ToList().IndexOf(str)).Take(entrylen).ToArray();
+                    str += (monIndex != (BitConverter.ToUInt16(MegaStoneBin, MegaStoneBin[0x10] + i * 4) & 0x3FF)) ? " X" : " Y";
+                byte[] data = MonDataBin.Skip(0x50 + entrylen * MonsList.ToList().IndexOf(str)).Take(entrylen).ToArray();
                 int maxSpeedup = (BitConverter.ToInt32(data, 0xA) >> 7) & 0x7F;
                 Megas[i] = new Tuple<int, int>(monIndex, maxSpeedup);
             }
@@ -157,14 +158,14 @@ namespace Pokemon_Shuffle_Save_Editor
             for (int i = 0; i < MonsList.Length; i++)
                 HasMega[i] = new bool[2];
             for (int i = 0; i < Megas.Length; i++)
-                HasMega[BitConverter.ToUInt16(MegaStone, 0x54 + i * 4) & 0x3FF][(MegaStone[0x54 + (i * 4) + 1] >> 3) & 1] = true;
+                HasMega[BitConverter.ToUInt16(MegaStoneBin, 0x54 + i * 4) & 0x3FF][(MegaStoneBin[0x54 + (i * 4) + 1] >> 3) & 1] = true;
 
             //pokemons
             Forms = new int[SpeciesList.Length];
-            Mons = new dbItem[BitConverter.ToUInt32(MonData, 0)];
+            Mons = new dbMon[BitConverter.ToUInt32(MonDataBin, 0)];
             for (int i = 0; i < Mons.Length; i++)
             {
-                byte[] data = MonData.Skip(0x50 + entrylen * i).Take(entrylen).ToArray();
+                byte[] data = MonDataBin.Skip(0x50 + entrylen * i).Take(entrylen).ToArray();
                 bool isMega = i >= MegaStartIndex && i <= MonsList.Count() - 1;
                 int spec = (isMega && i <= MegaStartIndex + Megas.Length - 1)
                     ? SpeciesList.ToList().IndexOf(MonsList[Megas[i - MegaStartIndex].Item1].Substring(0, (MonsList[Megas[i - MegaStartIndex].Item1].LastIndexOf(' ') <= 0) ? MonsList[Megas[i - MegaStartIndex].Item1].Length : MonsList[Megas[i - MegaStartIndex].Item1].LastIndexOf(' ')))
@@ -182,16 +183,16 @@ namespace Pokemon_Shuffle_Save_Editor
                 skillCount = Math.Max(skillCount, 1);
                 int type = (BitConverter.ToInt16(data, 0x01) >> 3) & 0x1F; //ranges 0-17 (normal - fairy) (https://gbatemp.net/threads/psse-pokemon-shuffle-save-editor.396499/page-33#post-6278446)
                 int index = (BitConverter.ToInt16(data, 0)) & 0x3FF; //ranges 1-999, it's the number you can see on the team selection menu
-                Mons[i] = new dbItem(spec, Forms[spec], isMega, raiseMaxLevel, basePower, skill, type, index, skillCount);
+                Mons[i] = new dbMon(spec, Forms[spec], isMega, raiseMaxLevel, basePower, skill, type, index, skillCount);
                 Forms[spec]++;
             }
 
             //Survival mode
-            int smEntry = BitConverter.ToInt32(PokeLoad, 0x4), smSkip = BitConverter.ToInt32(PokeLoad, 0x10), smTake = BitConverter.ToInt32(PokeLoad, 0x14);
-            Pokathlon = new List<int>[BitConverter.ToInt16(PokeLoad.Skip(smSkip + smTake - smEntry).Take(smEntry).ToArray(), 0) & 0x3FF]; //# of entries doesn't match # of steps since some are collided so I take the last entry and read its 'lowStep' value (should compare to 'highStep' but I don't want to overcomplicate thigns for now)
-            for (int i = 0; i < BitConverter.ToInt32(PokeLoad, 0); i++)
+            int smEntry = BitConverter.ToInt32(PokeLoadBin, 0x4), smSkip = BitConverter.ToInt32(PokeLoadBin, 0x10), smTake = BitConverter.ToInt32(PokeLoadBin, 0x14);
+            Pokathlon = new List<int>[BitConverter.ToInt16(PokeLoadBin.Skip(smSkip + smTake - smEntry).Take(smEntry).ToArray(), 0) & 0x3FF]; //# of entries doesn't match # of steps since some are collided so I take the last entry and read its 'lowStep' value (should compare to 'highStep' but I don't want to overcomplicate thigns for now)
+            for (int i = 0; i < BitConverter.ToInt32(PokeLoadBin, 0); i++)
             {
-                byte[] data = PokeLoad.Skip(smSkip + i * smEntry).Take(smEntry).ToArray();
+                byte[] data = PokeLoadBin.Skip(smSkip + i * smEntry).Take(smEntry).ToArray();
                 int lowStep = BitConverter.ToInt16(data, 0) & 0x3FF, highStep = (BitConverter.ToInt16(data, 0x01) >> 2) & 0x3FF; //if highStep !=0 then data[] applies to all steps in the lowStep - highStep range
                 int min = (BitConverter.ToInt16(data, 0x02) >> 4) & 0xFFF, max = BitConverter.ToInt16(data, 0x04) & 0xFFF; //if max !=0 then all stages in min-max range are possibilities for corresponding step(s)
                 List<int> stagesList = Enumerable.Range(min, max != 0 ? max - min + 1 : 1).ToList();
@@ -225,19 +226,19 @@ namespace Pokemon_Shuffle_Save_Editor
             #endregion
 
             //missions
-            Missions = new bool[BitConverter.ToInt32(MissionCard, 0)][];
+            Missions = new bool[BitConverter.ToInt32(MissionCardBin, 0)][];
             for (int i = 0; i < Missions.Length; i++)
             {
                 Missions[i] = new bool[10];
-                int ientrylen = BitConverter.ToInt32(MissionCard, 0x4);
-                byte[] data = MissionCard.Skip(BitConverter.ToInt32(MissionCard, 0x10) + i * ientrylen).Take(ientrylen).ToArray();
+                int ientrylen = BitConverter.ToInt32(MissionCardBin, 0x4);
+                byte[] data = MissionCardBin.Skip(BitConverter.ToInt32(MissionCardBin, 0x10) + i * ientrylen).Take(ientrylen).ToArray();
                 for (int j = 0; j < Missions[i].Length; j++)
                     Missions[i][j] = BitConverter.ToInt16(data, 0x8 + 2 * j) != 0;
             }
 
             //dictionnary (new)
-            string temp = Encoding.Unicode.GetString(MessageDex.Skip(BitConverter.ToInt32(MessageDex, 0x08)).Take(BitConverter.ToInt32(MessageDex, 0x0C) - 0x17).ToArray()); //Relevant chunk specified in .bin file, UTF16 Encoding, 0x17 bytes at the end are a useless stamp (data.messagePokedex)
-            temp = temp.Replace(Encoding.Unicode.GetString(MessageDex.Skip(BitConverter.ToInt32(MessageDex, 0x08)).Take(0x10).ToArray()), "[name]"); //because this variable ends with 0x00 it messes with Split() later on, so I replace it here
+            string temp = Encoding.Unicode.GetString(MessageDexBin.Skip(BitConverter.ToInt32(MessageDexBin, 0x08)).Take(BitConverter.ToInt32(MessageDexBin, 0x0C) - 0x17).ToArray()); //Relevant chunk specified in .bin file, UTF16 Encoding, 0x17 bytes at the end are a useless stamp (data.messagePokedex)
+            temp = temp.Replace(Encoding.Unicode.GetString(MessageDexBin.Skip(BitConverter.ToInt32(MessageDexBin, 0x08)).Take(0x10).ToArray()), "[name]"); //because this variable ends with 0x00 it messes with Split() later on, so I replace it here
             temp = temp.Replace(Encoding.Unicode.GetString(new byte[] { 0x01, 0x00, 0x03, 0x01, 0x01, 0x00, 0x03, 0x00, 0x05, 0x00, 0x6D, 0x65, 0x67, 0x61, 0x4E, 0x61, 0x6D, 0x65, 0x00, 0x00 }), "[megaName]"); //same but this variable isn't declared on a fixed position so I copied it directly
             string[] arr = temp.Split((char)0x00); //split the single string in an array
             arr = arr.Skip(Array.IndexOf(arr, "Opportunist")).ToArray(); //we only care for skills so I get rid of anything before Opportunist
@@ -275,6 +276,37 @@ namespace Pokemon_Shuffle_Save_Editor
                 stringChunks[i].CopyTo(skillText[i % 2], Array.IndexOf(skillText[i % 2], null));
             SkillsList = skillText[0];
             SkillsTextList = skillText[1];
+
+            //stages --> there are a lot of things that could be added here
+            Stages = new dbStage[3][];
+            Stages[0] = new dbStage[(BitConverter.ToInt32(StagesMainBin, 0) - 1) * 2];  //Main + UX stages
+            Stages[1] = new dbStage[BitConverter.ToInt32(StagesExpertBin, 0)];  //EX stages
+            Stages[2] = new dbStage[BitConverter.ToInt32(StagesEventBin, 0)];   //Event stages
+            for (int i = 0; i < Stages.Length; i++)
+            {
+                byte[] stagesData = new byte[][] { StagesMainBin, StagesExpertBin, StagesEventBin }[i];
+                int stgEntrylen = BitConverter.ToInt32(stagesData, 0x4);
+                for (int j = 0; j < Stages[i].Length; j++)
+                {
+                    int index = j;
+                    bool isux = (i == 0 && j >= (Stages[i].Length / 2));
+                    if (i == 0)
+                    {
+                        if (isux)
+                            index -= Stages[i].Length / 2;
+                        index++;
+                    }
+                    byte[] data = stagesData.Skip(0x50 + stgEntrylen * index).Take(stgEntrylen).ToArray();
+                    int pkmn = BitConverter.ToInt16(data, 0) & 0x7FF;
+                    int sranks = BitConverter.ToInt16(data, 0x4C) & 0x3FF;  //999 = unreleased EX stage, anything else = number of S ranks (EX stages) or completed stages (Main stages) required for that level to be unlocked
+                    int hp = (int)(BitConverter.ToUInt64(data, 0x4) & 0xFFFFFF) * (isux ? 3 : 1);
+                    int[] minmoves = new int[4];    //required number of moves left for C, B, A, S rank
+                    for (int k = 0; k < minmoves.Length; k++)
+                        minmoves[k] = ((k > 0) ? ((BitConverter.ToInt16(data, 0x30 + k - 1) >> 4) & 0xFF) : 0);  //data only has numbers for A, B & S ranks since C rank always require 0 moves left
+
+                    Stages[i][j] = new dbStage(isux, pkmn, sranks, hp, minmoves);
+                }
+            }
         }
     }
 }

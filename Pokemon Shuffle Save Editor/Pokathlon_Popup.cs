@@ -60,7 +60,7 @@ namespace Pokemon_Shuffle_Save_Editor
         private void UpdateForm()
         {
             B_Random.Visible = ((int)NUP_Step.Value > 0);
-            PB_Opponent.Image = ResizeImage(GetMonImage(BitConverter.ToInt16(db.StagesMain, 0x50 + BitConverter.ToInt32(db.StagesMain, 0x4) * (int)NUP_Opponent.Value) & 0x7FF, true), 48, 48);
+            PB_Opponent.Image = ResizeImage(GetMonImage(db.Stages[0][(int)NUP_Opponent.Value - 1].Pokemon), 48, 48);
         }
 
         private void B_OK_Click(object sender, EventArgs e)

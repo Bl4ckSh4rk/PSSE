@@ -51,31 +51,28 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private void B_AllCompleted_Click(object sender, EventArgs e)
         {
-            int j = 0;
-            foreach (byte[] stage in new byte[][] { db.StagesMain, db.StagesExpert })
+            for (int j = 0; j < 2; j++) //only affects Main & EX stages
             {
-                int entrylen = BitConverter.ToInt32(stage, 4);
-                int lim = BitConverter.ToInt32(stage, 0), stgInd;
-                bool isMain = false;
+                //int entrylen = BitConverter.ToInt32(stage, 4);
+                //int lim = BitConverter.ToInt32(stage, 0), stgInd;
+                //bool isMain = false;
                 
-                if (stage == db.StagesMain)
-                {
-                    isMain = true;
-                    lim = (lim - 1) * 2;
-                }
+                //if (stage == db.StagesMainBin)
+                //{
+                //    isMain = true;
+                //    lim = (lim - 1) * 2;
+                //}
 
-                for (int i = 0; i < lim; i++)
+                for (int i = 0; i < db.Stages[j].Length; i++)
                 {
-                    stgInd = i;
-                    if (isMain && i > lim / 2)
-                        stgInd = i - (lim / 2); //UX stages
-                    byte[] data = stage.Skip(0x50 + stgInd * entrylen).Take(entrylen).ToArray();
-                    if ((BitConverter.ToInt16(data, 0x4C) & 0x3FF) != 999)  //checks number of S ranks needed to unlock in order to skip "unreleased" expert stages. Not-expert stages should always return 0.
-                    {
+                    //stgInd = i;
+                    //if (isMain && i > lim / 2)
+                    //    stgInd = i - (lim / 2); //UX stages
+                    //byte[] data = stage.Skip(0x50 + stgInd * entrylen).Take(entrylen).ToArray();
+
+                    if (db.Stages[j][i].Srequirement != 999)  //checks number of S ranks needed to unlock in order to skip "unreleased" expert stages. Not-expert stages should always return 0.
                         SetStage(i, j, LvlState.Defeated);
-                    }
                 }
-                j++;
             }
             MessageBox.Show("All Normal & Expert stages have been marked as completed.\n\nRewards like megastones or jewels can still be redeemed by beating the stage.");
         }
@@ -84,12 +81,16 @@ namespace Pokemon_Shuffle_Save_Editor
         {
             for (int i = 1; i < db.MegaStartIndex; i++)
                 SetCaught(i, ((db.Mons[i].BasePower != 1) || (db.Mons[i].Skills != new int[] { 1, 0, 0, 0, 0 }) || (db.Mons[i].Type != 0)) && (db.Mons[i].DexNum != 999)); //displayed number isn't 999 & at least 1 of these isn't "default" : base power, talent, type
-            int stagelen = BitConverter.ToInt32(db.StagesMain, 0x4);
-            foreach (byte[] stage in new byte[][] { db.StagesMain, db.StagesExpert }) //also catches all Pokemons from Main or Expert stages (excluding Mega), because previous algorythm would skip legit Pokemons like Happiny (number isn't 999 but stats do match defaults).
-            {                                                                         //any Event-only Pokemon with such stats would still be missing but that's unlikely to ever happen.
-                for (int i = 1; i < BitConverter.ToInt32(stage, 0); i++)
+
+            //int stagelen = BitConverter.ToInt32(db.StagesMainBin, 0x4);
+            //foreach (byte[] stage in new byte[][] { db.StagesMainBin, db.StagesExpertBin }) //also catches all Pokemons from Main or Expert stages (excluding Mega), because previous algorythm would skip legit Pokemons like Happiny (number isn't 999 but stats do match defaults).
+            //{                                                                         //any Event-only Pokemon with such stats would still be missing but that's unlikely to ever happen.
+
+            for(int j = 0; j < 2; j++)  //only affects Main & EX stages
+            { 
+                for (int i = 1; i < db.Stages[j].Length; i++)
                 {
-                    int ind = BitConverter.ToUInt16(stage, 0x50 + stagelen * (i)) & 0x7FF;
+                    int ind = db.Stages[j][i].Pokemon;
                     if (!db.Mons[ind].IsMega)
                         SetCaught(ind, true);
                 }
@@ -100,7 +101,7 @@ namespace Pokemon_Shuffle_Save_Editor
         private void B_LevelMax_Click(object sender, EventArgs e)
         {
             int value = 10, lollipops = 20;
-            foreach (dbItem dbI in db.Mons) //if a pokemon can have more lollipops than coded, use that as max level instead
+            foreach (dbMon dbI in db.Mons) //if a pokemon can have more lollipops than coded, use that as max level instead
                 if (dbI.MaxLollipops > lollipops) { lollipops = dbI.MaxLollipops; }
             value += lollipops;    //default value
             bool boool = false;
@@ -240,7 +241,6 @@ namespace Pokemon_Shuffle_Save_Editor
         private void B_SRankCompleted_Click(object sender, EventArgs e)
         {
             int value = 3;    //default value
-            int j = 0;
             if (ModifierKeys == Keys.Control)
             {
                 using (var form = new NUP_Popup(0, 3, value, "rank"))
@@ -251,13 +251,17 @@ namespace Pokemon_Shuffle_Save_Editor
                     else return;
                 }
             }
-            foreach (byte[] stage in new byte[][] { db.StagesMain, db.StagesExpert })
-            {
-                int entrylen = BitConverter.ToInt32(stage, 0x4);
-                int lim = BitConverter.ToInt32(stage, 0);
-                if (stage == db.StagesMain)
-                    lim = (lim - 1) * 2;    //UX stages
-                for (int i = 0; i < lim; i++)
+
+            //foreach (byte[] stage in new byte[][] { db.StagesMainBin, db.StagesExpertBin })
+            //{
+            //    int entrylen = BitConverter.ToInt32(stage, 0x4);
+            //    int lim = BitConverter.ToInt32(stage, 0);
+            //    if (stage == db.StagesMainBin)
+            //        lim = (lim - 1) * 2;    //UX stages
+
+            for (int j = 0; j < 2; j++) //only affects Main & EX stages
+            { 
+                for (int i = 0; i < db.Stages[j].Length; i++)
                 {
                     if (GetStage(i, j).State == LvlState.Defeated)
                     {
@@ -265,23 +269,20 @@ namespace Pokemon_Shuffle_Save_Editor
                         PatchScore(i, j);
                     }
                 }
-                j++;
             }
             MessageBox.Show("All Completed Normal & Expert stages have been " + new string[] { "C", "B", "A", "S"}[value] + "-ranked.");
         }
 
         private void B_StageReset_Click(object sender, EventArgs e)
         {
-            int j = 0;
-            foreach (int length in new int[] { (BitConverter.ToInt32(db.StagesMain, 0) - 1) * 2, BitConverter.ToInt32(db.StagesExpert, 0), BitConverter.ToInt32(db.StagesEvent, 0) })
+            for (int j = 0; j < db.Stages.Length; j++) 
             {
-                for (int i = 0; i < length; i++)
+                for (int i = 0; i < db.Stages[j].Length; i++)
                 {
                     SetStage(i, j);
                     SetRank(i, j);
                     SetScore(i, j);
                 }
-                j++;
             }
             MessageBox.Show("All stages have been reset to C Rank, 0 score & uncompleted state.");
         }
@@ -335,7 +336,7 @@ namespace Pokemon_Shuffle_Save_Editor
             savedata[0xB760] = (byte)step;
             Array.Copy(BitConverter.GetBytes((BitConverter.ToInt16(savedata, 0xB768) & ~(0x7F)) | moves), 0, savedata, 0xB768, 2);
             Array.Copy(BitConverter.GetBytes((BitConverter.ToInt16(savedata, 0xB762) & ~(0x3FF << 6)) | (opponent << 6)), 0, savedata, 0xB762, 2);
-            string name = db.MonsList[BitConverter.ToInt16(db.StagesMain, 0x50 + BitConverter.ToInt32(db.StagesMain, 0x4) * opponent) & 0x7FF];
+            string name = db.MonsList[db.Stages[0][opponent - 1].Pokemon];  
             string str = new string[] { "th", "st", "nd", "rd" }[(!(step > 10 && step < 14) && step % 10 < 4) ? step % 4 : 0];
             MessageBox.Show((enabled ? "Survival mode enabled.\nYou'll face" : "Survival Mode is disabled.\nYou would have faced") + " survival mode's " + step + str + " step against " + name + " with " + (savedata[0xB768] & 0x7F) + " moves left.");
         }

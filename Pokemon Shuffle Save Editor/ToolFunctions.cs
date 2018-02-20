@@ -74,8 +74,8 @@ namespace Pokemon_Shuffle_Save_Editor
             Array.Copy(BitConverter.GetBytes(numRaiseMaxLevel), 0, savedata, Lollipop.Ofset(ind), 2);
 
             //experience patcher
-            int entrylen = BitConverter.ToInt32(db.MonLevel, 0x4);
-            byte[] data = db.MonLevel.Skip(0x50 + (Math.Min(db.Mons[ind].MaxLollipops + 10, (Math.Max(0, lev - 1))) * entrylen)).Take(entrylen).ToArray(); //makes sure to read exp values within the correct range (0 to max level)
+            int entrylen = BitConverter.ToInt32(db.MonLevelBin, 0x4);
+            byte[] data = db.MonLevelBin.Skip(0x50 + (Math.Min(db.Mons[ind].MaxLollipops + 10, (Math.Max(0, lev - 1))) * entrylen)).Take(entrylen).ToArray(); //makes sure to read exp values within the correct range (0 to max level)
             set_exp = (set_exp < 0) ? BitConverter.ToInt32(data, 0x4 * (db.Mons[ind].BasePower - 1)) : set_exp;
             int exp = (BitConverter.ToInt32(savedata, Experience.Ofset(ind)) & ~(0xFFFFFF << Experience.Shift(ind))) | (Math.Min(set_exp, 0xFFFFFF) << Experience.Shift(ind));
             Array.Copy(BitConverter.GetBytes(exp), 0, savedata, Experience.Ofset(ind), 4);
@@ -91,8 +91,8 @@ namespace Pokemon_Shuffle_Save_Editor
             Array.Copy(BitConverter.GetBytes(skilllvl), 0, savedata, SkillLevel.Ofset(ind, skind), 2);
 
             //exp
-            int entrylen = BitConverter.ToInt32(db.MonAbility, 0x4);
-            savedata[SkillExp.Ofset(ind, skind)] = (lvl < 2) ? (byte)0 : db.MonAbility.Skip(0x50 + db.Mons[ind].Skills[skind] * entrylen).Take(entrylen).ToArray()[0x1A + lvl];
+            int entrylen = BitConverter.ToInt32(db.MonAbilityBin, 0x4);
+            savedata[SkillExp.Ofset(ind, skind)] = (lvl < 2) ? (byte)0 : db.MonAbilityBin.Skip(0x50 + db.Mons[ind].Skills[skind] * entrylen).Take(entrylen).ToArray()[0x1A + lvl];
 
             //current
             if (current)
@@ -196,21 +196,21 @@ namespace Pokemon_Shuffle_Save_Editor
 
         public static void PatchScore(int ind, int type)
         {
-            byte[] stage = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent }[type];
-            int entrylen = BitConverter.ToInt32(stage, 0x4), stgInd = ind;
-            bool UXstage = false;
-            if (type == 0)
-            {
-                stgInd++;
-                if (stgInd >= BitConverter.ToInt32(stage, 0))
-                {
-                    stgInd -= (BitConverter.ToInt32(stage, 0) - 1);    //UX stages
-                    UXstage = true;
-                }
-            }
-            byte[] data = stage.Skip(0x50 + stgInd * entrylen).Take(entrylen).ToArray();
-            ulong hp = (BitConverter.ToUInt64(data, 0x4) & 0xFFFFFF) * (ulong)(UXstage ? 3 : 1);
-            int score = (int)Math.Max((ulong)GetStage(ind, type).Score, hp + (ulong)(Math.Min(7000, ((GetStage(ind, type).Rank > 0) ? ((BitConverter.ToInt16(data, 0x30 + GetStage(ind, type).Rank - 1) >> 4) & 0xFF) : 0) * 500)));  //score = Max(current_highscore, hitpoints + minimum_bonus_points (a.k.a min moves left times 500, capped at 7000))
+            //byte[] stage = new byte[][] { db.StagesMainBin, db.StagesExpertBin, db.StagesEventBin }[type];
+            //int entrylen = BitConverter.ToInt32(stage, 0x4), stgInd = ind;
+            //bool UXstage = false;
+            //if (type == 0)
+            //{
+            //    stgInd++;
+            //    if (stgInd >= BitConverter.ToInt32(stage, 0))
+            //    {
+            //        stgInd -= (BitConverter.ToInt32(stage, 0) - 1);    //UX stages
+            //        UXstage = true;
+            //    }
+            //}
+            //byte[] data = stage.Skip(0x50 + stgInd * entrylen).Take(entrylen).ToArray();
+            
+            int score = Math.Max(GetStage(ind, type).Score, db.Stages[type][ind].HP + Math.Min(7000, db.Stages[type][ind].MinMoves[GetStage(ind, type).Rank] * 500));  //score = Max(current_highscore, hitpoints + minimum_bonus_points (a.k.a min moves left times 500, capped at 7000))
             SetScore(ind, type, (GetStage(ind, type).State == LvlState.Defeated) ? score : 0);
         }
 
@@ -291,21 +291,24 @@ namespace Pokemon_Shuffle_Save_Editor
 
         public static Bitmap GetStageImage(int stgInd, int stgType)
         {
-            byte[] stagesData = new byte[][] { db.StagesMain, db.StagesExpert, db.StagesEvent }[stgType];
+            //byte[] stagesData = new byte[][] { db.StagesMainBin, db.StagesExpertBin, db.StagesEventBin }[stgType];
+            //LvlState state = GetStage(stgInd, stgType).State;
+            //int rank = GetStage(stgInd, stgType).Rank;
+            //bool uX = false;
+            //if (stgType == 0)
+            //{
+            //    stgInd++;
+            //    if (stgInd >= BitConverter.ToInt32(stagesData, 0))
+            //    {
+            //        stgInd -= (BitConverter.ToInt32(stagesData, 0) - 1);    //UX stages
+            //        uX = true;
+            //    }
+            //}
+
             LvlState state = GetStage(stgInd, stgType).State;
             int rank = GetStage(stgInd, stgType).Rank;
-            bool uX = false;
-            if (stgType == 0)
-            {
-                stgInd++;
-                if (stgInd >= BitConverter.ToInt32(stagesData, 0))
-                {
-                    stgInd -= (BitConverter.ToInt32(stagesData, 0) - 1);    //UX stages
-                    uX = true;
-                }
-            }
-            int monInd = BitConverter.ToInt16(stagesData, 0x50 + BitConverter.ToInt32(stagesData, 0x4) * stgInd) & 0x7FF;
-            return GetStageImage(monInd, uX, (db.Mons[monInd].IsMega && stgType == 0), GetMon(monInd).Caught, (state == LvlState.Locked && stgType == 0), (state == LvlState.Unlocked && stgType == 0), (state == LvlState.Defeated), rank);
+            int monInd = db.Stages[stgType][stgInd].Pokemon;
+            return GetStageImage(monInd, db.Stages[stgType][stgInd].IsUX, (db.Mons[monInd].IsMega && stgType == 0), GetMon(monInd).Caught, (state == LvlState.Locked && stgType == 0), (state == LvlState.Unlocked && stgType == 0), (state == LvlState.Defeated), rank);
         }   //Returns an img corresponding to a certain stage
 
         public static Bitmap GetStageImage()
@@ -931,7 +934,7 @@ namespace Pokemon_Shuffle_Save_Editor
         public int Score { get; set; }
     }
 
-    public class dbItem
+    public class dbMon
     {
         public int SpecieIndex { get; set; }
         public int FormIndex { get; set; }
@@ -943,7 +946,7 @@ namespace Pokemon_Shuffle_Save_Editor
         public int DexNum { get; set; }
         public int SkillCount { get; set; }
 
-        public dbItem(int spec, int form, bool ismega, int maxRML, int basepower, int[] skills, int type, int dexnum, int skillcount)
+        public dbMon(int spec, int form, bool ismega, int maxRML, int basepower, int[] skills, int type, int dexnum, int skillcount)
         {
             SpecieIndex = spec;
             FormIndex = form;
@@ -954,6 +957,24 @@ namespace Pokemon_Shuffle_Save_Editor
             Type = type;
             DexNum = dexnum;
             SkillCount = skillcount;
+        }
+    }
+
+    public class dbStage
+    {
+        public int Pokemon { get; set; }
+        public bool IsUX { get; set; }
+        public int Srequirement { get; set; }
+        public int HP { get; set; }
+        public int[] MinMoves { get; set; }        
+
+        public dbStage(bool isux, int pkmn, int sranks, int hp, int[] minmoves)
+        {
+            Pokemon = pkmn;
+            IsUX = isux;
+            Srequirement = sranks;
+            HP = hp;
+            MinMoves = minmoves;
         }
     }
 

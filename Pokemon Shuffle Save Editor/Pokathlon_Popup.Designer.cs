@@ -30,12 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             this.L_Step = new System.Windows.Forms.Label();
-            this.NUP_Step = new System.Windows.Forms.NumericUpDown();
-            this.NUP_Moves = new System.Windows.Forms.NumericUpDown();
+            this.NUP_Step = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
+            this.NUP_Moves = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.L_Moves = new System.Windows.Forms.Label();
             this.L_Opponent = new System.Windows.Forms.Label();
             this.PB_Opponent = new System.Windows.Forms.PictureBox();
-            this.NUP_Opponent = new System.Windows.Forms.NumericUpDown();
+            this.NUP_Opponent = new Pokemon_Shuffle_Save_Editor.NumericUpDownFix();
             this.B_OK = new System.Windows.Forms.Button();
             this.B_Random = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
