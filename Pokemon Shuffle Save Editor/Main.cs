@@ -286,7 +286,7 @@ namespace Pokemon_Shuffle_Save_Editor
             }
         }
 
-        private void B_Save_Click(object sender, EventArgs e)
+        private void B_Save_Click(object sender, EventArgs e) 
         {
             if (!loaded || updating)
                 return;

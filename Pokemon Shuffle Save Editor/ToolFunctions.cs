@@ -628,8 +628,11 @@ namespace Pokemon_Shuffle_Save_Editor
             switch (type)
             {
                 case 0: //Main
-                    return 0x688 + ind * 3 / 8;
-
+                    {
+                        if (ind > 1199) //there is only room for 1200 stages because 1201st would be offset 0x84A which is the first EX stage. Apparently, the rest of the main stages resumes just after the 53 EX stages.
+                            ind += 100; //I guess 100 is the amount of reserved EX stages though the game only has 53 yet.  
+                        return 0x688 + ind * 3 / 8;
+                    }                    
                 case 1: //Expert
                     return 0x84A + ind * 3 / 8;
 
@@ -646,8 +649,11 @@ namespace Pokemon_Shuffle_Save_Editor
             switch (type)
             {
                 case 0: //Main
-                    return (ind * 3) % 8;
-
+                    {
+                        if (ind > 1199) //cf Completed.Offset()
+                            ind += 100; 
+                        return (ind * 3) % 8;
+                    }
                 case 1: //Expert
                     return (ind * 3) % 8;
 
@@ -666,8 +672,11 @@ namespace Pokemon_Shuffle_Save_Editor
             switch (type)
             {
                 case 0: //Main
-                    return 0x987 + (7 + ind * 2) / 8;
-
+                    {
+                        if (ind > 1199) //cf Completed.Offset()
+                            ind += 100;
+                        return 0x987 + (7 + ind * 2) / 8;
+                    }
                 case 1: //Expert
                     return 0xAB3 + (7 + ind * 2) / 8;
 
@@ -684,7 +693,11 @@ namespace Pokemon_Shuffle_Save_Editor
             switch (type)
             {
                 case 0: //Main
-                    return (7 + ind * 2) % 8;
+                    {
+                        if (ind > 1199) //cf Completed.Offset()
+                            ind += 100;
+                        return (7 + ind * 2) % 8;
+                    }
 
                 case 1: //Expert
                     return (7 + ind * 2) % 8;
@@ -704,7 +717,11 @@ namespace Pokemon_Shuffle_Save_Editor
             switch (type)
             {
                 case 0: //Main
-                    return 0x4141 + 3 * ind;
+                    {
+                        if (ind > 1199) //cf Completed.Offset()
+                            ind += 100;
+                        return 0x4141 + 3 * ind;
+                    }
 
                 case 1: //Expert
                     return 0x4F51 + 3 * ind;
@@ -733,18 +750,6 @@ namespace Pokemon_Shuffle_Save_Editor
                 default:
                     throw new System.ArgumentException("Invalid type parameter", "type");
             }
-        }
-    }
-    public static class EscalationStep
-    {
-        public static int Ofset()
-        {
-            return 0x2D59;
-        }
-
-        public static int Shift()
-        {
-            return 2;
         }
     }
 
@@ -809,6 +814,18 @@ namespace Pokemon_Shuffle_Save_Editor
         }
     }
 
+    public static class EscalationStep
+    {
+        public static int Ofset()
+        {
+            return 0x2D59;
+        }
+
+        public static int Shift()
+        {
+            return 2;
+        }
+    }
     public static class StreetCount
     {
         public static int Ofset()

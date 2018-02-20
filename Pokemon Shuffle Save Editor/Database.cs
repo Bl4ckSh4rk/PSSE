@@ -78,7 +78,7 @@ namespace Pokemon_Shuffle_Save_Editor
 
             //resources override            
             if (Directory.Exists(resourcedir))
-            {                
+            {
                 for (int i = 0; i < filenames.Length; i++)
                 {
                     if (File.Exists(resourcedir + filenames[i]) && overRide[i])
@@ -121,13 +121,13 @@ namespace Pokemon_Shuffle_Save_Editor
                                 PokeLoad = File.ReadAllBytes(resourcedir + filenames[i]);
                                 break;
                             default:
-                                MessageBox.Show("Error loading resources :\nfilename = " + (filenames[i] != null ? filenames[i] : "null") +"\ni = " + i);
+                                MessageBox.Show("Error loading resources :\nfilename = " + (filenames[i] != null ? filenames[i] : "null") + "\ni = " + i);
                                 break;
                         }
                 }
-                
+
             }
-                
+
 
             //txt init
             SpeciesList = Properties.Resources.species.Split(new[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -194,7 +194,7 @@ namespace Pokemon_Shuffle_Save_Editor
                 byte[] data = PokeLoad.Skip(smSkip + i * smEntry).Take(smEntry).ToArray();
                 int lowStep = BitConverter.ToInt16(data, 0) & 0x3FF, highStep = (BitConverter.ToInt16(data, 0x01) >> 2) & 0x3FF; //if highStep !=0 then data[] applies to all steps in the lowStep - highStep range
                 int min = (BitConverter.ToInt16(data, 0x02) >> 4) & 0xFFF, max = BitConverter.ToInt16(data, 0x04) & 0xFFF; //if max !=0 then all stages in min-max range are possibilities for corresponding step(s)
-                List<int> stagesList = Enumerable.Range(min, max != 0 ? max-min+1 : 1).ToList();
+                List<int> stagesList = Enumerable.Range(min, max != 0 ? max - min + 1 : 1).ToList();
                 for (int j = 0x08; j < (data.Length - 3); j += 4) //weird pattern for excluded stages : each 32-bits block starting at 0x08 contains 3 10-bits long stages #
                 {
                     int exception = 0;
@@ -226,7 +226,7 @@ namespace Pokemon_Shuffle_Save_Editor
 
             //missions
             Missions = new bool[BitConverter.ToInt32(MissionCard, 0)][];
-            for(int i = 0 ; i < Missions.Length; i++)
+            for (int i = 0; i < Missions.Length; i++)
             {
                 Missions[i] = new bool[10];
                 int ientrylen = BitConverter.ToInt32(MissionCard, 0x4);
@@ -239,7 +239,7 @@ namespace Pokemon_Shuffle_Save_Editor
             string temp = Encoding.Unicode.GetString(MessageDex.Skip(BitConverter.ToInt32(MessageDex, 0x08)).Take(BitConverter.ToInt32(MessageDex, 0x0C) - 0x17).ToArray()); //Relevant chunk specified in .bin file, UTF16 Encoding, 0x17 bytes at the end are a useless stamp (data.messagePokedex)
             temp = temp.Replace(Encoding.Unicode.GetString(MessageDex.Skip(BitConverter.ToInt32(MessageDex, 0x08)).Take(0x10).ToArray()), "[name]"); //because this variable ends with 0x00 it messes with Split() later on, so I replace it here
             temp = temp.Replace(Encoding.Unicode.GetString(new byte[] { 0x01, 0x00, 0x03, 0x01, 0x01, 0x00, 0x03, 0x00, 0x05, 0x00, 0x6D, 0x65, 0x67, 0x61, 0x4E, 0x61, 0x6D, 0x65, 0x00, 0x00 }), "[megaName]"); //same but this variable isn't declared on a fixed position so I copied it directly
-            string[] arr = temp.Split( (char)0x00); //split the single string in an array
+            string[] arr = temp.Split((char)0x00); //split the single string in an array
             arr = arr.Skip(Array.IndexOf(arr, "Opportunist")).ToArray(); //we only care for skills so I get rid of anything before Opportunist
             for (int i = 0; i < arr.Length; i++)
             {
@@ -253,16 +253,28 @@ namespace Pokemon_Shuffle_Save_Editor
              * Also, note that there is no [Mega Skills], which is why I didn't implement it yet (the names of Mega Skills are probably inside another file).
              */
 
-            int a = Array.IndexOf(arr, "Opportunist"), b = Array.IndexOf(arr, "Transform") + 1, c = Array.IndexOf(arr, "Big Wave"), d = Array.IndexOf(arr, "Super Cheer") + 1, e = Array.IndexOf(arr, "Not Caught"), f = Array.IndexOf(arr, "Hammering Streak") + 1;
-            string[] s1 = arr.Skip(a).Take(b - a).ToArray(), s2 = arr.Skip(c).Take(d - c).ToArray(), s3 = arr.Skip(e).Take(f - e).ToArray();
-            string[] st1 = arr.Skip(b).Take(b - a).ToArray(), st2 = arr.Skip(d).Take(d - c).ToArray(), st3 = arr.Skip(f).Take(f - e).ToArray();
-            string[] Skills = new string[s1.Length + s2.Length + s3.Length], SkillsT = new string[Skills.Length]; ;
-            s1.CopyTo(Skills, 0);
-            s2.CopyTo(Skills, s1.Length);
-            SkillsList = Skills;
-            st1.CopyTo(SkillsT, 0);
-            st2.CopyTo(SkillsT, s1.Length);
-            SkillsTextList = SkillsT;
+            string[] hardcoded = new string[] { "Opportunist", "Transform", "Big Wave", "Super Cheer", "Not Caught", "Hammering Streak" };  //add hardcoded strings here
+            int[] indexes = new int[hardcoded.Length];
+            for (int i = 0; i < indexes.Length; i++)
+                indexes[i] = Array.IndexOf(arr, hardcoded[i]) + (i % 2); //I add 1 to every odd entry because they correspond to the first text of a group whereas I use the hardcoded last skill of former group instead.
+            string[][] stringChunks = new string[indexes.Length][];
+            int chunksLength = 0;
+            for (int i = 0; i < stringChunks.Length; i++)
+            {
+                if (i == 4)
+                    stringChunks[i] = arr.Skip(indexes[i] + 1).Take(indexes[2 * (i / 2) + 1] - indexes[2 * (i / 2)] - 1).ToArray(); //because for some reason in v1.5.7 skill "Not Caught" doesn't have a flavour entry so I had to remove it manually so the texts match correctly.
+                else
+                    stringChunks[i] = arr.Skip(indexes[i] + ((i == 4) ? 1 : 0)).Take(indexes[2 * (i / 2) + 1] - indexes[2 * (i / 2)]).ToArray();    
+                if (i % 2 == 1)
+                    chunksLength += Math.Max(stringChunks[i].Length, stringChunks[i - 1].Length);
+            }
+            string[][] skillText = new string[2][]; //[0] = skill name / [1] = flavor text
+            for (int i = 0; i < skillText.Length; i++)
+                skillText[i] = new string[chunksLength];
+            for (int i = 0; i < stringChunks.Length; i++)
+                stringChunks[i].CopyTo(skillText[i % 2], Array.IndexOf(skillText[i % 2], null));
+            SkillsList = skillText[0];
+            SkillsTextList = skillText[1];
         }
     }
 }

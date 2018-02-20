@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -55,16 +56,23 @@ namespace Pokemon_Shuffle_Save_Editor
             {
                 int entrylen = BitConverter.ToInt32(stage, 4);
                 int lim = BitConverter.ToInt32(stage, 0), stgInd;
+                bool isMain = false;
+                
                 if (stage == db.StagesMain)
-                    lim = 1200;
+                {
+                    isMain = true;
+                    lim = (lim - 1) * 2;
+                }
+
                 for (int i = 0; i < lim; i++)
                 {
-                    stgInd = (i > lim / 2) ? i - (lim / 2) : i; //UX stages
+                    stgInd = i;
+                    if (isMain && i > lim / 2)
+                        stgInd = i - (lim / 2); //UX stages
                     byte[] data = stage.Skip(0x50 + stgInd * entrylen).Take(entrylen).ToArray();
                     if ((BitConverter.ToInt16(data, 0x4C) & 0x3FF) != 999)  //checks number of S ranks needed to unlock in order to skip "unreleased" expert stages. Not-expert stages should always return 0.
                     {
                         SetStage(i, j, LvlState.Defeated);
-                        PatchScore(i, j);
                     }
                 }
                 j++;
@@ -91,8 +99,8 @@ namespace Pokemon_Shuffle_Save_Editor
 
         private void B_LevelMax_Click(object sender, EventArgs e)
         {
-            int value = 10, lollipops = 10;
-            foreach (dbItem dbI in db.Mons)
+            int value = 10, lollipops = 20;
+            foreach (dbItem dbI in db.Mons) //if a pokemon can have more lollipops than coded, use that as max level instead
                 if (dbI.MaxLollipops > lollipops) { lollipops = dbI.MaxLollipops; }
             value += lollipops;    //default value
             bool boool = false;
